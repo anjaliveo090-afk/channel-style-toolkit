@@ -1,0 +1,9 @@
+pycairo
+numpy
+opencv-python-headless
+pillow
+pocketsphinx
+librosa
+scipy
+matplotlib
+onnxruntime

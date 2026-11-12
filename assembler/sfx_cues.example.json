@@ -1,0 +1,5 @@
+[
+  {"time": 0.0, "file": "riser.wav", "volume": 0.7},
+  {"time": 4.8, "file": "clock_tick.wav", "volume": 0.8},
+  {"time": 9.2, "file": "shock_sting.wav", "volume": 0.9}
+]
