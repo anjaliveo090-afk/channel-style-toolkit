@@ -1,0 +1,1627 @@
+1
+00:00:00,130 --> 00:00:03,930
+On Thursday, NVIDIA lost more than $400 billion
+
+2
+00:00:03,930 --> 00:00:05,730
+in a single morning.
+
+3
+00:00:05,930 --> 00:00:07,490
+And it hadn't done anything wrong.
+
+4
+00:00:07,770 --> 00:00:08,470
+Nobody had.
+
+5
+00:00:08,690 --> 00:00:09,630
+No bank failed.
+
+6
+00:00:09,970 --> 00:00:11,010
+No law passed.
+
+7
+00:00:11,230 --> 00:00:12,510
+The economy looked fine.
+
+8
+00:00:12,770 --> 00:00:15,410
+The S&P 500 still lost more than
+
+9
+00:00:15,410 --> 00:00:17,810
+$2 trillion by mid-morning.
+
+10
+00:00:18,030 --> 00:00:20,590
+And the NASDAQ needed just six minutes to
+
+11
+00:00:20,590 --> 00:00:22,530
+give back a rally that was one day
+
+12
+00:00:22,530 --> 00:00:22,930
+old.
+
+13
+00:00:23,150 --> 00:00:25,650
+So why did the stock market just crash?
+
+14
+00:00:25,910 --> 00:00:27,970
+And was this the AI bubble popping?
+
+15
+00:00:28,770 --> 00:00:31,990
+Best day after a midterm since 1982.
+
+16
+00:00:32,550 --> 00:00:33,690
+Does this come with a receipt?
+
+17
+00:00:34,030 --> 00:00:35,730
+The short answer is an election.
+
+18
+00:00:36,170 --> 00:00:38,970
+600,000 chips stuck in Hong Kong and
+
+19
+00:00:38,970 --> 00:00:41,670
+some very rich people locking in a very
+
+20
+00:00:41,670 --> 00:00:42,290
+good year.
+
+21
+00:00:42,590 --> 00:00:45,050
+The long answer starts a month earlier, on
+
+22
+00:00:45,050 --> 00:00:48,050
+the 6th of October in Santa Clara, California.
+
+23
+00:00:50,270 --> 00:00:53,530
+That day, NVIDIA closed at the highest price
+
+24
+00:00:53,530 --> 00:00:54,770
+it had ever had.
+
+25
+00:00:54,950 --> 00:00:57,230
+A month before, it was worth about $5
+
+26
+00:00:57,230 --> 00:00:58,430
+.4 trillion.
+
+27
+00:00:59,150 --> 00:01:01,730
+Roughly $0.08 of every dollar in the
+
+28
+00:01:01,730 --> 00:01:03,150
+whole S&P 500.
+
+29
+00:01:03,610 --> 00:01:05,930
+If you own a plain index fund, the
+
+30
+00:01:05,930 --> 00:01:09,430
+safe, boring kind everyone recommends, you own a
+
+31
+00:01:09,430 --> 00:01:10,570
+lot of NVIDIA.
+
+32
+00:01:10,810 --> 00:01:12,570
+Add the rest of the magnificent seven.
+
+33
+00:01:12,870 --> 00:01:16,970
+Apple, Microsoft, Amazon, Alphabet, Meta, and Tesla.
+
+34
+00:01:17,270 --> 00:01:20,110
+And about $35 of every hundred in that
+
+35
+00:01:20,110 --> 00:01:22,210
+fund sits on seven companies.
+
+36
+00:01:22,530 --> 00:01:23,710
+I'm diversified.
+
+37
+00:01:23,850 --> 00:01:25,210
+500 companies.
+
+38
+00:01:25,430 --> 00:01:27,670
+Seven of them are a third of the
+
+39
+00:01:27,670 --> 00:01:27,930
+pie.
+
+40
+00:01:28,430 --> 00:01:30,670
+That is a big slice.
+
+41
+00:01:31,010 --> 00:01:33,370
+Even at the dot-com peak, the market
+
+42
+00:01:33,370 --> 00:01:36,330
+wasn't this lopsided, and most of those giants
+
+43
+00:01:36,330 --> 00:01:37,970
+are betting on the same thing.
+
+44
+00:01:38,190 --> 00:01:39,710
+That bet is expensive.
+
+45
+00:01:40,210 --> 00:01:42,990
+This year, the four biggest cloud companies plan
+
+46
+00:01:42,990 --> 00:01:46,930
+to spend over $700 billion building data centers.
+
+47
+00:01:47,270 --> 00:01:49,050
+Next year, more than a trillion.
+
+48
+00:01:49,490 --> 00:01:51,530
+The biggest line on that shopping list says
+
+49
+00:01:51,530 --> 00:01:55,110
+NVIDIA, whose last quarter brought in $96 billion,
+
+50
+00:01:55,730 --> 00:01:57,410
+more than double the year before.
+
+51
+00:01:59,820 --> 00:02:03,240
+By late October, investors were staring at four
+
+52
+00:02:03,240 --> 00:02:03,880
+cracks.
+
+53
+00:02:04,220 --> 00:02:04,740
+Crack one.
+
+54
+00:02:05,000 --> 00:02:06,380
+The money goes in a circle.
+
+55
+00:02:06,720 --> 00:02:09,780
+NVIDIA invests in its own customers, the AI
+
+56
+00:02:09,780 --> 00:02:12,400
+labs and chip rental firms that then buy
+
+57
+00:02:12,400 --> 00:02:13,180
+NVIDIA chips.
+
+58
+00:02:13,500 --> 00:02:16,100
+It owns a stake in CoreWeave, which rents
+
+59
+00:02:16,100 --> 00:02:18,180
+those chips out, and agreed to buy up
+
+60
+00:02:18,180 --> 00:02:21,520
+to $6.3 billion of the computing power
+
+61
+00:02:21,520 --> 00:02:22,860
+CoreWeave can't sell.
+
+62
+00:02:23,140 --> 00:02:26,000
+NVIDIA's own finance chief knows how that sounds.
+
+63
+00:02:26,000 --> 00:02:29,060
+We know some will call this circular financing.
+
+64
+00:02:35,980 --> 00:02:36,920
+Crack two.
+
+65
+00:02:37,160 --> 00:02:38,600
+The chips are the collateral.
+
+66
+00:02:38,980 --> 00:02:41,860
+Firms like CoreWeave borrowed huge sums to buy
+
+67
+00:02:41,860 --> 00:02:44,760
+chips, rented them out, and pledged those same
+
+68
+00:02:44,760 --> 00:02:45,920
+chips to borrow more.
+
+69
+00:02:46,220 --> 00:02:49,420
+At one point, CoreWeave owed over $5 for
+
+70
+00:02:49,420 --> 00:02:50,800
+every dollar of equity.
+
+71
+00:02:51,140 --> 00:02:53,540
+Fine, while a used chip holds its value.
+
+72
+00:02:53,540 --> 00:02:56,380
+But NVIDIA brings out a new generation every
+
+73
+00:02:56,380 --> 00:02:58,580
+year or two, and each one makes the
+
+74
+00:02:58,580 --> 00:02:59,980
+last one worth less.
+
+75
+00:03:00,280 --> 00:03:02,620
+And Michael Burry, who called the housing crash,
+
+76
+00:03:02,920 --> 00:03:05,420
+says the giants book their servers as lasting
+
+77
+00:03:05,420 --> 00:03:08,000
+longer than they do, which flatters profits.
+
+78
+00:03:08,320 --> 00:03:08,940
+The nightmare.
+
+79
+00:03:09,320 --> 00:03:12,340
+One borrower misses one payment, the lender grabs
+
+80
+00:03:12,340 --> 00:03:14,780
+the chips to sell, and everyone learns that
+
+81
+00:03:14,780 --> 00:03:17,180
+afternoon what a used AI chip is worth
+
+82
+00:03:17,180 --> 00:03:17,900
+in a hurry.
+
+83
+00:03:18,140 --> 00:03:20,920
+It hasn't happened, but every chip investor has
+
+84
+00:03:20,920 --> 00:03:21,700
+thought about it.
+
+85
+00:03:21,880 --> 00:03:22,580
+Crack three.
+
+86
+00:03:22,580 --> 00:03:23,600
+Who's paying?
+
+87
+00:03:23,860 --> 00:03:26,120
+By the end of July, NVIDIA was owed
+
+88
+00:03:26,120 --> 00:03:29,560
+about $63 billion for chips it had shipped
+
+89
+00:03:29,560 --> 00:03:31,260
+but not been paid for yet.
+
+90
+00:03:31,540 --> 00:03:33,980
+And this year, just three buyers made up
+
+91
+00:03:33,980 --> 00:03:35,920
+more than two-fifths of its sales.
+
+92
+00:03:36,240 --> 00:03:39,040
+Picture a restaurant where three tables order two
+
+93
+00:03:39,040 --> 00:03:40,520
+of every five plates.
+
+94
+00:03:40,880 --> 00:03:42,380
+And a lot of the food goes on
+
+95
+00:03:42,380 --> 00:03:42,820
+a tab.
+
+96
+00:03:43,040 --> 00:03:43,760
+Crack four.
+
+97
+00:03:44,040 --> 00:03:44,560
+The plug.
+
+98
+00:03:44,700 --> 00:03:45,760
+You can buy a chip.
+
+99
+00:03:46,020 --> 00:03:48,440
+You can't buy electricity that doesn't exist.
+
+100
+00:03:48,720 --> 00:03:51,480
+In Northern Virginia, the data center capital of
+
+101
+00:03:51,480 --> 00:03:53,420
+the world, the wait to hook a new
+
+102
+00:03:53,420 --> 00:03:55,480
+building up to the grid had stretched to
+
+103
+00:03:55,480 --> 00:03:56,860
+about seven years.
+
+104
+00:03:57,200 --> 00:03:59,940
+And the power that does exist, somebody pays
+
+105
+00:03:59,940 --> 00:04:00,260
+for.
+
+106
+00:04:00,520 --> 00:04:04,320
+On America's biggest grid, across 13 states, power
+
+107
+00:04:04,320 --> 00:04:06,480
+plants get paid just to stand ready.
+
+108
+00:04:06,760 --> 00:04:08,720
+And families cover that in their bills.
+
+109
+00:04:09,120 --> 00:04:10,960
+Then the data centers piled in.
+
+110
+00:04:11,280 --> 00:04:14,040
+Households there were paying an estimated $25 to
+
+111
+00:04:14,040 --> 00:04:16,600
+$30 a month more than in 2024.
+
+112
+00:04:17,060 --> 00:04:19,880
+And the grid's own watchdog blamed data centers
+
+113
+00:04:19,880 --> 00:04:20,360
+first.
+
+114
+00:04:21,480 --> 00:04:23,780
+Why is the electric bill up again?
+
+115
+00:04:24,120 --> 00:04:24,940
+Hi, neighbor!
+
+116
+00:04:25,560 --> 00:04:27,440
+Nobody reads a spending report.
+
+117
+00:04:27,760 --> 00:04:29,440
+Everybody reads their power bill.
+
+118
+00:04:29,660 --> 00:04:30,300
+Hold that thought.
+
+119
+00:04:30,580 --> 00:04:32,440
+Wall Street had its own bad news.
+
+120
+00:04:32,760 --> 00:04:35,860
+On October 29th, Google had its worst trading
+
+121
+00:04:35,860 --> 00:04:36,620
+day ever.
+
+122
+00:04:36,960 --> 00:04:39,180
+The next day, Intel fell by a quarter.
+
+123
+00:04:39,540 --> 00:04:41,540
+Chip stocks slid into a bear market.
+
+124
+00:04:41,860 --> 00:04:44,800
+And Apple, the boring one, passed NVIDIA in
+
+125
+00:04:44,800 --> 00:04:45,180
+value.
+
+126
+00:04:45,440 --> 00:04:48,400
+By the 2nd of November, the 47 biggest
+
+127
+00:04:48,400 --> 00:04:51,040
+AI and chip stocks had lost about $5
+
+128
+00:04:51,040 --> 00:04:52,940
+trillion since the top.
+
+129
+00:04:53,120 --> 00:04:55,200
+That's about what the whole dot-com crash
+
+130
+00:04:55,200 --> 00:04:55,760
+wiped out.
+
+131
+00:04:55,940 --> 00:04:57,680
+And that took two and a half years.
+
+132
+00:04:58,100 --> 00:04:59,700
+This took four weeks.
+
+133
+00:05:00,100 --> 00:05:01,360
+Then came the election.
+
+134
+00:05:03,940 --> 00:05:05,700
+Tuesday, the 3rd of November.
+
+135
+00:05:06,060 --> 00:05:07,380
+Democrats won the House.
+
+136
+00:05:07,720 --> 00:05:08,960
+Then they won the Senate.
+
+137
+00:05:09,340 --> 00:05:11,980
+Further down the ballot, in 10 states, there
+
+138
+00:05:11,980 --> 00:05:14,700
+were 41 local votes on data centers.
+
+139
+00:05:15,040 --> 00:05:16,920
+Voters went against them in 40.
+
+140
+00:05:17,140 --> 00:05:19,020
+21 of those were in Ohio.
+
+141
+00:05:19,020 --> 00:05:21,840
+The one town that said yes was Harwood,
+
+142
+00:05:22,000 --> 00:05:22,660
+North Dakota.
+
+143
+00:05:22,920 --> 00:05:23,400
+Ohio.
+
+144
+00:05:23,840 --> 00:05:24,360
+No.
+
+145
+00:05:24,780 --> 00:05:25,160
+Ohio.
+
+146
+00:05:25,580 --> 00:05:25,980
+No.
+
+147
+00:05:26,320 --> 00:05:26,660
+Ohio.
+
+148
+00:05:27,180 --> 00:05:27,540
+No.
+
+149
+00:05:27,920 --> 00:05:28,320
+Ohio.
+
+150
+00:05:28,640 --> 00:05:29,020
+Hi!
+
+151
+00:05:29,400 --> 00:05:29,780
+Yes!
+
+152
+00:05:30,100 --> 00:05:30,720
+Over here!
+
+153
+00:05:31,060 --> 00:05:33,020
+That's the power bill, showing up at the
+
+154
+00:05:33,020 --> 00:05:33,660
+ballot box.
+
+155
+00:05:33,960 --> 00:05:37,280
+In Ohio, Sherrod Brown beat John Husted, who'd
+
+156
+00:05:37,280 --> 00:05:39,540
+been called the face of data centers.
+
+157
+00:05:39,820 --> 00:05:43,180
+In Texas, Elon Musk, the cycle's biggest donor
+
+158
+00:05:43,180 --> 00:05:47,640
+with at least $474 million, lost both big
+
+159
+00:05:47,640 --> 00:05:48,000
+races.
+
+160
+00:05:48,000 --> 00:05:48,980
+His reaction?
+
+161
+00:05:49,500 --> 00:05:52,700
+Data centers in space looking pretty appealing right
+
+162
+00:05:52,700 --> 00:05:53,020
+now.
+
+163
+00:05:53,280 --> 00:05:55,680
+Here's why a town vote moves Wall Street.
+
+164
+00:05:55,980 --> 00:05:58,600
+A data center needs land, power, and a
+
+165
+00:05:58,600 --> 00:06:00,740
+permit, and all three are local.
+
+166
+00:06:01,000 --> 00:06:03,940
+Goldman Sachs figured moratoriums like these could hit
+
+167
+00:06:03,940 --> 00:06:07,420
+about 45% of America's planned data center
+
+168
+00:06:07,420 --> 00:06:07,960
+expansion.
+
+169
+00:06:08,320 --> 00:06:10,280
+And the bigger fear was Washington.
+
+170
+00:06:10,660 --> 00:06:13,500
+For years, AI was mostly left alone to
+
+171
+00:06:13,500 --> 00:06:13,800
+build.
+
+172
+00:06:13,800 --> 00:06:17,400
+Now, a Democratic Congress, elected the same night
+
+173
+00:06:17,400 --> 00:06:20,060
+voters said no to data centers, might want
+
+174
+00:06:20,060 --> 00:06:22,560
+rules on where data centers go, who pays
+
+175
+00:06:22,560 --> 00:06:24,740
+for their power, and how fast the build
+
+176
+00:06:24,740 --> 00:06:25,300
+-out runs.
+
+177
+00:06:25,580 --> 00:06:29,040
+One congressman, Robert Garcia, had two words for
+
+178
+00:06:29,040 --> 00:06:30,040
+AI executives.
+
+179
+00:06:30,480 --> 00:06:31,160
+Lawyer up.
+
+180
+00:06:32,020 --> 00:06:33,420
+So, data centers.
+
+181
+00:06:33,820 --> 00:06:35,220
+So, data centers.
+
+182
+00:06:36,200 --> 00:06:37,500
+We were just leaving.
+
+183
+00:06:37,880 --> 00:06:39,140
+No rule has passed.
+
+184
+00:06:39,420 --> 00:06:40,200
+Not one.
+
+185
+00:06:40,380 --> 00:06:41,920
+It was the fear of a rule that
+
+186
+00:06:41,920 --> 00:06:42,580
+did the selling.
+
+187
+00:06:42,580 --> 00:06:45,240
+That trillion-dollar shopping list had picked up
+
+188
+00:06:45,240 --> 00:06:47,780
+some small print, if they let us build
+
+189
+00:06:47,780 --> 00:06:47,980
+it.
+
+190
+00:06:50,160 --> 00:06:53,100
+And on Wednesday, Wall Street partied anyway.
+
+191
+00:06:53,500 --> 00:06:57,360
+The Dow jumped 1,569 points, about 3%.
+
+192
+00:06:57,940 --> 00:07:01,080
+It's best day after a midterm since 1982.
+
+193
+00:07:01,780 --> 00:07:03,300
+And oil fell more than 9%.
+
+194
+00:07:03,920 --> 00:07:05,820
+Traders loved the cheap oil.
+
+195
+00:07:06,080 --> 00:07:07,820
+They hadn't gotten to the new Congress yet.
+
+196
+00:07:08,020 --> 00:07:09,720
+The party lasted one day.
+
+197
+00:07:09,940 --> 00:07:12,660
+That morning, Vice President J.D. Vance had
+
+198
+00:07:12,660 --> 00:07:13,640
+posted on X.
+
+199
+00:07:14,220 --> 00:07:16,660
+The reason we lost is the war.
+
+200
+00:07:16,960 --> 00:07:18,100
+The war with Iran.
+
+201
+00:07:18,440 --> 00:07:20,720
+That raised hopes of a deal, and oil
+
+202
+00:07:20,720 --> 00:07:21,140
+fell.
+
+203
+00:07:21,400 --> 00:07:24,380
+By Thursday morning, traders doubted it, and oil
+
+204
+00:07:24,380 --> 00:07:25,100
+climbed again.
+
+205
+00:07:25,400 --> 00:07:28,540
+Then, before the opening bell, Reuters dropped the
+
+206
+00:07:28,540 --> 00:07:29,340
+next problem.
+
+207
+00:07:29,640 --> 00:07:33,340
+About 600,000 of Nvidia's H200 chips were
+
+208
+00:07:33,340 --> 00:07:36,080
+sitting in Hong Kong, waiting for Beijing to
+
+209
+00:07:36,080 --> 00:07:36,680
+let them in.
+
+210
+00:07:36,880 --> 00:07:39,740
+Washington had cleared the sales last winter, case
+
+211
+00:07:39,740 --> 00:07:42,320
+by case, with a 25% tariff.
+
+212
+00:07:42,320 --> 00:07:45,040
+In August, Beijing let companies use them in
+
+213
+00:07:45,040 --> 00:07:45,540
+Hong Kong.
+
+214
+00:07:45,780 --> 00:07:46,860
+Into mainland China?
+
+215
+00:07:47,220 --> 00:07:47,740
+In bulk?
+
+216
+00:07:48,060 --> 00:07:48,700
+Still waiting.
+
+217
+00:07:49,080 --> 00:07:50,600
+You said we can sell them!
+
+218
+00:07:51,140 --> 00:07:51,840
+You can.
+
+219
+00:07:52,160 --> 00:07:53,620
+25% please.
+
+220
+00:07:53,940 --> 00:07:54,820
+They're in Hong Kong.
+
+221
+00:07:55,040 --> 00:07:55,740
+Can they come in?
+
+222
+00:07:56,260 --> 00:07:57,320
+Not moving.
+
+223
+00:07:57,680 --> 00:07:58,440
+Not yet.
+
+224
+00:07:58,740 --> 00:07:59,680
+The strange part.
+
+225
+00:07:59,960 --> 00:08:03,500
+Nvidia had already taken a $400 million hit
+
+226
+00:08:03,500 --> 00:08:05,740
+on H200s that nobody bought.
+
+227
+00:08:05,960 --> 00:08:07,960
+And the ones that did have buyers couldn't
+
+228
+00:08:07,960 --> 00:08:08,740
+get through the door.
+
+229
+00:08:11,290 --> 00:08:13,810
+9.30. The bell rings in New York.
+
+230
+00:08:13,810 --> 00:08:16,410
+It takes the Nasdaq 6 minutes to give
+
+231
+00:08:16,410 --> 00:08:17,610
+back the whole rally.
+
+232
+00:08:17,990 --> 00:08:19,010
+So much for Wednesday.
+
+233
+00:08:19,450 --> 00:08:22,770
+10.35. The Nasdaq is down 4%, and
+
+234
+00:08:22,770 --> 00:08:24,590
+the Dow 700 points.
+
+235
+00:08:24,870 --> 00:08:27,290
+Across the S&P 500, more than $2
+
+236
+00:08:27,290 --> 00:08:30,950
+trillion has vanished, and more than $400 billion
+
+237
+00:08:30,950 --> 00:08:32,570
+of it is Nvidia alone.
+
+238
+00:08:32,909 --> 00:08:36,130
+That's about twice Amazon's entire building budget for
+
+239
+00:08:36,130 --> 00:08:36,690
+the year.
+
+240
+00:08:36,870 --> 00:08:40,630
+11.17. The VIX, Wall Street's fear gauge,
+
+241
+00:08:40,809 --> 00:08:42,049
+is up 65%.
+
+242
+00:08:42,750 --> 00:08:44,490
+Think of it as the price of crash
+
+243
+00:08:44,490 --> 00:08:45,010
+insurance.
+
+244
+00:08:45,430 --> 00:08:46,870
+And everybody wants some.
+
+245
+00:08:47,170 --> 00:08:49,770
+11.37. The Dow is on track for
+
+246
+00:08:49,770 --> 00:08:52,530
+its worst second day after a midterm in
+
+247
+00:08:52,530 --> 00:08:55,170
+records going back to 1896.
+
+248
+00:08:55,530 --> 00:08:59,530
+1.38. AMD's boss, Lisa Su, speaks up,
+
+249
+00:08:59,610 --> 00:09:01,250
+with her stock down 15%.
+
+250
+00:09:01,990 --> 00:09:04,650
+I think the market can sometimes be a
+
+251
+00:09:04,650 --> 00:09:05,910
+little bit short-sighted.
+
+252
+00:09:07,570 --> 00:09:11,030
+2.58. And this is where ordinary people
+
+253
+00:09:11,030 --> 00:09:11,490
+come in.
+
+254
+00:09:11,490 --> 00:09:13,970
+Maybe you're at work, checking your phone under
+
+255
+00:09:13,970 --> 00:09:14,490
+the desk.
+
+256
+00:09:14,710 --> 00:09:17,290
+You own a plain S&P 500 fund.
+
+257
+00:09:17,570 --> 00:09:19,050
+If it holds a quarter of a million
+
+258
+00:09:19,050 --> 00:09:23,550
+dollars, Nvidia alone took about $990 out of
+
+259
+00:09:23,550 --> 00:09:24,310
+it that morning.
+
+260
+00:09:24,570 --> 00:09:27,530
+By now, small investors have sold, on net,
+
+261
+00:09:27,790 --> 00:09:32,370
+$358 million of stock, the most since March
+
+262
+00:09:32,370 --> 00:09:33,050
+2020.
+
+263
+00:09:33,290 --> 00:09:34,130
+Buy the dip.
+
+264
+00:09:34,430 --> 00:09:35,730
+Or sell the dip.
+
+265
+00:09:36,030 --> 00:09:37,170
+Or sell the dip.
+
+266
+00:09:37,170 --> 00:09:40,330
+Viraj Patel at Vanda Research called it a
+
+267
+00:09:40,330 --> 00:09:44,710
+total capitulation by retail investors, with no signs
+
+268
+00:09:44,710 --> 00:09:45,630
+of buying the dip.
+
+269
+00:09:45,810 --> 00:09:49,470
+3.06. Charlie McElligot, a strategist at Nomura,
+
+270
+00:09:49,890 --> 00:09:51,650
+explains who's really selling.
+
+271
+00:09:51,950 --> 00:09:53,150
+They're shooting the generals.
+
+272
+00:09:53,630 --> 00:09:55,990
+The generals are the year's biggest winners.
+
+273
+00:09:56,470 --> 00:09:59,090
+Hedge funds had made a fortune in 2026,
+
+274
+00:09:59,370 --> 00:10:01,310
+and with two months to go, they sold
+
+275
+00:10:01,310 --> 00:10:02,570
+the winners to lock it in.
+
+276
+00:10:02,570 --> 00:10:05,670
+Computer-driven funds and funds on borrowed money
+
+277
+00:10:05,670 --> 00:10:06,970
+were forced to sell, too.
+
+278
+00:10:07,270 --> 00:10:09,030
+And nobody stepped in to buy.
+
+279
+00:10:09,430 --> 00:10:09,910
+Great year.
+
+280
+00:10:10,270 --> 00:10:10,970
+Let's bank it.
+
+281
+00:10:11,210 --> 00:10:11,830
+Sell the winners.
+
+282
+00:10:12,310 --> 00:10:13,410
+Which ones?
+
+283
+00:10:13,810 --> 00:10:14,230
+Yes.
+
+284
+00:10:14,570 --> 00:10:14,950
+Yes.
+
+285
+00:10:15,290 --> 00:10:18,550
+Single-name stock moves are absolutely bonkers.
+
+286
+00:10:19,010 --> 00:10:19,790
+4 o'clock.
+
+287
+00:10:20,050 --> 00:10:20,990
+The closing bell.
+
+288
+00:10:21,330 --> 00:10:24,410
+The Dow lost 1,833 points.
+
+289
+00:10:24,750 --> 00:10:26,410
+The S&P fell over 4%.
+
+290
+00:10:27,030 --> 00:10:30,330
+The Nasdaq fell 5.5, its biggest drop
+
+291
+00:10:30,330 --> 00:10:32,810
+in 19 months, and is now in a
+
+292
+00:10:32,810 --> 00:10:35,610
+correction, at least 10% below its high.
+
+293
+00:10:35,890 --> 00:10:38,230
+Chip stocks had their worst day since March
+
+294
+00:10:38,230 --> 00:10:38,910
+2020.
+
+295
+00:10:39,290 --> 00:10:43,170
+Nvidia closed at $181, down more than 9%.
+
+296
+00:10:43,830 --> 00:10:47,490
+And while everything burned, AppLovin rose almost 30%.
+
+297
+00:10:48,170 --> 00:10:50,590
+And Goldman Sachs picked that day to name
+
+298
+00:10:50,590 --> 00:10:54,670
+109 new partners, its biggest class since 2010.
+
+299
+00:10:57,690 --> 00:10:58,970
+Great day to get promoted.
+
+300
+00:11:01,470 --> 00:11:03,570
+It's easy to think a crash like this
+
+301
+00:11:03,570 --> 00:11:04,970
+only hurts rich people.
+
+302
+00:11:05,250 --> 00:11:05,890
+It doesn't.
+
+303
+00:11:06,150 --> 00:11:09,450
+Around 70 million Americans save in a 401k,
+
+304
+00:11:09,750 --> 00:11:11,530
+mostly through the same index funds.
+
+305
+00:11:11,830 --> 00:11:14,270
+And the pensions of teachers and firefighters hold
+
+306
+00:11:14,270 --> 00:11:14,690
+them, too.
+
+307
+00:11:14,930 --> 00:11:17,470
+When the seven giants fall, they fall, too.
+
+308
+00:11:17,710 --> 00:11:19,250
+It goes deeper than stocks.
+
+309
+00:11:19,670 --> 00:11:22,330
+Data centers run on borrowed money, much of
+
+310
+00:11:22,330 --> 00:11:24,650
+it raised from insurers and pension funds.
+
+311
+00:11:24,970 --> 00:11:26,810
+Pimco bought a big piece of the bonds
+
+312
+00:11:26,810 --> 00:11:30,650
+for Meta's giant Louisiana data center with And
+
+313
+00:11:30,650 --> 00:11:33,630
+Washington has moved to open 401ks to this
+
+314
+00:11:33,630 --> 00:11:34,270
+kind of lending.
+
+315
+00:11:34,610 --> 00:11:37,570
+So your retirement may be quietly lending to
+
+316
+00:11:37,570 --> 00:11:38,850
+a half-built building.
+
+317
+00:11:39,170 --> 00:11:41,270
+And some get hit without owning a share.
+
+318
+00:11:41,490 --> 00:11:42,330
+The electricians.
+
+319
+00:11:42,730 --> 00:11:46,530
+Some making $260,000 a year on data
+
+320
+00:11:46,530 --> 00:11:47,210
+center jobs.
+
+321
+00:11:47,470 --> 00:11:49,090
+And the diners that feed them.
+
+322
+00:11:49,350 --> 00:11:51,050
+Thursday didn't stop that work.
+
+323
+00:11:51,270 --> 00:11:53,690
+But if the spending stops, it lands there
+
+324
+00:11:53,690 --> 00:11:54,230
+first.
+
+325
+00:11:54,470 --> 00:11:57,210
+If you're 25, Thursday was a sale.
+
+326
+00:11:57,210 --> 00:11:59,810
+If you're 62 and retiring in the spring,
+
+327
+00:11:59,990 --> 00:12:01,890
+it was a very long day.
+
+328
+00:12:04,510 --> 00:12:06,290
+So who do you get angry at?
+
+329
+00:12:06,510 --> 00:12:08,010
+Every crash wants a villain.
+
+330
+00:12:08,350 --> 00:12:09,730
+2008 had the banks.
+
+331
+00:12:10,050 --> 00:12:11,950
+Thursday doesn't really have one.
+
+332
+00:12:12,410 --> 00:12:13,830
+I just didn't want the bill.
+
+333
+00:12:14,170 --> 00:12:16,250
+I just wanted to keep my good year.
+
+334
+00:12:16,470 --> 00:12:18,310
+I just said not yet.
+
+335
+00:12:18,610 --> 00:12:20,250
+I just sold chips.
+
+336
+00:12:20,610 --> 00:12:22,790
+Every one of those choices made sense on
+
+337
+00:12:22,790 --> 00:12:23,230
+its own.
+
+338
+00:12:23,410 --> 00:12:25,550
+They just all landed on the same morning.
+
+339
+00:12:25,850 --> 00:12:28,110
+So here's why the stock market crashed.
+
+340
+00:12:28,110 --> 00:12:30,810
+A market that's one-third AI had been
+
+341
+00:12:30,810 --> 00:12:32,070
+sliding for a month.
+
+342
+00:12:32,410 --> 00:12:35,470
+Then, in three days, voters elected a Congress
+
+343
+00:12:35,470 --> 00:12:38,390
+that might rein in data centers, Beijing left
+
+344
+00:12:38,390 --> 00:12:41,430
+600,000 chips at the door, and funds
+
+345
+00:12:41,430 --> 00:12:43,650
+sitting on a great year cashed out.
+
+346
+00:12:43,890 --> 00:12:44,610
+Nothing broke.
+
+347
+00:12:44,910 --> 00:12:45,870
+The fear did it.
+
+348
+00:12:46,090 --> 00:12:47,310
+It isn't new, either.
+
+349
+00:12:47,590 --> 00:12:51,090
+In the 1840s, Britain went mad for railways.
+
+350
+00:12:51,330 --> 00:12:53,110
+And at the peak, it was pouring about
+
+351
+00:12:53,110 --> 00:12:55,590
+7% of its economy into track.
+
+352
+00:12:55,590 --> 00:12:58,450
+Railway shares lost nearly two-thirds of their
+
+353
+00:12:58,450 --> 00:13:00,310
+value, and a third or more of the
+
+354
+00:13:00,310 --> 00:13:02,210
+approved lines never got built.
+
+355
+00:13:02,470 --> 00:13:04,090
+But many of the lines that did get
+
+356
+00:13:04,090 --> 00:13:06,710
+built are still part of Britain's railway today.
+
+357
+00:13:07,030 --> 00:13:07,830
+Here's the catch.
+
+358
+00:13:08,150 --> 00:13:10,250
+A railway can wait for its trains.
+
+359
+00:13:10,590 --> 00:13:12,830
+A chip sitting in a dark building just
+
+360
+00:13:12,830 --> 00:13:13,390
+gets older.
+
+361
+00:13:13,810 --> 00:13:16,630
+So, was Thursday the AI bubble popping?
+
+362
+00:13:16,930 --> 00:13:17,550
+Not yet.
+
+363
+00:13:17,930 --> 00:13:21,070
+Both tariff crash days in April 2025 were
+
+364
+00:13:21,070 --> 00:13:24,610
+bigger, and together erased a record $6.6
+
+365
+00:13:24,610 --> 00:13:25,270
+trillion.
+
+366
+00:13:26,130 --> 00:13:29,470
+Jobless claims were near their lowest since 1969.
+
+367
+00:13:29,990 --> 00:13:31,670
+And no rule had passed.
+
+368
+00:13:31,990 --> 00:13:35,030
+Bernie Sanders called for a national moratorium on
+
+369
+00:13:35,030 --> 00:13:35,790
+data centers.
+
+370
+00:13:36,170 --> 00:13:39,350
+Americans don't want big tech oligarchs wrecking the
+
+371
+00:13:39,350 --> 00:13:39,890
+environment.
+
+372
+00:13:40,290 --> 00:13:41,870
+A call, not a bill.
+
+373
+00:13:42,130 --> 00:13:44,470
+A bubble doesn't pop when prices fall.
+
+374
+00:13:44,710 --> 00:13:46,510
+It pops when the money stops.
+
+375
+00:13:46,830 --> 00:13:49,230
+On Thursday, the money hadn't stopped.
+
+376
+00:13:49,230 --> 00:13:51,450
+NVIDIA's sales were still doubling.
+
+377
+00:13:51,790 --> 00:13:54,050
+The giants were still expected to spend more
+
+378
+00:13:54,050 --> 00:13:55,990
+than a trillion dollars next year.
+
+379
+00:13:56,230 --> 00:13:58,650
+But here's the part almost nobody noticed.
+
+380
+00:13:58,970 --> 00:14:02,110
+A week before the crash, one giant blinked.
+
+381
+00:14:02,330 --> 00:14:06,030
+Microsoft cut its spending plan from $175 billion
+
+382
+00:14:06,030 --> 00:14:07,810
+to $170.
+
+383
+00:14:08,050 --> 00:14:09,230
+That's less than 3%.
+
+384
+00:14:09,910 --> 00:14:10,510
+Tiny.
+
+385
+00:14:10,830 --> 00:14:13,070
+But it's a foot moving toward the break.
+
+386
+00:14:13,290 --> 00:14:15,330
+And on Tuesday, the people who pay the
+
+387
+00:14:15,330 --> 00:14:17,910
+electric bill elected a Congress that might want
+
+388
+00:14:17,910 --> 00:14:19,650
+a say in where the buildings go.
+
+389
+00:14:19,970 --> 00:14:21,710
+So Thursday wasn't the pop.
+
+390
+00:14:21,870 --> 00:14:23,770
+It was the day the market noticed there's
+
+391
+00:14:23,770 --> 00:14:24,230
+a pin.
+
+392
+00:14:24,530 --> 00:14:27,990
+And that voters, Washington and Beijing, all have
+
+393
+00:14:27,990 --> 00:14:28,730
+a hand on it.
+
+394
+00:14:28,990 --> 00:14:31,410
+NVIDIA is now about a quarter below its
+
+395
+00:14:31,410 --> 00:14:32,290
+October record.
+
+396
+00:14:32,610 --> 00:14:34,770
+Its next report is due on the 17th
+
+397
+00:14:34,770 --> 00:14:35,290
+of November.
+
+398
+00:14:35,610 --> 00:14:38,250
+And the 600,000 chips are still in
+
+399
+00:14:38,250 --> 00:14:38,730
+Hong Kong.
+
+400
+00:14:39,030 --> 00:14:41,070
+The rally died in six minutes.
+
+401
+00:14:41,450 --> 00:14:44,330
+What happens next gets decided much more slowly.
+
+402
+00:14:44,330 --> 00:14:47,730
+By permits, power lines, and an electric bill
+
+403
+00:14:47,730 --> 00:14:49,410
+on a kitchen table in Ohio.
+
+404
+00:14:49,810 --> 00:14:52,450
+On Thursday, Lisa Su said the market can
+
+405
+00:14:52,450 --> 00:14:54,470
+be a little bit short-sighted.
+
+406
+00:14:54,650 --> 00:14:56,970
+That afternoon, it might have been the furthest
+
+407
+00:14:56,970 --> 00:14:58,370
+it had looked in months.

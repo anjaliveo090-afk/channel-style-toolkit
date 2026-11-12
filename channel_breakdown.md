@@ -7,6 +7,31 @@
 - Video list, descriptions and chapters via TranscriptAPI (`get_channel_latest_videos`).
 - Timed transcripts (YouTube captions) via TranscriptAPI, saved in `references/transcripts/*.tsv` and `*.srt`.
 - Stats from `python3 analysis/script_stats.py references/transcripts/<file>.tsv --chapters "..."`.
+- The user's SRTs (TurboScribe; watermark line stripped, V1's duplicated last cue removed) are in `references/srt/v1_spy_nvidia.srt`, `v2_market_crash.srt` and `v3_ipo_80b.srt`. **Use these for the analysis tools** (`frame_log.py`, `audio_ref.py`), because their timing is from the audio.
+
+**SRT vs YouTube captions.** The content is the same; the differences are listed here so no one re-checks them:
+- **Numbers.** The SRT writes them as digits ("$80 billion"); the captions spell them out ("eighty billion dollars"). The SRT therefore has 3-7% fewer words and 6-11% fewer characters:
+
+  | | SRT words / chars / wpm | Captions words / chars / wpm |
+  |---|---|---|
+  | V1 | 3,125 / 17,389 / 158 | 3,214 / 18,516 / 162 |
+  | V2 | 2,254 / 12,316 / 150 | 2,368 / 13,473 / 158 |
+  | V3 | 2,116 / 11,635 / 150 | 2,273 / 13,082 / 161 |
+
+- **Lines the SRT misses** (they are in the captions):
+  - V2 2:29-2:34, the gift skit "Here's a few billion dollars. / Wow! / What should I spend it on? / Funny you should ask."
+  - V2 10:55 "Honestly?"
+  - V2 9:05 "Aaaaah!"
+  - V2's "with savers' money" (11:27)
+
+  These are probably different voices or sound effects that TurboScribe skipped.
+- **Words only the SRT has:**
+  - V1 12:11 "August." and 12:15 "December." (spoken date labels inside the flip-flop skit)
+  - V2 7:56 "Not moving."
+  - V2 repeats: "So, data centers." ×2, "Or sell the dip." ×2, "Yes." ×2
+
+  These suggest a second voice echoing a line.
+- **Script length target for new scripts (A6).** Count with numbers spelled out, as the voiceover reads them. That is about **925 characters per minute of video** (900-935), with numbers written as words.
 
 **Not yet seen:** the videos themselves. YouTube is blocked from this cloud environment, so speaker attribution below is **inferred from the dialogue's content**. Character looks come only from the 3 thumbnails and the avatar. Everything visual still needs the mp4 files (B1).
 
