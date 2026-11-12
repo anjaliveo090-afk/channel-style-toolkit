@@ -1,0 +1,1232 @@
+1
+00:00:00,159 --> 00:00:02,379
+In the first six months of this year,
+
+2
+00:00:02,399 --> 00:00:05,971
+the company behind Claude lost eighty billion dollars.
+
+3
+00:00:05,991 --> 00:00:09,083
+That's about eighteen million dollars an hour.
+
+4
+00:00:09,103 --> 00:00:10,014
+Nights included.
+
+5
+00:00:10,034 --> 00:00:11,466
+And Wall Street's answer?
+
+6
+00:00:11,486 --> 00:00:12,698
+We want in.
+
+7
+00:00:12,718 --> 00:00:15,910
+Because Anthropic is about to sell itself to the public,
+
+8
+00:00:15,930 --> 00:00:18,693
+in the biggest IPO ever planned.
+
+9
+00:00:18,713 --> 00:00:19,285
+Wait.
+
+10
+00:00:19,305 --> 00:00:20,929
+It lost how much?
+
+11
+00:00:20,949 --> 00:00:22,773
+Eighty billion.
+
+12
+00:00:22,793 --> 00:00:23,645
+Okay.
+
+13
+00:00:23,665 --> 00:00:24,404
+Where do I tap?
+
+14
+00:00:24,424 --> 00:00:26,336
+So where did the money go?
+
+15
+00:00:26,356 --> 00:00:30,868
+And why has its own CEO already explained, on a podcast,
+
+16
+00:00:30,888 --> 00:00:33,731
+exactly how a company like his goes bankrupt?
+
+17
+00:00:33,751 --> 00:00:39,125
+San Francisco, January twenty twenty-one.
+
+18
+00:00:39,145 --> 00:00:43,017
+Seven people leave OpenAI and start a new AI lab.
+
+19
+00:00:43,037 --> 00:00:48,213
+Two of them are siblings: Dario Amodei, the scientist, and his sister Daniela,
+
+20
+00:00:48,233 --> 00:00:49,885
+the one who keeps the company running.
+
+21
+00:00:49,905 --> 00:00:52,357
+Why they left is a whole other story.
+
+22
+00:00:52,377 --> 00:00:54,098
+This one is about the bill.
+
+23
+00:00:54,118 --> 00:00:56,750
+Because building an AI takes hardware.
+
+24
+00:00:56,770 --> 00:00:57,782
+A lot of it.
+
+25
+00:00:57,802 --> 00:01:00,534
+Claude doesn't live in a box under someone's desk.
+
+26
+00:01:00,554 --> 00:01:03,814
+It lives on huge racks of chips in data centers,
+
+27
+00:01:03,834 --> 00:01:05,886
+most of them owned by other companies.
+
+28
+00:01:05,906 --> 00:01:09,178
+Every answer it gives burns time on those chips.
+
+29
+00:01:09,198 --> 00:01:11,297
+The industry calls that compute.
+
+30
+00:01:11,317 --> 00:01:13,341
+Think of it as rent for a brain.
+
+31
+00:01:13,361 --> 00:01:15,653
+And brains are expensive to rent.
+
+32
+00:01:15,673 --> 00:01:19,365
+In May, Anthropic raises its first big round,
+
+33
+00:01:19,385 --> 00:01:22,117
+a hundred and twenty-four million dollars.
+
+34
+00:01:22,137 --> 00:01:25,849
+Early on, another investor puts in five hundred million.
+
+35
+00:01:25,869 --> 00:01:28,280
+His name is Sam Bankman-Fried.
+
+36
+00:01:28,300 --> 00:01:29,892
+You know how that one ends.
+
+37
+00:01:29,912 --> 00:01:34,996
+In November twenty twenty-two, his crypto exchange, FTX, collapses,
+
+38
+00:01:35,016 --> 00:01:39,488
+and his piece of Anthropic gets swept into the bankruptcy with everything else.
+
+39
+00:01:39,508 --> 00:01:42,915
+Then the people cleaning up the wreck go through the boxes.
+
+40
+00:01:42,935 --> 00:01:45,620
+We've got a stake in some AI lab.
+
+41
+00:01:45,640 --> 00:01:47,483
+Is it worth anything?
+
+42
+00:01:47,503 --> 00:01:49,131
+It's worth more than he paid.
+
+43
+00:01:49,151 --> 00:01:50,611
+In twenty twenty-four,
+
+44
+00:01:50,631 --> 00:01:54,603
+the estate sells it for about one point three billion dollars.
+
+45
+00:01:54,623 --> 00:01:57,595
+That's roughly eight hundred million in profit.
+
+46
+00:01:57,615 --> 00:02:02,187
+The most famous crypto fraud of the decade made one great investment,
+
+47
+00:02:02,207 --> 00:02:05,191
+and it was in the AI lab known for being careful.
+
+48
+00:02:05,211 --> 00:02:07,483
+Meanwhile, Claude starts selling.
+
+49
+00:02:07,503 --> 00:02:10,507
+Twenty twenty-three: forty-one million dollars.
+
+50
+00:02:10,527 --> 00:02:13,851
+Twenty twenty-four: three hundred and eighty-six million.
+
+51
+00:02:13,871 --> 00:02:17,255
+Twenty twenty-five: four point six billion.
+
+52
+00:02:17,275 --> 00:02:19,644
+About ten times bigger every year.
+
+53
+00:02:19,664 --> 00:02:21,236
+The giants want in.
+
+54
+00:02:21,256 --> 00:02:23,928
+Amazon puts in eight billion dollars.
+
+55
+00:02:23,948 --> 00:02:26,060
+Google signs up for as much as forty.
+
+56
+00:02:26,080 --> 00:02:27,432
+But look at how they pay.
+
+57
+00:02:27,452 --> 00:02:28,824
+They don't buy shares.
+
+58
+00:02:28,844 --> 00:02:33,948
+They hand over cash for a promise: an IOU that turns into shares later.
+
+59
+00:02:33,968 --> 00:02:34,900
+Hold on to that.
+
+60
+00:02:34,920 --> 00:02:37,588
+It comes back with a very big number attached.
+
+61
+00:02:37,608 --> 00:02:40,260
+Because the losses grew even faster.
+
+62
+00:02:40,280 --> 00:02:44,852
+In twenty twenty-five, Anthropic lost forty-two billion dollars.
+
+63
+00:02:44,872 --> 00:02:48,144
+About nine dollars lost for every dollar sold.
+
+64
+00:02:48,164 --> 00:02:50,956
+That's the kind of math that usually ends a company.
+
+65
+00:02:50,976 --> 00:02:53,554
+Here, investors kept paying more.
+
+66
+00:02:53,574 --> 00:02:55,666
+Even the snacks were losing money.
+
+67
+00:02:55,686 --> 00:03:00,058
+That year, Anthropic let Claude run a small vending machine in its office.
+
+68
+00:03:00,078 --> 00:03:02,315
+The staff nicknamed it Claudius.
+
+69
+00:03:02,335 --> 00:03:04,527
+Can you stock tungsten cubes?
+
+70
+00:03:04,547 --> 00:03:06,007
+Absolutely!
+
+71
+00:03:06,027 --> 00:03:07,929
+Also, here's a discount code.
+
+72
+00:03:07,949 --> 00:03:10,256
+You're selling them for less than you paid.
+
+73
+00:03:10,276 --> 00:03:11,779
+Customer loyalty.
+
+74
+00:03:11,799 --> 00:03:14,099
+It also tried to sell three-dollar Coke
+
+75
+00:03:14,119 --> 00:03:16,419
+Zero to people who could get it for free in
+
+76
+00:03:16,439 --> 00:03:17,611
+the same office.
+
+77
+00:03:17,631 --> 00:03:19,123
+Claudius lost money.
+
+78
+00:03:19,143 --> 00:03:21,341
+Anthropic wrote it up as research.
+
+79
+00:03:21,361 --> 00:03:24,021
+Then, in early twenty twenty-six,
+
+80
+00:03:24,041 --> 00:03:30,935
+Anthropic got so good at its job that it scared the rest of Wall Street.
+
+81
+00:03:30,955 --> 00:03:33,439
+January twelfth, twenty twenty-six.
+
+82
+00:03:33,459 --> 00:03:36,691
+Anthropic launches Claude Cowork, an AI that
+
+83
+00:03:36,711 --> 00:03:39,235
+doesn't just chat, it does office work.
+
+84
+00:03:39,255 --> 00:03:43,261
+A few weeks later, it adds plugins for eleven different industries.
+
+85
+00:03:43,281 --> 00:03:44,913
+Wall Street does the math.
+
+86
+00:03:44,933 --> 00:03:46,805
+If an AI can do the work,
+
+87
+00:03:46,825 --> 00:03:49,977
+what happens to the companies that sell the tools for that work?
+
+88
+00:03:49,997 --> 00:03:51,417
+In early February,
+
+89
+00:03:51,437 --> 00:03:56,349
+software stocks lose about two hundred and eighty-five billion dollars in value.
+
+90
+00:03:56,369 --> 00:04:01,033
+Thomson Reuters, the company behind Reuters, falls sixteen percent,
+
+91
+00:04:01,053 --> 00:04:02,595
+its worst day ever.
+
+92
+00:04:02,615 --> 00:04:04,336
+What did Anthropic release?
+
+93
+00:04:04,356 --> 00:04:05,234
+Plugins.
+
+94
+00:04:05,254 --> 00:04:07,179
+How many plugins?
+
+95
+00:04:07,199 --> 00:04:07,933
+Eleven.
+
+96
+00:04:07,953 --> 00:04:12,093
+That same month, investors put in thirty billion dollars,
+
+97
+00:04:12,113 --> 00:04:15,325
+valuing Anthropic at three hundred and eighty billion.
+
+98
+00:04:15,345 --> 00:04:17,197
+Google alone puts in ten.
+
+99
+00:04:17,217 --> 00:04:19,677
+And Dario sits down for a long podcast
+
+100
+00:04:19,697 --> 00:04:22,157
+interview and says something about all that
+
+101
+00:04:22,177 --> 00:04:23,389
+rented compute.
+
+102
+00:04:23,409 --> 00:04:24,437
+We'll come back to it.
+
+103
+00:04:24,457 --> 00:04:26,229
+Then the government turns.
+
+104
+00:04:26,249 --> 00:04:30,869
+Anthropic had refused to let Claude be used for mass surveillance at home or for
+
+105
+00:04:30,889 --> 00:04:32,661
+weapons that fire on their own.
+
+106
+00:04:32,681 --> 00:04:34,773
+So on February twenty-seventh,
+
+107
+00:04:34,793 --> 00:04:38,720
+Pete Hegseth's Pentagon labels it a supply chain risk.
+
+108
+00:04:38,740 --> 00:04:42,053
+As of today, Anthropic is a supply chain risk.
+
+109
+00:04:42,073 --> 00:04:46,440
+Isn't that label for companies from rival countries?
+
+110
+00:04:46,460 --> 00:04:47,335
+Next question.
+
+111
+00:04:47,355 --> 00:04:48,687
+He's right, by the way.
+
+112
+00:04:48,707 --> 00:04:51,407
+Anthropic's own lawyers say the losses this
+
+113
+00:04:51,427 --> 00:04:53,327
+year could run from hundreds of millions
+
+114
+00:04:53,347 --> 00:04:55,879
+of dollars to multiple billions.
+
+115
+00:04:55,899 --> 00:04:58,831
+For a company getting ready to ask the public for money,
+
+116
+00:04:58,851 --> 00:05:01,322
+this is how the whole plan dies.
+
+117
+00:05:01,342 --> 00:05:02,219
+It didn't.
+
+118
+00:05:02,239 --> 00:05:04,671
+Because the government was never the money.
+
+119
+00:05:04,691 --> 00:05:07,490
+It's less than two percent of Anthropic's sales.
+
+120
+00:05:07,510 --> 00:05:11,663
+The Pentagon deal at the center of the fight was worth about two hundred million
+
+121
+00:05:11,683 --> 00:05:13,368
+dollars over two years.
+
+122
+00:05:13,388 --> 00:05:16,583
+These days, Anthropic sells that much in about a day.
+
+123
+00:05:16,603 --> 00:05:20,115
+And the spring is the best stretch it has ever had.
+
+124
+00:05:20,135 --> 00:05:24,587
+From April to June, sales hit eleven point six billion dollars,
+
+125
+00:05:24,607 --> 00:05:25,879
+and for the first time,
+
+126
+00:05:25,899 --> 00:05:30,583
+the business makes an operating profit: nine hundred and seventy-four million.
+
+127
+00:05:30,603 --> 00:05:33,863
+Operating profit means what you make selling the thing,
+
+128
+00:05:33,883 --> 00:05:35,695
+minus what it costs to make it.
+
+129
+00:05:35,715 --> 00:05:37,947
+Claude finally paid for itself.
+
+130
+00:05:37,967 --> 00:05:42,699
+In May, investors put in another sixty-five billion dollars,
+
+131
+00:05:42,719 --> 00:05:45,851
+at a value of nine hundred and sixty-five billion.
+
+132
+00:05:45,871 --> 00:05:48,963
+Remember that first round of a hundred and twenty-four million?
+
+133
+00:05:48,983 --> 00:05:52,237
+This one is over five hundred times bigger.
+
+134
+00:05:52,257 --> 00:05:56,289
+That's more than double February's price, in about three months.
+
+135
+00:05:56,309 --> 00:05:58,241
+Which is fantastic news.
+
+136
+00:05:58,261 --> 00:06:05,065
+And, as it turns out, the reason it lost eighty billion dollars.
+
+137
+00:06:05,085 --> 00:06:07,437
+June first, twenty twenty-six.
+
+138
+00:06:07,457 --> 00:06:11,621
+Anthropic sends its IPO paperwork to regulators, in secret.
+
+139
+00:06:11,641 --> 00:06:14,507
+Eleven days later, somebody else goes first.
+
+140
+00:06:14,527 --> 00:06:18,079
+SpaceX lists at a hundred and thirty-five dollars a share,
+
+141
+00:06:18,099 --> 00:06:20,631
+worth one point seven seven trillion,
+
+142
+00:06:20,651 --> 00:06:24,023
+with almost a third of the shares set aside for regular people.
+
+143
+00:06:24,043 --> 00:06:27,195
+Day one, it closes at a hundred and sixty-one.
+
+144
+00:06:27,215 --> 00:06:29,827
+Then it peaks at two hundred and eleven.
+
+145
+00:06:29,847 --> 00:06:32,831
+By the middle of July, it's below where it started.
+
+146
+00:06:32,851 --> 00:06:35,195
+By early August, a hundred and eight.
+
+147
+00:06:35,215 --> 00:06:38,507
+In about six weeks, half the peak is gone.
+
+148
+00:06:38,527 --> 00:06:41,822
+That's the chart Anthropic's bankers get to look at every morning.
+
+149
+00:06:41,842 --> 00:06:43,994
+In October, the books leak.
+
+150
+00:06:44,014 --> 00:06:47,498
+Then, on October twenty-sixth, the filing goes public.
+
+151
+00:06:47,518 --> 00:06:50,190
+Its ticker will be ANT.
+
+152
+00:06:50,210 --> 00:06:54,634
+Sales in the first half of the year: sixteen point three billion dollars,
+
+153
+00:06:54,654 --> 00:06:57,946
+up from about one point two billion a year earlier.
+
+154
+00:06:57,966 --> 00:06:59,930
+Loss: eighty point seven billion.
+
+155
+00:06:59,950 --> 00:07:04,323
+The draft's list of things that could go wrong ran ninety-four pages.
+
+156
+00:07:04,343 --> 00:07:07,438
+We're worth more than twice what we were in February.
+
+157
+00:07:07,458 --> 00:07:08,210
+Correct.
+
+158
+00:07:08,230 --> 00:07:10,306
+Congratulations.
+
+159
+00:07:10,326 --> 00:07:14,518
+Then why does this say we lost seventy-two billion dollars?
+
+160
+00:07:14,538 --> 00:07:17,884
+Because you're worth more than twice what you were in February.
+
+161
+00:07:17,904 --> 00:07:19,576
+Remember the IOUs?
+
+162
+00:07:19,596 --> 00:07:20,376
+Amazon,
+
+163
+00:07:20,396 --> 00:07:22,616
+Google and other early backers gave
+
+164
+00:07:22,636 --> 00:07:25,908
+Anthropic cash in exchange for shares later.
+
+165
+00:07:25,928 --> 00:07:27,300
+Picture a lemonade stand.
+
+166
+00:07:27,320 --> 00:07:30,980
+Your neighbor gives you a hundred dollars today for a slice of the stand,
+
+167
+00:07:31,000 --> 00:07:32,792
+handed over down the road.
+
+168
+00:07:32,812 --> 00:07:36,204
+Then your stand becomes the hottest stand in America.
+
+169
+00:07:36,224 --> 00:07:40,008
+That slice is now worth a fortune, and you still owe it.
+
+170
+00:07:40,028 --> 00:07:44,404
+The accounting rules say: the more your promise is worth, the more you owe.
+
+171
+00:07:44,424 --> 00:07:46,910
+And that jump goes on the books as a loss.
+
+172
+00:07:46,930 --> 00:07:49,442
+Out of the eighty point seven billion,
+
+173
+00:07:49,462 --> 00:07:52,634
+seventy-two point four billion is exactly that.
+
+174
+00:07:52,654 --> 00:07:54,439
+A charge on paper.
+
+175
+00:07:54,459 --> 00:07:57,035
+So did any actual money leave?
+
+176
+00:07:57,055 --> 00:07:58,259
+Not for that part.
+
+177
+00:07:58,279 --> 00:08:00,991
+Look only at the business of selling Claude,
+
+178
+00:08:01,011 --> 00:08:04,963
+and it lost about seven hundred million dollars in those six months.
+
+179
+00:08:04,983 --> 00:08:06,195
+That's real money.
+
+180
+00:08:06,215 --> 00:08:08,947
+It's also a long way from eighty billion.
+
+181
+00:08:08,967 --> 00:08:11,187
+And over the first nine months of the year,
+
+182
+00:08:11,207 --> 00:08:15,987
+the business itself brought in six point six billion dollars more than it cost to
+
+183
+00:08:16,007 --> 00:08:16,471
+run.
+
+184
+00:08:16,491 --> 00:08:17,743
+Now flip it around.
+
+185
+00:08:17,763 --> 00:08:20,535
+Amazon owns a pile of those IOUs.
+
+186
+00:08:20,555 --> 00:08:25,487
+On its own books, it reported gains of more than sixty billion dollars from them.
+
+187
+00:08:25,507 --> 00:08:26,459
+Same promise.
+
+188
+00:08:26,479 --> 00:08:28,271
+One company calls it a loss.
+
+189
+00:08:28,291 --> 00:08:29,830
+The other calls it a profit.
+
+190
+00:08:29,850 --> 00:08:31,262
+And it keeps going.
+
+191
+00:08:31,282 --> 00:08:32,582
+On November second,
+
+192
+00:08:32,602 --> 00:08:37,314
+a new filing: the loss for the first nine months is a hundred and four billion
+
+193
+00:08:37,334 --> 00:08:38,066
+dollars.
+
+194
+00:08:38,086 --> 00:08:41,878
+That's more than SpaceX raised in its record IPO in June.
+
+195
+00:08:41,898 --> 00:08:44,310
+Ninety-four billion of it is paper,
+
+196
+00:08:44,330 --> 00:08:48,922
+including a two-billion-dollar charge for matching the staff's donations to charity.
+
+197
+00:08:48,942 --> 00:08:49,482
+Meanwhile,
+
+198
+00:08:49,502 --> 00:08:54,174
+Anthropic is sitting on about a hundred and thirty-two billion dollars in cash.
+
+199
+00:08:54,194 --> 00:08:55,486
+More than it lost.
+
+200
+00:08:55,506 --> 00:08:56,588
+Both numbers are true.
+
+201
+00:08:56,608 --> 00:08:59,148
+So the scary number on the thumbnail is
+
+202
+00:08:59,168 --> 00:09:01,988
+mostly a scoreboard of how fast Anthropic's
+
+203
+00:09:02,008 --> 00:09:02,760
+value went up.
+
+204
+00:09:02,780 --> 00:09:03,623
+Case closed?
+
+205
+00:09:03,643 --> 00:09:04,795
+Not quite.
+
+206
+00:09:04,815 --> 00:09:08,187
+Because buried in the same filing is a different number.
+
+207
+00:09:08,207 --> 00:09:12,149
+And that one is real.
+
+208
+00:09:12,169 --> 00:09:15,301
+Eight hundred and ninety-five billion dollars.
+
+209
+00:09:15,321 --> 00:09:19,473
+That's how much Anthropic has signed up to pay for computers in the years ahead.
+
+210
+00:09:19,493 --> 00:09:22,557
+Its sales so far this year: thirty-three billion.
+
+211
+00:09:22,577 --> 00:09:25,567
+The bill is about twenty-seven times bigger.
+
+212
+00:09:25,587 --> 00:09:26,839
+Here's who gets paid.
+
+213
+00:09:26,859 --> 00:09:29,663
+Broadcom, about a hundred and sixty billion.
+
+214
+00:09:29,683 --> 00:09:31,415
+Google, a hundred and twenty.
+
+215
+00:09:31,435 --> 00:09:33,607
+Amazon, a hundred and ten.
+
+216
+00:09:33,627 --> 00:09:35,399
+Microsoft, forty-five.
+
+217
+00:09:35,419 --> 00:09:39,451
+And about a hundred and twenty billion to SpaceX's AI business.
+
+218
+00:09:39,471 --> 00:09:41,283
+Yes, that SpaceX.
+
+219
+00:09:41,303 --> 00:09:46,554
+The company whose IPO record Anthropic is chasing is also one of its landlords.
+
+220
+00:09:46,574 --> 00:09:48,354
+Some of it can be cancelled,
+
+221
+00:09:48,374 --> 00:09:52,358
+or depends on conditions: about two hundred and fourteen billion.
+
+222
+00:09:52,378 --> 00:09:55,550
+But seventy billion is due in the next twelve months,
+
+223
+00:09:55,570 --> 00:09:59,163
+and almost four hundred and fifty billion before twenty thirty-one.
+
+224
+00:09:59,183 --> 00:10:02,095
+Why sign for so much, so far ahead?
+
+225
+00:10:02,115 --> 00:10:04,947
+Because compute gets rented years in advance.
+
+226
+00:10:04,967 --> 00:10:07,859
+Book too little, and you pay the last-minute price.
+
+227
+00:10:07,879 --> 00:10:09,931
+That's exactly what happened this summer.
+
+228
+00:10:09,951 --> 00:10:15,843
+From July to September, computers cost Anthropic nine point nine billion dollars,
+
+229
+00:10:15,863 --> 00:10:17,795
+up seventy-seven percent.
+
+230
+00:10:17,815 --> 00:10:21,907
+Five billion of that was expensive capacity grabbed at short notice.
+
+231
+00:10:21,927 --> 00:10:25,155
+The business slipped back into a small operating loss.
+
+232
+00:10:25,175 --> 00:10:26,435
+We need more computers.
+
+233
+00:10:26,455 --> 00:10:26,951
+Today.
+
+234
+00:10:26,971 --> 00:10:28,999
+Today costs more.
+
+235
+00:10:29,019 --> 00:10:30,605
+How much have you got?
+
+236
+00:10:30,625 --> 00:10:33,529
+About five billion dollars' worth.
+
+237
+00:10:33,549 --> 00:10:38,233
+So that's one way to get it wrong: buy too little, and you pay through the nose.
+
+238
+00:10:38,253 --> 00:10:42,663
+The other way is to buy too much.
+
+239
+00:10:42,683 --> 00:10:44,155
+Which brings us to you.
+
+240
+00:10:44,175 --> 00:10:46,787
+Here's how a company sells itself to the public.
+
+241
+00:10:46,807 --> 00:10:48,291
+First, the filing.
+
+242
+00:10:48,311 --> 00:10:50,803
+Then the roadshow: for about a week,
+
+243
+00:10:50,823 --> 00:10:54,095
+bankers pitch the company to the biggest funds on Earth.
+
+244
+00:10:54,115 --> 00:10:57,959
+The funds place orders: this many shares, at this price.
+
+245
+00:10:57,979 --> 00:10:59,759
+The night before trading starts,
+
+246
+00:10:59,779 --> 00:11:03,191
+the company and its banks pick the price that fills the book.
+
+247
+00:11:03,211 --> 00:11:07,618
+Then the market opens, and the price does whatever it wants.
+
+248
+00:11:07,638 --> 00:11:09,069
+How much did it lose?
+
+249
+00:11:09,089 --> 00:11:10,690
+Which loss?
+
+250
+00:11:10,710 --> 00:11:11,850
+The big one.
+
+251
+00:11:11,870 --> 00:11:14,166
+Oh, that one's good news.
+
+252
+00:11:14,186 --> 00:11:16,269
+Then we'll pay the low end.
+
+253
+00:11:16,289 --> 00:11:20,821
+Goldman Sachs and Morgan Stanley lead it, with twenty-two banks in all.
+
+254
+00:11:20,841 --> 00:11:25,125
+One more thing to know: Anthropic only gets the money from new shares.
+
+255
+00:11:25,145 --> 00:11:29,217
+When early holders sell their shares in the deal, that money goes to them.
+
+256
+00:11:29,237 --> 00:11:32,249
+And most insiders can't sell for six months anyway.
+
+257
+00:11:32,269 --> 00:11:34,545
+The founders, for up to about a year.
+
+258
+00:11:34,565 --> 00:11:37,177
+Regular people get a real seat this time.
+
+259
+00:11:37,197 --> 00:11:41,901
+The filing names six brokers, from Schwab and Fidelity to Robinhood.
+
+260
+00:11:41,921 --> 00:11:45,933
+Reports say the public could get fifteen to twenty percent of the shares.
+
+261
+00:11:45,953 --> 00:11:50,013
+And in September, Anthropic split every share into ten,
+
+262
+00:11:50,033 --> 00:11:51,530
+before the public could buy one.
+
+263
+00:11:51,550 --> 00:11:55,422
+The price talk is one and a half to two trillion dollars.
+
+264
+00:11:55,442 --> 00:11:57,514
+The big funds are pushing for the low end.
+
+265
+00:11:57,534 --> 00:11:58,346
+Even there,
+
+266
+00:11:58,366 --> 00:12:03,106
+buyers pay about forty-three dollars for every dollar of sales Anthropic made over
+
+267
+00:12:03,126 --> 00:12:04,558
+the past twelve months.
+
+268
+00:12:04,578 --> 00:12:06,633
+At two trillion, fifty-seven.
+
+269
+00:12:06,653 --> 00:12:09,753
+Jay Ritter, the professor Wall Street calls Mr.
+
+270
+00:12:09,773 --> 00:12:11,605
+IPO, has counted.
+
+271
+00:12:11,625 --> 00:12:16,525
+Out of four thousand one hundred and ten American IPOs from nineteen eighty to
+
+272
+00:12:16,545 --> 00:12:21,209
+twenty twenty-four, only fourteen priced at forty times sales or more.
+
+273
+00:12:21,229 --> 00:12:24,745
+On average, they did fifteen percent worse than the market.
+
+274
+00:12:24,765 --> 00:12:28,417
+Aswath Damodaran, who values companies for a living,
+
+275
+00:12:28,437 --> 00:12:30,417
+called the latest quarter "the most
+
+276
+00:12:30,437 --> 00:12:33,289
+telegraphed third quarter number of all time."
+
+277
+00:12:33,309 --> 00:12:37,381
+He puts Anthropic at about one point four seven five trillion.
+
+278
+00:12:37,401 --> 00:12:38,850
+Just under the low end.
+
+279
+00:12:38,870 --> 00:12:42,062
+Now, back to February, and that podcast.
+
+280
+00:12:42,082 --> 00:12:46,454
+Dario was talking about the danger of a lab buying compute too early,
+
+281
+00:12:46,474 --> 00:12:48,106
+years ahead of the customers.
+
+282
+00:12:48,126 --> 00:12:49,411
+He didn't soften it.
+
+283
+00:12:49,431 --> 00:12:52,243
+If I'm just off by a year in that rate of growth,
+
+284
+00:12:52,263 --> 00:12:55,975
+or if the growth rate is five x a year instead of ten x a year,
+
+285
+00:12:55,995 --> 00:12:57,073
+then you go bankrupt.
+
+286
+00:12:57,093 --> 00:12:59,605
+That's not someone betting against the stock.
+
+287
+00:12:59,625 --> 00:13:04,289
+That's the CEO, describing the trap his whole industry is standing in.
+
+288
+00:13:04,309 --> 00:13:06,209
+Anthropic has signed eight hundred and
+
+289
+00:13:06,229 --> 00:13:08,929
+ninety-five billion dollars of bills on the
+
+290
+00:13:08,949 --> 00:13:11,141
+bet that growth shows up on schedule.
+
+291
+00:13:11,161 --> 00:13:13,527
+Now it's asking the public to buy in.
+
+292
+00:13:13,547 --> 00:13:14,819
+Here's where it stands.
+
+293
+00:13:14,839 --> 00:13:17,871
+The roadshow can start as early as November tenth,
+
+294
+00:13:17,891 --> 00:13:21,223
+with trading planned for mid-November, the week of the sixteenth.
+
+295
+00:13:21,243 --> 00:13:26,007
+The Pentagon fight stands at a split: a judge threw out one label in August,
+
+296
+00:13:26,027 --> 00:13:28,699
+and an appeals court kept the other in September.
+
+297
+00:13:28,719 --> 00:13:33,483
+SpaceX, the record holder, is trading right back around its IPO price.
+
+298
+00:13:33,503 --> 00:13:35,003
+And whatever the price,
+
+299
+00:13:35,023 --> 00:13:39,055
+the seven co-founders keep control through one special share.
+
+300
+00:13:39,075 --> 00:13:42,439
+One share, with fifty point one percent of the vote.
+
+301
+00:13:42,459 --> 00:13:45,433
+They've also pledged eighty percent of their stake to charity.
+
+302
+00:13:45,453 --> 00:13:48,705
+Eighty billion dollars sounds like the end of a company.
+
+303
+00:13:48,725 --> 00:13:52,057
+Here, it's mostly the receipt for becoming more valuable.
+
+304
+00:13:52,077 --> 00:13:56,249
+The number that decides this story is the one nobody puts on a thumbnail.
+
+305
+00:13:56,269 --> 00:14:00,933
+Eight hundred and ninety-five billion dollars of computers, already booked.
+
+306
+00:14:00,953 --> 00:14:03,074
+Now the customers have to show up on time.
+
+307
+00:14:03,094 --> 00:14:03,714
+As Mr.
+
+308
+00:14:03,734 --> 00:14:07,996
+IPO put it, "a lot of things have to go right."
+
