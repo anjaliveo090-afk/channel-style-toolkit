@@ -37,9 +37,11 @@
 
 | # | Title | Link | Length | Views (age) | VPH |
 |---|---|---|---|---|---|
-| V1 | How a Chinese Spy Got Inside Nvidia | https://www.youtube.com/watch?v=_MG4v3foET8 | 19:48 | 1.4M (1 day) | 46K |
-| V2 | Why the Stock Market Just Crashed | https://www.youtube.com/watch?v=zEUKLSrbRZk | 15:00 | 1.0M (3 days) | 6.5K |
-| V3 | The Biggest IPO in History Lost $80 Billion | https://www.youtube.com/watch?v=hPCywNDA60o | 14:09 | 92K (5 days) | 3.2K |
+| V1 | How a Chinese Spy Got Inside Nvidia | https://www.youtube.com/watch?v=_MG4v3foET8 | 19:48 | 1.4M (1 day) → **1.7M (2 days)** | 46K → 27.6K |
+| V2 | Why the Stock Market Just Crashed | https://www.youtube.com/watch?v=zEUKLSrbRZk | 15:00 | 1.0M (3 days) → **1.1M (4 days)** | 6.5K → 3.2K |
+| V3 | The Biggest IPO in History Lost $80 Billion | https://www.youtube.com/watch?v=hPCywNDA60o | 14:09 | 92K (5 days) → **110K (6 days)** | 3.2K → 1.8K |
+
+Views were updated on 13 Nov 2026 from the user's research sheet ("growth 3x" on all three); the transcript in that sheet is identical to `references/transcripts/`.
 
 Format: **long-form 16:9, 14-20 min, English**. There are no Shorts on the channel. Every description ends with a one-line question (for example "Who should have warned him?"), a chapter list and a sources line.
 
