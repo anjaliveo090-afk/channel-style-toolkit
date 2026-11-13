@@ -1,0 +1,156 @@
+1
+00:00:00,000 --> 00:00:01,200
+It calls it the booth that launched a
+
+2
+00:00:01,200 --> 00:00:02,900
+$1 trillion company.
+
+3
+00:00:03,260 --> 00:00:05,140
+At the party, the boss of that company
+
+4
+00:00:05,140 --> 00:00:07,600
+put on an apron, balanced 10 plates up
+
+5
+00:00:07,600 --> 00:00:09,180
+his arm, and served the tables.
+
+6
+00:00:09,500 --> 00:00:10,460
+Still remember how?
+
+7
+00:00:10,740 --> 00:00:11,520
+Dishes first.
+
+8
+00:00:11,700 --> 00:00:14,540
+Two years later, NVIDIA became the first company
+
+9
+00:00:14,540 --> 00:00:16,440
+ever worth $5 trillion.
+
+10
+00:00:17,220 --> 00:00:19,140
+Every dollar the three of them put into
+
+11
+00:00:19,140 --> 00:00:21,320
+that booth had become about $8 billion.
+
+12
+00:00:21,620 --> 00:00:23,740
+The kid who scrubbed the toilets in Kentucky
+
+13
+00:00:23,740 --> 00:00:26,500
+now holds the key to artificial intelligence.
+
+14
+00:00:26,860 --> 00:00:28,400
+And when he talks about who should be
+
+15
+00:00:28,400 --> 00:00:30,920
+allowed to buy his chips, Washington listens.
+
+16
+00:00:31,180 --> 00:00:33,820
+Every AI lab on Earth needs this man.
+
+17
+00:00:34,320 --> 00:00:35,620
+Then so do we.
+
+18
+00:00:35,800 --> 00:00:38,160
+That made him the one man China needed
+
+19
+00:00:38,160 --> 00:00:38,780
+most.
+
+20
+00:00:41,230 --> 00:00:44,470
+October 2022, Washington calls NVIDIA.
+
+21
+00:00:44,590 --> 00:00:46,950
+Your best AI chips can't be sold to
+
+22
+00:00:46,950 --> 00:00:47,770
+China anymore.
+
+23
+00:00:47,970 --> 00:00:49,950
+And the slower ones we made just for
+
+24
+00:00:49,950 --> 00:00:50,230
+China?
+
+25
+00:00:50,490 --> 00:00:51,850
+Those too, China.
+
+26
+00:00:52,230 --> 00:00:56,530
+$17 billion a year, 13% of everything
+
+27
+00:00:56,530 --> 00:00:57,130
+we sell.
+
+28
+00:00:57,290 --> 00:00:57,710
+Was.
+
+29
+00:00:57,890 --> 00:00:59,290
+How many chips do we need?
+
+30
+00:00:59,290 --> 00:01:00,710
+For a real AI?
+
+31
+00:01:01,070 --> 00:01:02,170
+Tens of thousands.
+
+32
+00:01:02,550 --> 00:01:03,530
+And one costs?
+
+33
+00:01:03,790 --> 00:01:05,170
+About $30,000.
+
+34
+00:01:05,910 --> 00:01:07,550
+A new car per chip.
+
+35
+00:01:07,770 --> 00:01:09,130
+And how many can we buy?
+
+36
+00:01:09,330 --> 00:01:09,770
+Zero.
+
+37
+00:01:10,030 --> 00:01:12,990
+By Jensen's own account, NVIDIA's share of China's
+
+38
+00:01:12,990 --> 00:01:15,770
+market went from 95% to zero.
+
+39
+00:01:16,090 --> 00:01:17,650
+And he told Washington so every chance he
+

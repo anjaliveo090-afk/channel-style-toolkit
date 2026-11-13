@@ -1,32 +1,40 @@
-"""Flat 2D cartoon characters matched to the Paper Billions references (measured on V1 frames
-0:07 and 0:23 at 1280x720, see references/notes_v1_part1.md and style_bible.md):
+"""Paper Billions style characters, rebuilt from measured reference frames
+(V1 0:07, 0:23, 1:01, 1:06, 3:56-5:10 and the user's crops; see style_bible.md section 2).
 
-- head: big circle; outline #200a00 about 4% of the head radius; lines of the face about the same weight
-- skin in three tones lit by one warm key light: highlight #fdd480, mid #e9a561, shade #b5794e,
-  plus a crisp bright crescent (#ffc56a) just inside the outline on the key-light side
-- dot / arc eyes, small curved brows, no nose; laugh = big D mouth (#430b0b inside, cream teeth band,
-  coral tongue #d34238)
-- the face turns toward whoever the character talks to (look = -1..1 shifts the features)
-- glasses: thin frames whose temple lines run out to the edge of the head on both sides
-- hair: a big solid shape with its own outline and a few strand lines, reaching outside the head
-- body: broad sloped shoulders right under the head (no neck), clothing colour, thin outline
-- limbs: long curved black lines about as thick as the head outline; 4 splayed stick fingers
+CONSTRUCTION (units of the head radius R)
+- head: circle R, outline INK #200a00, width 0.045 R (+0.6 px)
+- body: a capsule / bean under the head, 1.7 R wide, 2.8 R tall, overlapped 0.3 R by the head;
+  bottom 0.36 R is a dark shorts band; thin outline; lit side lighter, bottom darker
+- arms at rest: curved contour lines INSIDE the body edges; gesturing arms are thin black lines from
+  the shoulder (body edge, 25% down) to the hand; holding hands get 3 short finger strokes
+- legs: two straight thin lines 1.15 R long, 0.4 R apart, no feet; soft dark ellipse shadow on the floor
+- overall ~2.9 heads tall (5.8 R); kids are scaled down with the same proportions
+FACE
+- skin in 3 tones from one key light, plus the "moon line": a bright crescent inside the outline on the
+  key-light side whose inner edge is a thin darker line; a soft darker crescent under the chin
+- eyes: vertical dark-brown ovals with a small white highlight; thin arc brows high above; no nose
+- the face turns: features slide toward the side the character looks at (look -1..1); glasses keep a
+  temple line only toward the far edge of the head
+- expressions: neutral happy laugh talk smirk wink shock scared sad worried angry deadpan blush sly
+VIEWS (pose): stand, sit, walk, back, back_sit (seen from behind: no face, hair covers the back)
+SCENE LIGHT: Char.scene(ambient=(r,g,b), rim="#hex") tints skin/clothes for night or blue scenes.
 
-Char.draw() keeps the signature of reference_examples/animator/style2.py Char2.draw. (x, y) is the
-point between the feet (or the hip point for pose="sit"); s=1 gives a head radius of 40 px.
-`arms` may be a preset name, (preset, amount 0..1), or a dict {"r": (x, y), "l": (x, y)} of hand
-targets in world coordinates.
+draw() keeps the signature of reference_examples/animator/style2.py Char2.draw. (x, y) is the point
+between the feet (stand/walk/back) or the seat point (sit). s=1 gives R = 40 px.
+`arms`: preset name, (preset, amount 0..1), or {"l": (x, y), "r": (x, y)} hand targets (world coords).
 """
 import math
 
 import cairo
 
 INK = (0x20 / 255, 0x0a / 255, 0.0)
-SKIN_HI, SKIN_MID, SKIN_SH, SKIN_RIM = "#fdd480", "#e9a561", "#b5794e", "#ffc56a"
+EYE = (0x3a / 255, 0x24 / 255, 0x14 / 255)
 
 
 def hexc(h):
     h = h.lstrip("#")
+    if len(h) == 3:
+        h = "".join(ch * 2 for ch in h)
     return tuple(int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
 
 
@@ -34,355 +42,703 @@ def mix(a, b, k):
     return tuple(a[i] + (b[i] - a[i]) * k for i in range(3))
 
 
-def _clamp(x, a=0.0, b=1.0):
-    return max(a, min(b, x))
+def mul(a, b):
+    return tuple(a[i] * b[i] for i in range(3))
+
+
+SKIN = {"hi": "#fdd480", "mid": "#e9a561", "sh": "#b5794e", "rim": "#ffd98a"}
+SKIN_LIGHT = {"hi": "#fde2b0", "mid": "#efc08f", "sh": "#c48e67", "rim": "#fff0c8"}
+SKIN_DARK = {"hi": "#c98a5a", "mid": "#9a6340", "sh": "#6e4329", "rim": "#e0a46a"}
 
 
 class Char:
-    """hair: 'swept' (big side-swept), 'bob', 'bun', 'short', 'curly', 'bald', 'none'.
-    glasses: None, 'rect', 'round', 'shades'. collar: None, 'shirt', 'lapel', 'round'.
-    light: direction the key light comes FROM, e.g. (1, 0.3) = from the right and a bit below."""
-
-    def __init__(self, body="#1a1412", hair="short", hair_col="#2b2422", skin=None,
-                 glasses=None, collar="lapel", tie=None, earrings=None, light=(1.0, 0.2), pin=None, build=1.0):
+    def __init__(self, body="#e07a4f", hair="bowl", hair_col="#1d1716", skin=None, glasses=None,
+                 collar="shirt", tie=None, earrings=None, pants="#3a2f30", light=(-1.0, -0.2), pin=None,
+                 build=1.0, creases=False, mustache=None, zipper=False, lapels=False, blush=False):
         self.body = hexc(body)
         self.hair = hair
         self.hair_col = hexc(hair_col)
-        sk = skin or {}
-        self.sk_hi = hexc(sk.get("hi", SKIN_HI))
-        self.sk_mid = hexc(sk.get("mid", SKIN_MID))
-        self.sk_sh = hexc(sk.get("sh", SKIN_SH))
-        self.sk_rim = hexc(sk.get("rim", SKIN_RIM))
+        sk = dict(SKIN)
+        sk.update(skin or {})
+        self.sk = {k: hexc(v) for k, v in sk.items()}
         self.glasses = glasses
         self.collar = collar
         self.tie = hexc(tie) if tie else None
         self.earrings = hexc(earrings) if earrings else None
+        self.pants = hexc(pants)
         self.pin = hexc(pin) if pin else None
         self.build = build
+        self.creases = creases
+        self.mustache = hexc(mustache) if mustache else None
+        self.zipper = zipper
+        self.lapels = lapels
+        self.blush_always = blush
         n = math.hypot(*light) or 1
         self.light = (light[0] / n, light[1] / n)
+        self.ambient = (1.0, 1.0, 1.0)
+        self.rim = None
+
+    def scene(self, ambient=(1, 1, 1), rim=None, light=None):
+        """Tint for the scene light, e.g. night blue: ambient=(0.55,0.62,0.85), rim="#bcd4ff"."""
+        self.ambient = ambient
+        self.rim = hexc(rim) if rim else None
+        if light:
+            n = math.hypot(*light) or 1
+            self.light = (light[0] / n, light[1] / n)
+        return self
+
+    def _c(self, col):
+        return mul(col, self.ambient)
 
     # ------------------------------------------------------------------ public
-    def draw(self, ctx, x, y, s=1.0, expr="neutral", t=0.0, talk=False, arms="down", pose="stand",
+    def draw(self, ctx, x, y, s=1.0, expr="neutral", t=0.0, talk=False, arms="rest", pose="stand",
              look=0.0, bob=0.0, item=None, item_hand="r", walk_phase=None, lean=0.0, shadow=True):
         R = 40 * s
-        lw = 0.04 * R + 0.6
-        limb = 0.042 * R + 0.6
-        sway = math.sin(t * 2.0) * 0.01 * R + bob * R
-        legs_h = 0.0 if pose == "sit" else 1.15 * R
-        torso_h, torso_w = 1.75 * R, 1.75 * R * self.build
-        hip_y = y - legs_h
-        top_y = hip_y - torso_h
-        hx = x + lean * R * 0.5
-        head_cy = top_y - 0.82 * R + sway
+        lw = 0.045 * R + 0.6
+        limb = 0.05 * R + 0.6
+        back = pose in ("back", "back_sit")
+        sit = pose in ("sit", "back_sit")
+        breathe = math.sin(t * 2.2) * 0.008 * R
+        bw, bh = 1.7 * R * self.build, 2.8 * R
+        legs = 0.0 if sit else 1.15 * R
+        if pose == "walk" and walk_phase is None:
+            walk_phase = t * 9
+        hop = abs(math.sin(walk_phase)) * 0.06 * R if walk_phase is not None else 0
+        base = y - legs - hop
+        top = base - bh + breathe
+        hx = x + lean * 0.5 * R
+        hy = top + 0.3 * R - R + bob * R
 
-        if shadow and pose != "sit":
+        if shadow and not sit:
             ctx.save()
             ctx.translate(x, y)
-            ctx.scale(1, 0.2)
-            g = cairo.RadialGradient(0, 0, 0, 0, 0, 1.4 * R)
-            g.add_color_stop_rgba(0, 0, 0, 0, 0.3)
+            ctx.scale(1, 0.18)
+            g = cairo.RadialGradient(0, 0, 0, 0, 0, 1.35 * R)
+            g.add_color_stop_rgba(0, 0, 0, 0, 0.42)
+            g.add_color_stop_rgba(0.7, 0, 0, 0, 0.25)
             g.add_color_stop_rgba(1, 0, 0, 0, 0)
             ctx.set_source(g)
-            ctx.arc(0, 0, 1.4 * R, 0, 2 * math.pi)
+            ctx.arc(0, 0, 1.35 * R, 0, 2 * math.pi)
             ctx.fill()
             ctx.restore()
-
-        if pose != "sit":
-            for side in (-1, 1):
-                fx = x + side * 0.3 * R
+        if not sit:
+            for sd in (-1, 1):
+                fx = x + sd * 0.2 * R
                 kx = fx
                 if walk_phase is not None:
-                    sw = math.sin(walk_phase + (0 if side < 0 else math.pi)) * 0.35 * R
+                    sw = math.sin(walk_phase + (0 if sd < 0 else math.pi)) * 0.4 * R
                     fx += sw
-                    kx += sw * 0.5
-                _curve(ctx, [(x + side * 0.3 * R, hip_y - 0.1 * R), (kx, y - 0.55 * R), (fx, y)], limb)
-                _curve(ctx, [(fx, y), (fx + side * 0.2 * R, y)], limb)
-
-        self._hair_back(ctx, hx, head_cy, R, lw, look)
-        self._torso(ctx, hx, hip_y, torso_w, torso_h, lw)
-        hands = self._arms(ctx, hx, top_y, torso_w, R, limb, arms, item, item_hand, t)
-        self._last_arms = (hx, top_y, torso_w, R, limb, arms, item, item_hand, t)
-        self._head(ctx, hx, head_cy, R, lw, expr, t, talk, look)
-        return {"head": (hx, head_cy, R), "hands": hands}
+                    kx += sw * 0.4
+                _line(ctx, [(x + sd * 0.2 * R, base - 0.05 * R), (kx, base + legs * 0.5), (fx, y)], limb)
+        if self.hair == "long" and not back:
+            self._long_hair_back(ctx, hx, hy, R, lw)
+        hands = self._body(ctx, hx, top, base, bw, bh, R, lw, limb, arms, item, item_hand, t, back)
+        if back:
+            self._head_back(ctx, hx, hy, R, lw, look)
+        else:
+            self._head(ctx, hx, hy, R, lw, expr, t, talk, look)
+        self._last = (hx, top, base, bw, bh, R, lw, limb, arms, item, item_hand, t, back)
+        return {"head": (hx, hy, R), "hands": hands, "top": top, "base": base}
 
     def draw_arms_over(self, ctx, only=("l", "r")):
-        """Re-draw the arms of the last draw() on top of props (hands resting ON a table)."""
-        hx, top_y, w, R, limb, arms, item, item_hand, t = self._last_arms
-        if isinstance(arms, dict):
-            arms = {k: v for k, v in arms.items() if k in only}
-            if not arms:
-                return
-        self._arms(ctx, hx, top_y, w, R, limb, arms, item, item_hand, t, only=only)
+        """Re-draw gesturing arms of the last draw() on top of props (hands resting ON a table)."""
+        hx, top, base, bw, bh, R, lw, limb, arms, item, item_hand, t, back = self._last
+        self._arms(ctx, hx, top, bw, bh, R, lw, limb, arms, item, item_hand, t, only, rest=False)
 
-    # ----------------------------------------------------------------- pieces
-    def _torso(self, ctx, x, hip_y, w, h, lw):
-        top = hip_y - h
+    # ------------------------------------------------------------------ body
+    def _body_path(self, ctx, x, top, base, bw):
+        h = base - top
         ctx.new_path()
-        ctx.move_to(x - w * 0.52, hip_y + h * 0.05)
-        ctx.curve_to(x - w * 0.56, top + h * 0.45, x - w * 0.5, top + h * 0.08, x - w * 0.18, top)
-        ctx.line_to(x + w * 0.18, top)
-        ctx.curve_to(x + w * 0.5, top + h * 0.08, x + w * 0.56, top + h * 0.45, x + w * 0.52, hip_y + h * 0.05)
+        ctx.move_to(x, top)
+        ctx.curve_to(x + bw * 0.3, top, x + bw * 0.44, top + h * 0.18, x + bw * 0.48, top + h * 0.45)
+        ctx.curve_to(x + bw * 0.53, top + h * 0.78, x + bw * 0.48, base, x, base)
+        ctx.curve_to(x - bw * 0.48, base, x - bw * 0.53, top + h * 0.78, x - bw * 0.48, top + h * 0.45)
+        ctx.curve_to(x - bw * 0.44, top + h * 0.18, x - bw * 0.3, top, x, top)
         ctx.close_path()
+
+    def _body(self, ctx, x, top, base, bw, bh, R, lw, limb, arms, item, item_hand, t, back):
+        h = base - top
+        body = self._c(self.body)
         lx = self.light[0]
-        g = cairo.LinearGradient(x + lx * w * 0.6, top, x - lx * w * 0.6, hip_y)
-        g.add_color_stop_rgb(0, *mix(self.body, (1, 0.85, 0.6), 0.14))
-        g.add_color_stop_rgb(1, *mix(self.body, (0, 0, 0), 0.25))
+        self._body_path(ctx, x, top, base, bw)
+        ctx.save()
+        ctx.clip_preserve()
+        g = cairo.LinearGradient(x + lx * bw * 0.5, top, x - lx * bw * 0.5, base)
+        g.add_color_stop_rgb(0, *mix(body, (1, 0.9, 0.7), 0.12))
+        g.add_color_stop_rgb(0.6, *body)
+        g.add_color_stop_rgb(1, *mix(body, (0, 0, 0), 0.3))
         ctx.set_source(g)
-        ctx.fill_preserve()
-        ctx.set_source_rgb(*INK)
-        ctx.set_line_width(lw * 0.85)
+        ctx.fill()
+        ctx.rectangle(x - bw, base - 0.36 * R, 2 * bw, R)
+        ctx.set_source_rgb(*self._c(self.pants))
+        ctx.fill()
+        ctx.move_to(x - bw, base - 0.36 * R)
+        ctx.line_to(x + bw, base - 0.36 * R)
+        ctx.set_source_rgba(*INK, 0.5)
+        ctx.set_line_width(lw * 0.4)
         ctx.stroke()
-        if self.collar == "lapel":
-            ctx.set_source_rgb(*mix(self.body, (0, 0, 0), 0.5))
-            ctx.set_line_width(lw * 0.5)
-            for sd in (-1, 1):
-                ctx.move_to(x + sd * w * 0.2, top + h * 0.02)
-                ctx.line_to(x + sd * w * 0.08, top + h * 0.42)
-                ctx.line_to(x + sd * w * 0.3, top + h * 0.3)
-                ctx.stroke()
-        elif self.collar == "shirt":
+        ctx.set_line_width(R * 0.12)
+        ctx.set_source_rgba(*(self.rim or self.sk["rim"]), 0.22)
+        sd = 1 if lx > 0 else -1
+        ctx.move_to(x + sd * bw * 0.48, top + h * 0.2)
+        ctx.curve_to(x + sd * bw * 0.53, top + h * 0.5, x + sd * bw * 0.5, top + h * 0.75, x + sd * bw * 0.42, base - 0.4 * R)
+        ctx.stroke()
+        if not back:
+            self._clothes_front(ctx, x, top, base, bw, R, lw)
+        ctx.restore()
+        self._body_path(ctx, x, top, base, bw)
+        ctx.set_source_rgb(*INK)
+        ctx.set_line_width(lw * 0.8)
+        ctx.stroke()
+        return self._arms(ctx, x, top, bw, bh, R, lw, limb, arms, item, item_hand, t)
+
+    def _clothes_front(self, ctx, x, top, base, bw, R, lw):
+        h = base - top
+        white = self._c((0.97, 0.95, 0.9))
+        if self.collar == "shirt":
+            c0 = top + 0.26 * R
             ctx.new_path()
-            ctx.move_to(x - w * 0.24, top + h * 0.0)
-            ctx.line_to(x, top + h * 0.2)
-            ctx.line_to(x + w * 0.24, top + h * 0.0)
-            ctx.line_to(x + w * 0.12, top + h * 0.12)
-            ctx.line_to(x, top + h * 0.08)
-            ctx.line_to(x - w * 0.12, top + h * 0.12)
+            ctx.move_to(x - 0.36 * R, c0)
+            ctx.line_to(x - 0.03 * R, c0 + 0.32 * R)
+            ctx.line_to(x + 0.03 * R, c0 + 0.32 * R)
+            ctx.line_to(x + 0.36 * R, c0)
+            ctx.line_to(x + 0.16 * R, c0 + 0.08 * R)
+            ctx.line_to(x, c0 + 0.2 * R)
+            ctx.line_to(x - 0.16 * R, c0 + 0.08 * R)
             ctx.close_path()
-            ctx.set_source_rgb(0.97, 0.94, 0.88)
+            ctx.set_source_rgb(*white)
             ctx.fill_preserve()
             ctx.set_source_rgb(*INK)
-            ctx.set_line_width(lw * 0.5)
+            ctx.set_line_width(lw * 0.45)
             ctx.stroke()
         elif self.collar == "round":
             ctx.new_path()
             ctx.save()
-            ctx.translate(x, top + h * 0.02)
-            ctx.scale(w * 0.3, h * 0.12)
+            ctx.translate(x, top + 0.3 * R)
+            ctx.scale(0.4 * R, 0.16 * R)
             ctx.arc(0, 0, 1, 0, math.pi)
             ctx.restore()
-            ctx.set_source_rgb(0.97, 0.95, 0.9)
+            ctx.set_source_rgb(*white)
             ctx.fill_preserve()
             ctx.set_source_rgb(*INK)
-            ctx.set_line_width(lw * 0.5)
+            ctx.set_line_width(lw * 0.45)
             ctx.stroke()
+        elif self.collar == "turtleneck":
+            ctx.rectangle(x - 0.35 * R, top + 0.05 * R, 0.7 * R, 0.18 * R)
+            ctx.set_source_rgb(*mix(self._c(self.body), (0, 0, 0), 0.15))
+            ctx.fill()
+        if self.lapels:
+            ctx.set_source_rgba(*INK, 0.55)
+            ctx.set_line_width(lw * 0.45)
+            for sd in (-1, 1):
+                ctx.move_to(x + sd * 0.32 * R, top + 0.14 * R)
+                ctx.line_to(x + sd * 0.06 * R, top + h * 0.45)
+                ctx.line_to(x + sd * 0.38 * R, top + h * 0.3)
+                ctx.stroke()
         if self.tie:
             ctx.new_path()
-            ctx.move_to(x, top + h * 0.12)
-            ctx.line_to(x - w * 0.05, top + h * 0.45)
-            ctx.line_to(x, top + h * 0.55)
-            ctx.line_to(x + w * 0.05, top + h * 0.45)
+            ctx.move_to(x, top + 0.24 * R)
+            ctx.line_to(x - 0.08 * R, top + h * 0.42)
+            ctx.line_to(x, top + h * 0.5)
+            ctx.line_to(x + 0.08 * R, top + h * 0.42)
             ctx.close_path()
-            ctx.set_source_rgb(*self.tie)
+            ctx.set_source_rgb(*self._c(self.tie))
             ctx.fill()
+        if self.zipper or (self.collar == "shirt" and not self.tie):
+            ctx.move_to(x, top + 0.58 * R)
+            ctx.line_to(x, base - 0.4 * R)
+            ctx.set_source_rgba(*INK, 0.5)
+            ctx.set_line_width(lw * 0.35)
+            ctx.stroke()
         if self.pin:
-            ctx.save()
-            ctx.translate(x + w * 0.22, top + h * 0.48)
-            ctx.scale(w * 0.05, w * 0.04)
-            ctx.arc(0, 0, 1, 0, 2 * math.pi)
-            ctx.restore()
-            ctx.set_source_rgb(*self.pin)
+            ctx.arc(x + 0.42 * R, top + h * 0.48, 0.08 * R, 0, 2 * math.pi)
+            ctx.set_source_rgb(*self._c(self.pin))
             ctx.fill_preserve()
             ctx.set_source_rgb(*INK)
             ctx.set_line_width(lw * 0.3)
             ctx.stroke()
 
-    def _arms(self, ctx, x, top_y, w, R, limb, arms, item, item_hand, t, only=("l", "r")):
+    def _arms(self, ctx, x, top, bw, bh, R, lw, limb, arms, item, item_hand, t, only=("l", "r"), rest=True):
         presets = {
-            "down": {"l": (-0.62, 1.5), "r": (0.62, 1.5)},
-            "hold": {"l": (-0.45, 1.2), "r": (0.45, 1.2)},
-            "raise_r": {"r": (1.2, -0.6)}, "raise_l": {"l": (-1.2, -0.6)},
-            "toast": {"r": (1.05, -0.35)},
-            "point_r": {"r": (1.9, 0.2)}, "point_l": {"l": (-1.9, 0.2)},
-            "shrug": {"l": (-1.15, -0.05), "r": (1.15, -0.05)},
-            "chin": {"r": (0.2, -0.45)},
-            "table": {"l": (-0.8, 1.6), "r": (0.8, 1.6)},
+            "rest": {}, "down": {},
+            "hold": {"l": (-0.25, 1.15), "r": (0.25, 1.15)},
+            "raise_r": {"r": (1.1, -0.7)}, "raise_l": {"l": (-1.1, -0.7)},
+            "wave": {"r": (1.05, -1.0)},
+            "point_r": {"r": (2.2, 0.15)}, "point_l": {"l": (-2.2, 0.15)},
+            "shrug": {"l": (-1.15, -0.2), "r": (1.15, -0.2)},
+            "present_r": {"r": (1.35, 0.55)}, "present_l": {"l": (-1.35, 0.55)},
+            "hips": {"l": (-0.85, 0.95), "r": (0.85, 0.95)},
+            "chin": {"r": (0.15, -0.35)},
+            "cheer": {"l": (-0.9, -1.4), "r": (0.9, -1.4)},
         }
         amount = 1.0
         targets = {}
-        sh_y = top_y + 0.32 * R
-        base = presets["down"]
+        sh_y = top + 0.25 * bh
         if isinstance(arms, dict):
             targets = dict(arms)
         else:
             if isinstance(arms, tuple):
                 arms, amount = arms
-            p = presets.get(arms, {})
-            for k in ("l", "r"):
-                bx, by = base[k]
-                px, py = p.get(k, base[k])
-                tx, ty = bx + (px - bx) * amount, by + (py - by) * amount
-                targets[k] = (x + tx * w, sh_y + ty * R)
+            for k, (ox, oy) in presets.get(arms, {}).items():
+                rx, ry = (-0.55 if k == "l" else 0.55), 1.15
+                targets[k] = (x + (rx + (ox - rx) * amount) * R, sh_y + (ry + (oy - ry) * amount) * R)
         hands = {}
-        for side, key in ((-1, "l"), (1, "r")):
+        for sd, key in ((-1, "l"), (1, "r")):
             if key not in only:
                 continue
-            sx = x + side * w * 0.44
-            hxp, hyp = targets.get(key, (x + base[key][0] * w, sh_y + base[key][1] * R))
-            # elbow bends outward and down for a soft curve
+            sx = x + sd * bw * 0.46
+            if key not in targets:
+                if rest:
+                    ctx.new_path()
+                    ctx.move_to(x + sd * bw * 0.36, sh_y - 0.05 * R)
+                    ctx.curve_to(x + sd * bw * 0.44, sh_y + 0.5 * R, x + sd * bw * 0.44, sh_y + 0.95 * R,
+                                 x + sd * bw * 0.32, sh_y + 1.25 * R)
+                    ctx.set_source_rgb(*INK)
+                    ctx.set_line_width(lw * 0.8)
+                    ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+                    ctx.stroke()
+                hands[key] = (x + sd * bw * 0.32, sh_y + 1.25 * R)
+                continue
+            hxp, hyp = targets[key]
             dx, dy = hxp - sx, hyp - sh_y
-            mx, my = sx + dx * 0.5 + side * abs(dy) * 0.18 + side * 0.12 * R, sh_y + dy * 0.5 + abs(dx) * 0.12
-            _curve(ctx, [(sx, sh_y), (mx, my), (hxp, hyp)], limb)
+            mx = sx + dx * 0.5 + sd * 0.1 * R
+            my = sh_y + dy * 0.5 + abs(dx) * 0.08
+            _line(ctx, [(sx, sh_y), (mx, my), (hxp, hyp)], limb)
             hands[key] = (hxp, hyp)
-            ang = math.atan2(hyp - my, hxp - mx)
             if item and key == item_hand:
                 draw_item(ctx, item, hxp, hyp, R, t)
-            _fingers(ctx, hxp, hyp, ang, R, limb)
+            ang = math.atan2(hyp - my, hxp - mx)
+            for k in (-0.6, 0, 0.6):
+                a = ang + k
+                _line(ctx, [(hxp, hyp), (hxp + math.cos(a) * 0.14 * R, hyp + math.sin(a) * 0.14 * R)], limb * 0.8)
         return hands
 
-    def _head(self, ctx, cx, cy, R, lw, expr, t, talk, look):
+    # ------------------------------------------------------------------ head
+    def _skin(self, col):
+        # skin keeps its warmth under coloured scene light (half-strength tint), clothes take it fully
+        return mix(col, mul(col, self.ambient), 0.5)
+
+    def _skin_fill(self, ctx, cx, cy, R):
         lx, ly = self.light
-        ctx.save()
-        ctx.arc(cx, cy, R, 0, 2 * math.pi)
-        ctx.clip()
-        # three tones: shade on the side away from the light, mid, highlight toward the light/top
+        sk = {k: self._skin(v) for k, v in self.sk.items()}
         g = cairo.LinearGradient(cx + lx * R, cy + ly * R, cx - lx * R, cy - ly * R)
-        g.add_color_stop_rgb(0, *self.sk_hi)
-        g.add_color_stop_rgb(0.35, *self.sk_mid)
-        g.add_color_stop_rgb(0.85, *self.sk_sh)
-        g.add_color_stop_rgb(1, *mix(self.sk_sh, (0.2, 0.08, 0.02), 0.25))
+        g.add_color_stop_rgb(0, *sk["hi"])
+        g.add_color_stop_rgb(0.4, *sk["mid"])
+        g.add_color_stop_rgb(1, *sk["sh"])
         ctx.set_source(g)
         ctx.paint()
-        g = cairo.RadialGradient(cx - 0.1 * R, cy - 0.55 * R, 0, cx - 0.1 * R, cy - 0.55 * R, 0.9 * R)
-        g.add_color_stop_rgba(0, *self.sk_hi, 0.55)
-        g.add_color_stop_rgba(1, *self.sk_hi, 0)
+        g = cairo.RadialGradient(cx + lx * 0.25 * R, cy - 0.45 * R, 0, cx + lx * 0.25 * R, cy - 0.45 * R, 0.8 * R)
+        g.add_color_stop_rgba(0, *sk["hi"], 0.5)
+        g.add_color_stop_rgba(1, *sk["hi"], 0)
         ctx.set_source(g)
         ctx.paint()
-        # crisp rim crescent: head circle minus the same circle nudged away from the light
+        g = cairo.LinearGradient(0, cy + 0.55 * R, 0, cy + R)
+        g.add_color_stop_rgba(0, *sk["sh"], 0)
+        g.add_color_stop_rgba(1, *sk["sh"], 0.55)
+        ctx.set_source(g)
+        ctx.paint()
+
+    def _moon(self, ctx, cx, cy, R, lw):
+        """The bright crescent on the key-light side and its thin inner edge line."""
+        lx, ly = self.light
+        rim = self.rim or self._skin(self.sk["rim"])
+        ox, oy = -lx * 0.13 * R, -ly * 0.13 * R
         ctx.new_path()
         ctx.set_fill_rule(cairo.FILL_RULE_EVEN_ODD)
         ctx.arc(cx, cy, R, 0, 2 * math.pi)
         ctx.new_sub_path()
-        ctx.arc(cx - lx * 0.09 * R, cy - ly * 0.09 * R, R * 0.995, 0, 2 * math.pi)
-        ctx.set_source_rgba(*self.sk_rim, 0.95)
+        ctx.arc(cx + ox, cy + oy, R * 0.985, 0, 2 * math.pi)
+        g = cairo.LinearGradient(cx + lx * R, cy + ly * R, cx, cy)
+        g.add_color_stop_rgba(0, *rim, 0.95)
+        g.add_color_stop_rgba(1, *rim, 0.55)
+        ctx.set_source(g)
         ctx.fill()
         ctx.set_fill_rule(cairo.FILL_RULE_WINDING)
+        a = math.atan2(ly, lx)
+        ctx.new_path()
+        ctx.arc(cx + ox, cy + oy, R * 0.985, a - 1.25, a + 1.25)
+        ctx.set_source_rgba(*mix(self._c(self.sk["sh"]), (0, 0, 0), 0.25), 0.55)
+        ctx.set_line_width(max(0.8, lw * 0.3))
+        ctx.stroke()
+
+    def _head(self, ctx, cx, cy, R, lw, expr, t, talk, look):
+        if self.hair == "bob":
+            self._hair_back(ctx, cx, cy, R, lw, look)
+        ctx.save()
+        ctx.arc(cx, cy, R, 0, 2 * math.pi)
+        ctx.clip()
+        self._skin_fill(ctx, cx, cy, R)
+        self._moon(ctx, cx, cy, R, lw)
         ctx.restore()
         if self.earrings:
             for sd in (-1, 1):
-                ctx.arc(cx + sd * R * 0.97, cy + R * 0.35, R * 0.06, 0, 2 * math.pi)
-                ctx.set_source_rgb(*self.earrings)
+                ex = cx + sd * R * (0.97 - 0.25 * max(0, sd * look))
+                ctx.arc(ex, cy + R * 0.32, R * 0.06, 0, 2 * math.pi)
+                ctx.set_source_rgb(*self._c(self.earrings))
                 ctx.fill()
         ctx.new_path()
         ctx.arc(cx, cy, R, 0, 2 * math.pi)
         ctx.set_source_rgb(*INK)
         ctx.set_line_width(lw)
         ctx.stroke()
-        fx = cx + look * R * 0.3
-        self._glasses(ctx, fx, cy, R, lw, cx)
-        draw_face(ctx, fx, cy, R, lw, expr, t, talk)
-        self._glasses(ctx, fx, cy, R, lw, cx, frames_only=True)
+        fx = cx + look * 0.38 * R
+        self._temples(ctx, fx, cx, cy, R, lw, look)
+        draw_face(ctx, fx, cy, R, lw, expr, t, talk, self, look)
+        self._glasses(ctx, fx, cy, R, lw, look)
         self._hair_front(ctx, cx, cy, R, lw, look)
 
-    # hair: back part (behind head) and front part (over the head)
-    def _hair_back(self, ctx, cx, cy, R, lw, look):
-        if self.hair == "bob":
+    def _head_back(self, ctx, cx, cy, R, lw, look):
+        ctx.save()
+        ctx.arc(cx, cy, R, 0, 2 * math.pi)
+        ctx.clip()
+        self._skin_fill(ctx, cx, cy, R)
+        ctx.restore()
+        col = self._c(self.hair_col)
+        if self.hair != "bald":
+            ctx.save()
+            ctx.arc(cx, cy, R + lw, 0, 2 * math.pi)
+            ctx.clip()
             ctx.new_path()
-            ctx.move_to(cx - 1.15 * R, cy + 0.95 * R)
-            ctx.curve_to(cx - 1.35 * R, cy - 1.45 * R, cx + 1.35 * R, cy - 1.45 * R, cx + 1.15 * R, cy + 0.95 * R)
+            low = 0.25 if self.hair in ("bob", "long", "bun") else 0.05
+            ctx.move_to(cx - 1.2 * R, cy - 1.2 * R)
+            ctx.line_to(cx + 1.2 * R, cy - 1.2 * R)
+            ctx.line_to(cx + 1.2 * R, cy + low * R)
+            for k in range(7):
+                xx = cx + R - (k + 0.5) * (2 * R / 7)
+                ctx.line_to(xx, cy + (low + (0.12 if k % 2 == 0 else 0)) * R)
+            ctx.line_to(cx - 1.2 * R, cy + low * R)
             ctx.close_path()
-            _fill_line(ctx, self.hair_col, lw * 0.9)
+            ctx.set_source_rgb(*col)
+            ctx.fill_preserve()
+            ctx.set_source_rgb(*INK)
+            ctx.set_line_width(lw * 0.6)
+            ctx.stroke()
+            ctx.restore()
+            if self.hair == "bun":
+                ctx.new_path()
+                ctx.arc(cx, cy - 1.05 * R, 0.32 * R, 0, 2 * math.pi)
+                _fill_ink(ctx, col, lw * 0.8)
+            if self.hair == "long":
+                ctx.new_path()
+                ctx.rectangle(cx - 0.95 * R, cy, 1.9 * R, 1.6 * R)
+                _fill_ink(ctx, col, lw * 0.8)
+        ctx.new_path()
+        ctx.arc(cx, cy, R, 0, 2 * math.pi)
+        ctx.set_source_rgb(*INK)
+        ctx.set_line_width(lw)
+        ctx.stroke()
+
+    def _hair_back(self, ctx, cx, cy, R, lw, look):
+        ctx.new_path()
+        ctx.move_to(cx - 1.12 * R, cy + 0.8 * R)
+        ctx.curve_to(cx - 1.32 * R, cy - 1.4 * R, cx + 1.32 * R, cy - 1.4 * R, cx + 1.12 * R, cy + 0.8 * R)
+        ctx.close_path()
+        _fill_ink(ctx, self._c(self.hair_col), lw * 0.8)
+
+    def _long_hair_back(self, ctx, cx, cy, R, lw):
+        ctx.new_path()
+        ctx.move_to(cx - 1.05 * R, cy)
+        ctx.curve_to(cx - 1.25 * R, cy - 1.3 * R, cx + 1.25 * R, cy - 1.3 * R, cx + 1.05 * R, cy)
+        ctx.line_to(cx + 1.0 * R, cy + 2.2 * R)
+        ctx.line_to(cx - 1.0 * R, cy + 2.2 * R)
+        ctx.close_path()
+        _fill_ink(ctx, self._c(self.hair_col), lw * 0.8)
 
     def _hair_front(self, ctx, cx, cy, R, lw, look):
-        h, col = self.hair, self.hair_col
-        strand = mix(col, (0, 0, 0), 0.35)
-        if h == "swept":
-            # big side-swept cap: covers the top, spills past the outline on the far side
-            sd = -1 if look >= 0 else 1
-            ctx.new_path()
-            ctx.move_to(cx + sd * 1.12 * R, cy + 0.1 * R)
-            ctx.line_to(cx + sd * 1.0 * R, cy - 0.05 * R)
-            ctx.line_to(cx + sd * 1.18 * R, cy - 0.2 * R)
-            ctx.line_to(cx + sd * 1.0 * R, cy - 0.35 * R)
-            ctx.curve_to(cx + sd * 1.1 * R, cy - 1.2 * R, cx - sd * 0.6 * R, cy - 1.35 * R,
-                         cx - sd * 1.05 * R, cy - 0.55 * R)
-            ctx.curve_to(cx - sd * 0.6 * R, cy - 0.5 * R, cx - sd * 0.2 * R, cy - 0.85 * R, cx + sd * 0.1 * R, cy - 0.62 * R)
-            ctx.curve_to(cx + sd * 0.5 * R, cy - 0.45 * R, cx + sd * 0.75 * R, cy - 0.3 * R, cx + sd * 0.8 * R, cy + 0.1 * R)
-            ctx.close_path()
-            _fill_line(ctx, col, lw * 0.9)
-            ctx.set_source_rgba(*strand, 0.75)
-            ctx.set_line_width(lw * 0.35)
-            for k in range(4):
-                a0 = cx + sd * (0.75 - k * 0.38) * R
-                ctx.move_to(a0, cy - 1.05 * R + k * 0.06 * R)
-                ctx.curve_to(a0 - sd * 0.1 * R, cy - 0.9 * R, a0 - sd * 0.25 * R, cy - 0.8 * R, a0 - sd * 0.35 * R, cy - 0.72 * R)
-                ctx.stroke()
-        elif h in ("bob", "short", "bun"):
-            ctx.new_path()
-            ctx.move_to(cx - 1.08 * R, cy + (0.1 if h == "bob" else -0.25) * R)
-            ctx.curve_to(cx - 1.15 * R, cy - 1.25 * R, cx + 1.15 * R, cy - 1.25 * R, cx + 1.08 * R, cy + (0.1 if h == "bob" else -0.25) * R)
-            ctx.curve_to(cx + 0.9 * R, cy - 0.45 * R, cx + 0.5 * R, cy - 0.62 * R, cx + 0.1 * R, cy - 0.6 * R)
-            ctx.curve_to(cx - 0.35 * R, cy - 0.58 * R, cx - 0.85 * R, cy - 0.45 * R, cx - 1.08 * R, cy + (0.1 if h == "bob" else -0.25) * R)
-            ctx.close_path()
-            _fill_line(ctx, col, lw * 0.9)
-            if h == "bun":
-                ctx.new_path()
-                ctx.arc(cx + 0.15 * R, cy - 1.15 * R, 0.32 * R, 0, 2 * math.pi)
-                _fill_line(ctx, col, lw * 0.9)
-            ctx.set_source_rgba(*mix(col, (1, 1, 1), 0.25), 0.5)
-            ctx.set_line_width(lw * 0.35)
-            for k in range(3):
-                a0 = cx - 0.5 * R + k * 0.35 * R
-                ctx.move_to(a0, cy - 0.98 * R)
-                ctx.curve_to(a0 + 0.08 * R, cy - 0.85 * R, a0 + 0.1 * R, cy - 0.75 * R, a0 + 0.06 * R, cy - 0.66 * R)
-                ctx.stroke()
-        elif h == "curly":
-            for k in range(10):
-                a = math.pi + 0.05 + k * (math.pi - 0.1) / 9
-                ctx.new_path()
-                ctx.arc(cx + math.cos(a) * 0.98 * R, cy + math.sin(a) * 0.98 * R, 0.24 * R, 0, 2 * math.pi)
-                _fill_line(ctx, col, lw * 0.7)
-        elif h == "bald":
+        h = self.hair
+        col = self._c(self.hair_col)
+        if h == "none":
+            return
+        if h == "bald":
             for sd in (-1, 1):
                 ctx.new_path()
-                ctx.move_to(cx + sd * 1.04 * R, cy + 0.15 * R)
-                ctx.curve_to(cx + sd * 1.18 * R, cy - 0.2 * R, cx + sd * 1.12 * R, cy - 0.5 * R, cx + sd * 0.86 * R, cy - 0.62 * R)
-                ctx.curve_to(cx + sd * 0.92 * R, cy - 0.3 * R, cx + sd * 0.9 * R, cy - 0.05 * R, cx + sd * 1.04 * R, cy + 0.15 * R)
+                ctx.move_to(cx + sd * 1.03 * R, cy + 0.1 * R)
+                ctx.curve_to(cx + sd * 1.15 * R, cy - 0.25 * R, cx + sd * 1.08 * R, cy - 0.5 * R, cx + sd * 0.86 * R, cy - 0.6 * R)
+                ctx.curve_to(cx + sd * 0.92 * R, cy - 0.3 * R, cx + sd * 0.9 * R, cy - 0.05 * R, cx + sd * 1.03 * R, cy + 0.1 * R)
                 ctx.close_path()
-                _fill_line(ctx, col, lw * 0.8)
+                _fill_ink(ctx, col, lw * 0.7)
+            return
+        side = 0.08 if h in ("bowl", "bun", "bob", "long") else -0.2
+        fr = cx + look * 0.25 * R
+        ctx.new_path()
+        ctx.move_to(cx - 1.08 * R, cy + side * R)
+        ctx.curve_to(cx - 1.18 * R, cy - 1.3 * R, cx + 1.18 * R, cy - 1.3 * R, cx + 1.08 * R, cy + side * R)
+        if h == "spiky":
+            for k in range(6):
+                xx = cx + R - (k + 0.5) * (2 * R / 6)
+                ctx.line_to(xx + 0.1 * R, cy - 0.35 * R)
+                ctx.line_to(xx - 0.05 * R, cy - 0.6 * R)
+        elif h == "side":
+            ctx.curve_to(cx + 0.9 * R, cy - 0.5 * R, fr + 0.4 * R, cy - 0.45 * R, fr - 0.2 * R, cy - 0.62 * R)
+            ctx.curve_to(fr - 0.5 * R, cy - 0.7 * R, cx - 0.9 * R, cy - 0.45 * R, cx - 1.08 * R, cy + side * R)
+        else:
+            ctx.curve_to(cx + 0.95 * R, cy - 0.38 * R, fr + 0.5 * R, cy - 0.5 * R, fr, cy - 0.5 * R)
+            ctx.curve_to(fr - 0.5 * R, cy - 0.5 * R, cx - 0.95 * R, cy - 0.38 * R, cx - 1.08 * R, cy + side * R)
+        ctx.close_path()
+        _fill_ink(ctx, col, lw * 0.75)
+        if h == "curly":
+            for k in range(9):
+                a = math.pi + 0.1 + k * (math.pi - 0.2) / 8
+                ctx.new_path()
+                ctx.arc(cx + math.cos(a) * 0.98 * R, cy + math.sin(a) * 0.98 * R, 0.2 * R, 0, 2 * math.pi)
+                _fill_ink(ctx, col, lw * 0.6)
+        if h == "bun":
+            ctx.new_path()
+            ctx.arc(cx + look * 0.1 * R, cy - 1.18 * R, 0.3 * R, 0, 2 * math.pi)
+            _fill_ink(ctx, col, lw * 0.75)
 
-    def _glasses(self, ctx, fx, cy, R, lw, cx, frames_only=False):
+    def _temples(self, ctx, fx, cx, cy, R, lw, look):
+        if not self.glasses:
+            return
+        ey = cy - 0.04 * R
+        ctx.set_source_rgb(*INK)
+        ctx.set_line_width(max(1.0, lw * 0.4))
+        for sd in (-1, 1):
+            if look * sd > 0.15:
+                continue
+            ex = fx + sd * 0.42 * R
+            edge = cx + sd * R * 0.99
+            if (edge - ex) * sd > 0:
+                ctx.move_to(ex, ey)
+                ctx.line_to(edge, ey - 0.04 * R)
+                ctx.stroke()
+
+    def _glasses(self, ctx, fx, cy, R, lw, look):
         g = self.glasses
         if not g:
             return
-        ey = cy - 0.12 * R
-        w = lw * 0.85
-        ctx.set_line_width(w)
+        ey = cy - 0.04 * R
         ctx.set_source_rgb(*INK)
-        if not frames_only:
-            # temples run out to the head edge on both sides
-            for sd in (-1, 1):
-                ex = fx + sd * 0.33 * R + sd * 0.17 * R
-                edge = cx + sd * math.sqrt(max(0, R * R - (ey - cy) ** 2)) * 1.02
-                ctx.move_to(ex, ey - 0.03 * R)
-                ctx.line_to(edge, ey - 0.06 * R)
-                ctx.stroke()
-            return
+        ctx.set_line_width(max(1.0, lw * 0.4))
         for sd in (-1, 1):
-            ex = fx + sd * 0.33 * R
+            ex = fx + sd * 0.25 * R
+            squash = 1 - 0.35 * max(0, -sd * look)
+            ctx.new_path()
             if g == "round":
-                ctx.new_path()
-                ctx.arc(ex, ey, 0.17 * R, 0, 2 * math.pi)
+                ctx.save()
+                ctx.translate(ex, ey)
+                ctx.scale(squash, 1)
+                ctx.arc(0, 0, 0.16 * R, 0, 2 * math.pi)
+                ctx.restore()
             else:
-                _rrect(ctx, ex - 0.17 * R, ey - 0.11 * R, 0.34 * R, 0.22 * R, 0.04 * R)
+                _rrect(ctx, ex - 0.17 * R * squash, ey - 0.11 * R, 0.34 * R * squash, 0.22 * R, 0.04 * R)
             if g == "shades":
                 ctx.set_source_rgb(0.03, 0.02, 0.02)
                 ctx.fill_preserve()
                 ctx.set_source_rgb(*INK)
             ctx.stroke()
-            if g == "shades":
-                ctx.set_source_rgba(1, 1, 1, 0.5)
-                ctx.rectangle(ex - 0.11 * R, ey - 0.06 * R, 0.06 * R, 0.03 * R)
-                ctx.fill()
-                ctx.set_source_rgb(*INK)
-        ctx.move_to(fx - 0.16 * R, ey - 0.03 * R)
-        ctx.curve_to(fx - 0.05 * R, ey - 0.08 * R, fx + 0.05 * R, ey - 0.08 * R, fx + 0.16 * R, ey - 0.03 * R)
+        ctx.move_to(fx - 0.09 * R, ey - 0.02 * R)
+        ctx.line_to(fx + 0.09 * R, ey - 0.02 * R)
         ctx.stroke()
 
 
+# ---------------------------------------------------------------------- face
+EXPRESSIONS = ("neutral", "happy", "joy", "laugh", "talk", "smirk", "wink", "shock", "scared", "sad", "worried",
+               "angry", "deadpan", "blush", "sly")
+
+
+def draw_face(ctx, cx, cy, R, lw, expr, t, talk, ch=None, look=0.0):
+    w = max(1.0, lw * 0.55)
+    ey = cy - 0.02 * R
+    ex = 0.21 * R
+    my = cy + 0.32 * R
+    if expr == "talk":
+        talk, expr = True, "neutral"
+
+    def stroke(width=None):
+        ctx.set_source_rgb(*INK)
+        ctx.set_line_width(width or w)
+        ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+        ctx.stroke()
+
+    def eye(x0, scale=1.0):
+        ctx.new_path()
+        ctx.save()
+        ctx.translate(x0, ey)
+        ctx.scale(0.055 * R * scale, 0.085 * R * scale)
+        ctx.arc(0, 0, 1, 0, 2 * math.pi)
+        ctx.restore()
+        ctx.set_source_rgb(*EYE)
+        ctx.fill()
+        ctx.arc(x0 + 0.018 * R, ey - 0.035 * R, 0.018 * R * scale, 0, 2 * math.pi)
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.fill()
+
+    def closed(x0):
+        ctx.new_path()
+        ctx.arc(x0, ey + 0.04 * R, 0.08 * R, math.pi * 1.15, math.pi * 1.85)
+        stroke()
+
+    def brow(sd, lift=0.0, tilt=0.0):
+        x0, y0 = cx + sd * ex, ey - (0.24 + lift) * R
+        ctx.new_path()
+        ctx.move_to(x0 - 0.1 * R, y0 + 0.025 * R + sd * tilt * R)
+        ctx.curve_to(x0 - 0.04 * R, y0 - 0.03 * R, x0 + 0.04 * R, y0 - 0.03 * R, x0 + 0.1 * R, y0 + 0.025 * R - sd * tilt * R)
+        stroke()
+
+    def creases():
+        for sd in (-1, 1):
+            for k in (-1, 0, 1):
+                ctx.new_path()
+                x0 = cx + sd * (ex + 0.13 * R)
+                ctx.move_to(x0, ey + k * 0.035 * R)
+                ctx.line_to(x0 + sd * 0.07 * R, ey + k * 0.05 * R)
+                ctx.set_source_rgba(*INK, 0.35)
+                ctx.set_line_width(w * 0.6)
+                ctx.stroke()
+
+    def blush():
+        for sd in (-1, 1):
+            for k in range(3):
+                x0 = cx + sd * (ex + 0.02 * R) + (k - 1) * 0.045 * R
+                ctx.new_path()
+                ctx.move_to(x0 - 0.02 * R, ey + 0.17 * R)
+                ctx.line_to(x0 + 0.02 * R, ey + 0.11 * R)
+                ctx.set_source_rgba(0.93, 0.35, 0.45, 0.8)
+                ctx.set_line_width(w * 0.8)
+                ctx.stroke()
+
+    blink = (t % 4.1) < 0.09
+    if expr in ("joy", "laugh"):
+        closed(cx - ex)
+        closed(cx + ex)
+        brow(-1, 0.03)
+        brow(1, 0.03)
+        if expr == "laugh":
+            creases()
+    elif expr == "wink":
+        eye(cx - ex)
+        closed(cx + ex)
+        brow(-1, 0.05)
+        brow(1, -0.02)
+        creases()
+    elif expr in ("shock", "scared"):
+        for sd in (-1, 1):
+            ctx.new_path()
+            ctx.arc(cx + sd * ex, ey, 0.1 * R, 0, 2 * math.pi)
+            ctx.set_source_rgb(1, 1, 1)
+            ctx.fill_preserve()
+            stroke()
+            ctx.arc(cx + sd * ex, ey, 0.035 * R, 0, 2 * math.pi)
+            ctx.set_source_rgb(*EYE)
+            ctx.fill()
+            brow(sd, 0.1, -0.03 if expr == "scared" else 0)
+    elif blink:
+        for sd in (-1, 1):
+            ctx.new_path()
+            ctx.move_to(cx + sd * ex - 0.05 * R, ey)
+            ctx.line_to(cx + sd * ex + 0.05 * R, ey)
+            stroke()
+    else:
+        eye(cx - ex)
+        eye(cx + ex)
+        if expr in ("smirk", "sly"):
+            brow(-1, 0.07, 0.03)
+            brow(1, -0.03, -0.02)
+            if expr == "sly":
+                for sd in (-1, 1):
+                    ctx.new_path()
+                    ctx.move_to(cx + sd * ex - 0.07 * R, ey - 0.03 * R)
+                    ctx.line_to(cx + sd * ex + 0.07 * R, ey - 0.03 * R)
+                    stroke(w * 1.2)
+        elif expr == "angry":
+            brow(-1, -0.04, 0.06)
+            brow(1, -0.04, 0.06)
+        elif expr in ("sad", "worried"):
+            brow(-1, 0.04, -0.05)
+            brow(1, 0.04, -0.05)
+        else:
+            brow(-1)
+            brow(1)
+    if ch is not None and ch.creases and expr not in ("laugh", "wink"):
+        creases()
+    if expr == "blush" or (ch is not None and ch.blush_always):
+        blush()
+
+    if expr == "laugh":
+        mw, mh = 0.24 * R, 0.3 * R * (0.92 + 0.08 * math.sin(t * 17))
+        top = my - 0.04 * R
+        ctx.new_path()
+        ctx.move_to(cx - mw, top)
+        ctx.curve_to(cx - mw * 0.95, top + mh * 1.25, cx + mw * 0.95, top + mh * 1.25, cx + mw, top)
+        ctx.close_path()
+        ctx.set_source_rgb(0x43 / 255, 0x0b / 255, 0x0b / 255)
+        ctx.fill_preserve()
+        ctx.save()
+        ctx.clip()
+        ctx.rectangle(cx - mw, top - 0.02 * R, 2 * mw, 0.1 * R)
+        ctx.set_source_rgb(0xec / 255, 0xe0 / 255, 0xc0 / 255)
+        ctx.fill()
+        ctx.new_path()
+        ctx.arc(cx, top + mh * 0.95, mw * 0.5, 0, 2 * math.pi)
+        ctx.set_source_rgb(0xd3 / 255, 0x42 / 255, 0x38 / 255)
+        ctx.fill()
+        ctx.restore()
+        ctx.new_path()
+        ctx.move_to(cx - mw, top)
+        ctx.curve_to(cx - mw * 0.95, top + mh * 1.25, cx + mw * 0.95, top + mh * 1.25, cx + mw, top)
+        ctx.close_path()
+        stroke()
+    elif expr in ("shock", "scared"):
+        ctx.new_path()
+        ctx.save()
+        ctx.translate(cx, my + 0.03 * R)
+        ctx.scale(0.08 * R, 0.11 * R)
+        ctx.arc(0, 0, 1, 0, 2 * math.pi)
+        ctx.restore()
+        ctx.set_source_rgb(0x43 / 255, 0x0b / 255, 0x0b / 255)
+        ctx.fill_preserve()
+        stroke()
+    elif talk:
+        k = 0.25 + 0.75 * abs(math.sin(t * 9.0)) * (0.6 + 0.4 * math.sin(t * 3.1))
+        ctx.new_path()
+        ctx.save()
+        ctx.translate(cx, my)
+        ctx.scale(0.09 * R, 0.075 * R * k + 0.01 * R)
+        ctx.arc(0, 0, 1, 0, 2 * math.pi)
+        ctx.restore()
+        ctx.set_source_rgb(0x43 / 255, 0x0b / 255, 0x0b / 255)
+        ctx.fill_preserve()
+        stroke(w * 0.8)
+    else:
+        ctx.new_path()
+        if expr in ("happy", "joy", "neutral", "blush", "wink"):
+            wdt = 0.12 if expr == "neutral" else 0.16
+            ctx.move_to(cx - wdt * R, my - 0.02 * R)
+            ctx.curve_to(cx - 0.05 * R, my + 0.06 * R, cx + 0.05 * R, my + 0.06 * R, cx + wdt * R, my - 0.02 * R)
+        elif expr in ("smirk", "sly"):
+            ctx.move_to(cx - 0.11 * R, my + 0.01 * R)
+            ctx.curve_to(cx - 0.02 * R, my + 0.05 * R, cx + 0.07 * R, my + 0.03 * R, cx + 0.14 * R, my - 0.05 * R)
+        elif expr in ("sad", "worried"):
+            ctx.move_to(cx - 0.1 * R, my + 0.04 * R)
+            ctx.curve_to(cx - 0.04 * R, my - 0.03 * R, cx + 0.04 * R, my - 0.03 * R, cx + 0.1 * R, my + 0.04 * R)
+        elif expr == "angry":
+            ctx.move_to(cx - 0.1 * R, my + 0.02 * R)
+            ctx.line_to(cx + 0.1 * R, my - 0.01 * R)
+        else:
+            ctx.move_to(cx - 0.07 * R, my)
+            ctx.line_to(cx + 0.07 * R, my)
+        stroke()
+    if ch is not None and ch.mustache:
+        ctx.new_path()
+        ctx.move_to(cx - 0.12 * R, my - 0.05 * R)
+        ctx.curve_to(cx - 0.05 * R, my - 0.12 * R, cx + 0.05 * R, my - 0.12 * R, cx + 0.12 * R, my - 0.05 * R)
+        ctx.curve_to(cx + 0.04 * R, my - 0.07 * R, cx - 0.04 * R, my - 0.07 * R, cx - 0.12 * R, my - 0.05 * R)
+        ctx.set_source_rgb(*ch.mustache)
+        ctx.fill()
+    if expr in ("shock", "worried", "scared"):
+        sx, sy = cx + 0.62 * R, cy - 0.42 * R + (t * 25 % 10) * 0.012 * R
+        ctx.new_path()
+        ctx.move_to(sx, sy - 0.14 * R)
+        ctx.curve_to(sx + 0.09 * R, sy, sx + 0.07 * R, sy + 0.09 * R, sx, sy + 0.09 * R)
+        ctx.curve_to(sx - 0.07 * R, sy + 0.09 * R, sx - 0.09 * R, sy, sx, sy - 0.14 * R)
+        ctx.set_source_rgb(0.62, 0.86, 1.0)
+        ctx.fill_preserve()
+        stroke(w * 0.7)
+
+
 # ---------------------------------------------------------------------- helpers
-def _curve(ctx, pts, w, col=INK):
+def _line(ctx, pts, w, col=INK):
     ctx.new_path()
     ctx.set_source_rgb(*col)
     ctx.set_line_width(w)
@@ -398,14 +754,7 @@ def _curve(ctx, pts, w, col=INK):
     ctx.stroke()
 
 
-def _fingers(ctx, hx, hy, ang, R, limb):
-    for k in (-0.75, -0.25, 0.25, 0.75):
-        a = ang + k * 0.9
-        L = 0.2 * R * (1 - abs(k) * 0.25)
-        _curve(ctx, [(hx, hy), (hx + math.cos(a) * L, hy + math.sin(a) * L)], limb * 0.85)
-
-
-def _fill_line(ctx, col, w):
+def _fill_ink(ctx, col, w):
     ctx.set_source_rgb(*col)
     ctx.fill_preserve()
     ctx.set_source_rgb(*INK)
@@ -423,154 +772,10 @@ def _rrect(ctx, x, y, w, h, r):
     ctx.close_path()
 
 
-# ---------------------------------------------------------------------- face
-EXPRESSIONS = ("neutral", "happy", "laugh", "smirk", "shock", "sad", "deadpan", "angry", "worried", "sly")
-
-
-def draw_face(ctx, cx, cy, R, lw, expr, t, talk):
-    w = lw * 0.9
-    ey = cy - 0.12 * R
-    ex = 0.33 * R
-    my = cy + 0.38 * R
-
-    def stroke():
-        ctx.set_source_rgb(*INK)
-        ctx.set_line_width(w)
-        ctx.set_line_cap(cairo.LINE_CAP_ROUND)
-        ctx.stroke()
-
-    def brow(sd, lift=0.0, tilt=0.0):
-        x0, y0 = cx + sd * ex, ey - (0.33 + lift) * R
-        ctx.new_path()
-        ctx.move_to(x0 - 0.13 * R, y0 + 0.03 * R + sd * tilt * R)
-        ctx.curve_to(x0 - 0.05 * R, y0 - 0.04 * R, x0 + 0.05 * R, y0 - 0.04 * R, x0 + 0.13 * R, y0 + 0.03 * R - sd * tilt * R)
-        stroke()
-
-    def dot(x0, y0, r=0.055):
-        ctx.new_path()
-        ctx.arc(x0, y0, r * R, 0, 2 * math.pi)
-        ctx.set_source_rgb(*INK)
-        ctx.fill()
-
-    blink = (t % 3.9) < 0.08
-    if expr in ("happy", "laugh"):
-        for sd in (-1, 1):
-            ctx.new_path()
-            ctx.arc(cx + sd * ex, ey + 0.05 * R, 0.1 * R, math.pi * 1.12, math.pi * 1.88)
-            stroke()
-            # little crease lines at the outer corners (seen on laughs)
-            if expr == "laugh":
-                for k in (-1, 1):
-                    ctx.new_path()
-                    ctx.move_to(cx + sd * (ex + 0.2 * R), ey + k * 0.03 * R)
-                    ctx.line_to(cx + sd * (ex + 0.28 * R), ey + k * 0.06 * R)
-                    ctx.set_source_rgba(*INK, 0.35)
-                    ctx.set_line_width(w * 0.5)
-                    ctx.stroke()
-            brow(sd, 0.04)
-    elif expr == "shock":
-        for sd in (-1, 1):
-            ctx.new_path()
-            ctx.arc(cx + sd * ex, ey, 0.11 * R, 0, 2 * math.pi)
-            ctx.set_source_rgb(1, 1, 1)
-            ctx.fill_preserve()
-            stroke()
-            dot(cx + sd * ex, ey, 0.04)
-            brow(sd, 0.12)
-    elif blink:
-        for sd in (-1, 1):
-            ctx.new_path()
-            ctx.move_to(cx + sd * ex - 0.06 * R, ey)
-            ctx.line_to(cx + sd * ex + 0.06 * R, ey)
-            stroke()
-    else:
-        for sd in (-1, 1):
-            dot(cx + sd * ex, ey)
-        if expr in ("smirk", "sly"):
-            brow(-1, 0.05, 0.05)
-            brow(1, -0.03, -0.02)
-        elif expr == "angry":
-            brow(-1, -0.03, 0.08)
-            brow(1, -0.03, 0.08)
-        elif expr in ("sad", "worried"):
-            brow(-1, 0.05, -0.07)
-            brow(1, 0.05, -0.07)
-        else:
-            brow(-1)
-            brow(1)
-
-    if expr == "laugh" or (talk and expr in ("happy", "neutral", "smirk")):
-        k = 1.0 if expr == "laugh" else 0.45 + 0.4 * abs(math.sin(t * 11))
-        k *= 0.92 + 0.08 * math.sin(t * 17)
-        mw, mh = 0.33 * R, 0.42 * R * k
-        top = my - 0.05 * R
-        ctx.new_path()
-        ctx.move_to(cx - mw, top)
-        ctx.curve_to(cx - mw * 0.95, top + mh * 1.25, cx + mw * 0.95, top + mh * 1.25, cx + mw, top)
-        ctx.close_path()
-        ctx.set_source_rgb(0x43 / 255, 0x0b / 255, 0x0b / 255)
-        ctx.fill_preserve()
-        ctx.save()
-        ctx.clip()
-        ctx.rectangle(cx - mw, top - 0.02 * R, 2 * mw, 0.13 * R)
-        ctx.set_source_rgb(0xe8 / 255, 0xd8 / 255, 0xb4 / 255)
-        ctx.fill()
-        ctx.new_path()
-        ctx.arc(cx + 0.02 * R, top + mh * 0.95, mw * 0.5, 0, 2 * math.pi)
-        ctx.set_source_rgb(0xd3 / 255, 0x42 / 255, 0x38 / 255)
-        ctx.fill()
-        ctx.restore()
-        ctx.new_path()
-        ctx.move_to(cx - mw, top)
-        ctx.curve_to(cx - mw * 0.95, top + mh * 1.25, cx + mw * 0.95, top + mh * 1.25, cx + mw, top)
-        ctx.close_path()
-        stroke()
-    elif expr == "shock":
-        ctx.new_path()
-        ctx.save()
-        ctx.translate(cx, my + 0.05 * R)
-        ctx.scale(0.12 * R, 0.17 * R)
-        ctx.arc(0, 0, 1, 0, 2 * math.pi)
-        ctx.restore()
-        ctx.set_source_rgb(0x43 / 255, 0x0b / 255, 0x0b / 255)
-        ctx.fill_preserve()
-        stroke()
-    else:
-        ctx.new_path()
-        if expr == "happy":
-            ctx.move_to(cx - 0.17 * R, my - 0.02 * R)
-            ctx.curve_to(cx - 0.07 * R, my + 0.09 * R, cx + 0.07 * R, my + 0.09 * R, cx + 0.17 * R, my - 0.02 * R)
-        elif expr in ("smirk", "sly"):
-            ctx.move_to(cx - 0.15 * R, my + 0.02 * R)
-            ctx.curve_to(cx - 0.02 * R, my + 0.08 * R, cx + 0.1 * R, my + 0.04 * R, cx + 0.18 * R, my - 0.05 * R)
-        elif expr in ("sad", "worried"):
-            ctx.move_to(cx - 0.14 * R, my + 0.05 * R)
-            ctx.curve_to(cx - 0.05 * R, my - 0.04 * R, cx + 0.05 * R, my - 0.04 * R, cx + 0.14 * R, my + 0.05 * R)
-        elif expr == "angry":
-            ctx.move_to(cx - 0.14 * R, my + 0.02 * R)
-            ctx.line_to(cx + 0.14 * R, my - 0.02 * R)
-        elif expr in ("deadpan", "neutral"):
-            ctx.move_to(cx - 0.08 * R, my)
-            ctx.line_to(cx + 0.08 * R, my)
-        stroke()
-    if expr in ("shock", "worried"):
-        sx, sy = cx + 0.8 * R, cy - 0.45 * R + (t * 25 % 10) * 0.012 * R
-        ctx.new_path()
-        ctx.move_to(sx, sy - 0.15 * R)
-        ctx.curve_to(sx + 0.1 * R, sy, sx + 0.08 * R, sy + 0.1 * R, sx, sy + 0.1 * R)
-        ctx.curve_to(sx - 0.08 * R, sy + 0.1 * R, sx - 0.1 * R, sy, sx, sy - 0.15 * R)
-        ctx.set_source_rgb(0.62, 0.86, 1.0)
-        ctx.fill_preserve()
-        ctx.set_source_rgb(*INK)
-        ctx.set_line_width(w * 0.7)
-        ctx.stroke()
-
-
 # ---------------------------------------------------------------------- items
 def draw_item(ctx, item, x, y, R, t):
     lw = 0.035 * R + 0.5
     if item == "wine":
-        # held by the base (as in the reference): stem rises from the hand, bowl on top
         bw, bh, stem = 0.36 * R, 0.75 * R, 0.75 * R
         ctx.save()
         ctx.translate(x, y)
@@ -604,11 +809,6 @@ def draw_item(ctx, item, x, y, R, t):
         ctx.close_path()
         ctx.set_source_rgb(0x93 / 255, 0x2a / 255, 0x27 / 255)
         ctx.fill()
-        ctx.set_source_rgba(1, 1, 1, 0.65)
-        ctx.set_line_width(lw * 1.4)
-        ctx.move_to(-bw * 0.62, top + bh * 0.12)
-        ctx.curve_to(-bw * 0.75, top + bh * 0.4, -bw * 0.7, top + bh * 0.6, -bw * 0.5, top + bh * 0.8)
-        ctx.stroke()
         ctx.restore()
     elif item == "fork":
         ctx.save()
@@ -629,10 +829,44 @@ def draw_item(ctx, item, x, y, R, t):
     elif item == "phone":
         ctx.save()
         ctx.translate(x, y - 0.3 * R)
-        _rrect(ctx, -0.22 * R, -0.4 * R, 0.44 * R, 0.8 * R, 0.06 * R)
+        _rrect(ctx, -0.2 * R, -0.36 * R, 0.4 * R, 0.72 * R, 0.06 * R)
         ctx.set_source_rgb(0.1, 0.1, 0.12)
         ctx.fill()
-        ctx.rectangle(-0.17 * R, -0.33 * R, 0.34 * R, 0.62 * R)
+        ctx.rectangle(-0.15 * R, -0.3 * R, 0.3 * R, 0.56 * R)
         ctx.set_source_rgb(0.55, 0.85, 1.0)
         ctx.fill()
+        ctx.restore()
+    elif item == "paper":
+        ctx.save()
+        ctx.translate(x, y - 0.5 * R)
+        ctx.rotate(-0.08)
+        ctx.rectangle(-0.45 * R, -0.6 * R, 0.9 * R, 1.2 * R)
+        _fill_ink(ctx, (0.98, 0.97, 0.94), lw)
+        ctx.set_source_rgba(*INK, 0.4)
+        ctx.set_line_width(lw * 0.6)
+        for k in range(4):
+            ctx.move_to(-0.3 * R, -0.35 * R + k * 0.22 * R)
+            ctx.line_to(0.3 * R, -0.35 * R + k * 0.22 * R)
+            ctx.stroke()
+        ctx.restore()
+    elif item == "key":
+        ctx.save()
+        ctx.translate(x, y - 0.4 * R)
+        g = cairo.RadialGradient(0, 0, 0, 0, 0, 0.9 * R)
+        g.add_color_stop_rgba(0, 1, 0.85, 0.3, 0.6)
+        g.add_color_stop_rgba(1, 1, 0.85, 0.3, 0)
+        ctx.set_source(g)
+        ctx.arc(0, 0, 0.9 * R, 0, 2 * math.pi)
+        ctx.fill()
+        ctx.arc(0, -0.25 * R, 0.18 * R, 0, 2 * math.pi)
+        ctx.set_source_rgb(0.98, 0.78, 0.2)
+        ctx.set_line_width(0.09 * R)
+        ctx.stroke()
+        ctx.move_to(0, -0.07 * R)
+        ctx.line_to(0, 0.55 * R)
+        ctx.move_to(0, 0.4 * R)
+        ctx.line_to(0.15 * R, 0.4 * R)
+        ctx.move_to(0, 0.52 * R)
+        ctx.line_to(0.12 * R, 0.52 * R)
+        ctx.stroke()
         ctx.restore()
