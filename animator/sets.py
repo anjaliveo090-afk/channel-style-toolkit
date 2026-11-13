@@ -322,35 +322,28 @@ def _slanted_font(ctx, size, family=SCRIPT):
 
 
 def name_tag(ctx, text, x, y, w, h, k, accent="#7ab51d"):
-    """Lower-third tag (measured V1 0:07): dark translucent box, accent bar on the left with a
-    small pointer below it, cream slanted brush caps. k = 0..1 reveal."""
+    """Lower-third tag (measured frame by frame on V1 0:06): the dark box + accent bar appear first,
+    then the name TYPES ON about one letter per frame. k is progress where 1.0 = 0.35 s
+    (callers pass (t - start) / 0.35); full name shown by k ~ 1.4 (~0.5 s)."""
     if k <= 0:
         return
-    ease = 1 - (1 - min(1, k)) ** 3
-    ctx.save()
-    ctx.rectangle(x, y - 4, w * ease + 2, h + 40)
-    ctx.clip()
+    a = min(1.0, k / 0.15)
     _rrect(ctx, x, y, w, h, 6)
-    ctx.set_source_rgba(0.09, 0.06, 0.05, 0.86)
+    ctx.set_source_rgba(0.09, 0.06, 0.05, 0.86 * a)
     ctx.fill()
-    ctx.restore()
-    ctx.rectangle(x, y, 9, h * min(1, k * 2))
-    ctx.set_source_rgb(*hexc(accent))
+    ctx.rectangle(x, y, 9, h)
+    ctx.set_source_rgba(*hexc(accent), a)
     ctx.fill()
-    if k > 0.4:
-        ctx.move_to(x - 4, y + h)
-        ctx.line_to(x + 13, y + h)
-        ctx.line_to(x + 4.5, y + h + 14)
-        ctx.close_path()
-        ctx.fill()
-    ctx.save()
-    ctx.rectangle(x, y, w * ease, h)
-    ctx.clip()
+    ctx.move_to(x - 4, y + h)
+    ctx.line_to(x + 13, y + h)
+    ctx.line_to(x + 4.5, y + h + 14)
+    ctx.close_path()
+    ctx.fill()
+    n = max(0, min(len(text), int((k - 0.15) / 1.25 * len(text)) + 1)) if k > 0.15 else 0
     _slanted_font(ctx, h * 0.46)
-    ctx.move_to(x + 34, y + h * 0.5)
+    ctx.move_to(x + 34, y + h * 0.66)
     ctx.set_source_rgb(*hexc("#f4ecd6"))
-    ctx.show_text(text)
-    ctx.restore()
+    ctx.show_text(text[:n])
 
 
 def pop_label(ctx, text, x, y, k, col="#e23b2e", size=64, angle=-0.06):

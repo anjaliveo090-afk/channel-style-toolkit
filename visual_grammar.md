@@ -78,3 +78,86 @@ The camera almost never sits still. Most shots start fast and decelerate (ease-o
 1. Run `python3 analysis/motion30.py our.mp4 out [srt]`.
 2. Compare it with the table in section 1: shot length 2.5-3 s, push-in about 70%, zoom 6-9%/s while moving, text cards about 1 per 20 s.
 3. Look at `out_plot.png` and at the frame strips around every transition.
+
+## 12. Line-by-line log (V1 parts 1 and 4; frames at start, middle and end of every sentence)
+Sheets: `output/ref/cues/v1_part{1,4}_*.jpg`, made by `analysis/cue_sheets.py` with `references/srt/*_sentences.srt`.
+
+| Time | Sentence | What is shown (the device) |
+|---|---|---|
+| 0:00 | "In Singapore, the boss … having dinner with a Chinese spy." | Two-shot at the dinner, then a whip to a world map with glowing chip pins, then a **black text card** typing the punch phrase |
+| 0:06 | "He's Jensen Huang, who runs NVIDIA." | Big close-up laughing, raising a fork; the **name tag types on** |
+| 0:08 | "She's Alice Huang, no relation…" | Whip-pan to her close-up + name tag; back to the two-shot; a **"VIP CUSTOMER" sign** pops on the table |
+| 0:13 | "But here's the strange part." | Push out through the restaurant window into the rainy street (**camera leaves the room**) |
+| 0:15 | "…agents are taking pictures." | Dark street, two agents with a long lens; **polaroids pop in one by one with a camera flash each** |
+| 0:18 | "They know exactly who she is." | Corkboard file; a **hand draws a red circle** around her photo |
+| 0:20 | "Jensen has no idea." | **Black text card** |
+| 0:22-0:25 | "To our customers!" / "To friends." | Two-shot toast; the **speaker's mouth talks**, glasses clink |
+| 0:25 | "Under that table…billions of dollars of his chips" | Under-the-table view: a glowing green chip passed across, a **money counter label** above it ("$23,…" → "$ BILLIONS") |
+| 0:29 | "The kind China isn't allowed to have." | **Black text card** |
+| 0:32 | "This is the story of how China got a spy into that seat" | **Top-down seating plan**; a red **CHINA star stamp** lands on her seat |
+| 0:35 | "…and who was watching." | **Viewfinder** through the window (REC, crosshair), shutter flash |
+| 0:37 | "It starts with a phone call from Washington." | Night desk with a rotary phone; the **title** types onto the desk scene, then the chapter card |
+| 0:44 | "…who picked it up…the man in the leather jacket" | Push through skyscraper windows (**zoom-through**) to a desk, then a dark door |
+| 0:50 | "He started in a bathroom in Kentucky." | **Black text card** |
+| 0:53 | "Jensen's story begins in Taiwan." | **Paper map**: zoom to Taiwan, which turns orange; a pin drops with a label |
+| 0:55-1:04 | "At nine…put on a plane…parents sold almost everything" | Kids appear on the map with an "AGE 9" label; **plane arc** across the Pacific to the USA (USA highlighted); living room where the parents hand over an envelope marked "SCHOOL" (the TV says "BREAKING NEWS") |
+| 1:04 | "Oneida Baptist Institute, a boarding school in Kentucky." | Porch at sunset, suitcases; a **brochure with a picture** hangs in the air |
+| 1:08-1:10 | "Very strict." / "Strict is good." | Single shots of each speaker; the brochure is pointed at |
+| 1:11 | "It wasn't a fancy boarding school." | Top-down desk: brochure; a **magnifying glass reveals the fine print "FOR TROUBLED BOYS"** |
+| 1:13 | "It was a reform school…signed them up by mistake." | **Black text card**, then a **checkbox form**: "REFORM PROGRAM ☑" |
+| 3:53 | "It calls it the booth that launched a $1 trillion company." | Diner exterior, neon sign, the **plaque** close-up |
+| 3:56 | "…put on an apron, balanced 10 plates…" | Crowded diner; he holds a stack of plates, and a **"10 PLATES" counter** pops |
+| 4:02-4:03 | "Still remember how?" / "Dishes first." | **Callback set**: the same dish station as his teenage job, now with the old him |
+| 4:04 | "Two years later, NVIDIA became…$5 trillion." | **Black text card** (a long line, typed left-aligned) |
+| 4:10 | "Every dollar…had become about $8 billion." | The booth table: a **green counter box "$1 FROM EVERY $1"** rolls up while a **money tower** grows out of the booth; **impact flash**; "$8 BILLION" |
+| 4:14 | "The kid who scrubbed the toilets…" | Bathroom stalls, the kid with a mop; then **black card** "now holds the key to artificial intelligence." |
+| 4:20 | "…who should be allowed to buy his chips, Washington listens." | A glowing **golden key** in a black void, a **fast pull-out** to him on a platform, a **podium in front of a domed government building** with listeners |
+| 4:24-4:28 | "Every AI lab on Earth needs this man." / "Then so do we." | Dark blue corridor: a man on a stepladder pins **his photo** to the wall; a second man reacts |
+| 4:28 | "That made him the one man China needed most." | **Black text card** + chapter card ("The Locked Door") |
+| 4:33 | "October 2022, Washington calls NVIDIA." | **Calendar** (AUG → SEP, **page flip**); a **map with a dotted route line** Santa Clara ↔ Washington |
+| 4:37-4:44 | The phone call dialogue | **Split screen**: night government office | bright tech office, a phone cord across the divider; a **"A YEAR LATER" sticky label** slides down; **"BLOCKED" stamp** on a document |
+| 4:45 | "$17 billion a year, 13% of everything we sell." | **Whiteboard handwriting appears as the words are said**; a pie chart showing 13% |
+| 4:50 | "Was." | Back to the split screen; the whiteboard line is **struck through** |
+| 4:51-5:02 | "How many chips…? Tens of thousands. …$30,000. A new car per chip." | Corridor between server racks: **rack lights switch on in sequence**, a **counter label "10,000s"** rolls; a **balance scale**: a chip on one pan, a toy **car** on the other, with a price tag |
+| 5:02 | "And how many can we buy?" / "Zero." | Clipboard close-up via a **circular lens wipe** |
+| 5:03 | "NVIDIA's share of China's market went from 95% to zero." | **Pie on a plate with a "95%" tag**, then an **empty plate** |
+| 5:09 | "And he told Washington so every chance he got." | Spotlight on stage, then a **TV interview set with a "LIVE" bug** |
+
+## 13. Explaining devices (concept → picture), the core of the style
+**Rule: every sentence shows its meaning literally.** If the sentence has a noun, show that object. If it has a number, show the number on an object in the scene. If it has an idea, show a physical metaphor. Skits keep the set and cut between the speakers.
+
+| Concept in the line | Device | Code |
+|---|---|---|
+| A person is introduced | Close-up + **name tag (box, then the name types on)** | `sets.name_tag` |
+| Money / amount | **Green counter box** that rolls up; dollar labels with a glow; a money tower for growth | `devices.counter_box`, `sets.contract_doc` |
+| A big jump or growth | Counter rolls + **impact flash** + the object grows | `sets.impact_flash` |
+| Market share / a part of a whole | **Pie / cake slice with a % tag**; "to zero" = **empty plate** | `devices.pie_plate` |
+| Comparing values ("a new car per chip") | **Balance scale** with both objects | `devices.balance_scale` |
+| A rule, a list, what changed | **Whiteboard / document handwriting** in sync with the words; **strike-through** when it stops being true; **"BLOCKED"/"APPROVED" stamp** | `places.whiteboard`, `devices.stamp`, `devices.strike` |
+| A hidden truth / fine print | **Magnifying glass** reveals small text | `transitions.magnifier` |
+| A decision on paper / a mistake | **Form with a checkbox** that ticks | `devices.checkbox_form` |
+| Being watched / evidence | **Viewfinder** + **polaroids with a flash**; a **corkboard** with a **hand-drawn red circle** | `transitions.viewfinder`, `transitions.polaroid`, `devices.marker_circle` |
+| "Into that seat" / position, who sits where | **Top-down seating plan**, **stamp** on a seat | `devices.stamp` |
+| Time passes | **Sticky label slides in** ("A YEAR LATER"); **calendar page flip**; "Two years later" black card | `devices.sticky_label`, `transitions.page_flip` |
+| Place / journey / origin | **Paper map**: highlight a region, pin drop, plane arc or dotted route | `sets.paper_map`, `sets.map_pin`, `devices.route_arc` |
+| Power / importance ("holds the key") | **Glowing symbolic prop** in a black void + **fast pull-out** | `places.void_spotlight`, `transitions.pull_out` |
+| Two sides talking | **Split screen** + phone cord | `transitions.split_screen` |
+| Counting / quantity | **Things switch on or pop in one by one** (rack lights, plates), plus a counter label | `devices.counter_box` |
+| Punchline / thesis / irony / chapter end | **Black text card** typed with the line (about 1 per 15-20 s) | `sets.text_card` |
+| Callback to the past | **Reuse the exact earlier set**, with the character older | — |
+| Public statements | **TV interview set with a LIVE bug** / podium | `devices.live_tv` |
+
+## 14. Animation timing (measured frame by frame, `output/ref/motion/entrances.png`)
+| Element | How it moves | Duration |
+|---|---|---|
+| Name tag | The box fades in (2 frames), then letters type on at about 1 per frame | about 0.5 s |
+| Black text card | Letters type on | about 16 letters/s |
+| Polaroids | Each drops in with a **white camera flash** over the whole frame | about 0.15 s apart |
+| Red marker circle | A hand with a marker slides in and the stroke grows around the target | about 0.5 s |
+| Sticky label | Slides down from the top edge and settles | about 0.2 s |
+| Counter | Digits step up (slow at first, then faster), ending on the round number | 0.6-1.2 s |
+| Pop-in props/labels | Scale 0 → 1.1 → 1.0 | about 0.15 s |
+| Rack lights / counted things | Switch on in sequence | about 0.03 s apart |
+| Expression change | Snaps in 1 frame on the key word | — |
+| Mouth (speaker only) | Opens and closes every 2-3 frames while talking | — |
+| Camera | Cuts between speakers line by line in skits; push-ins ease-out; a pull-out reveal about 1.4 s | — |

@@ -110,6 +110,6 @@ Overalls, hard hats and plasters are drawn as props per story.
   - Short lines are centred (y about 0.47 H). Long lines start at the left (x about 0.09 W, y about 0.3-0.45 H).
   - It holds about 0.5-1 s after the last letter.
 - **Chapter card.** The same font, centred, holding about 2.2 s, on a 2-4.5 s pause in the voice.
-- **Name tag (lower third).** Dark rounded box, green bar on the left with a small pointer under it, cream slanted brush caps, wiping in left→right.
+- **Name tag (lower third).** Dark rounded box, green bar on the left with a small pointer under it, cream slanted brush caps. The box appears first, then the name **types on** at about one letter per frame (~0.5 s; measured frame by frame).
 - **Labels and documents.** Hand-lettered slanted caps on paper, whiteboards, plaques and stamps ("SECRET", "BLOCKED" red stamp). Money counters roll up ("$1M → $8M → $61M").
 - **Effects.** Comic speed-lines/impact flash (white radial burst, 2 frames), magnifier lens, camera viewfinder with REC, polaroids dropping in, split screen with a phone cord across the divider.
