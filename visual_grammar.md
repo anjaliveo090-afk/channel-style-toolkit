@@ -161,3 +161,25 @@ Sheets: `output/ref/cues/v1_part{1,4}_*.jpg`, made by `analysis/cue_sheets.py` w
 | Expression change | Snaps in 1 frame on the key word | — |
 | Mouth (speaker only) | Opens and closes every 2-3 frames while talking | — |
 | Camera | Cuts between speakers line by line in skits; push-ins ease-out; a pull-out reveal about 1.4 s | — |
+
+## 15. Every-frame pass (all 4,193 frames of V1 parts 1 and 4)
+Notes: `references/frame_notes_v1_part1.md` and `references/frame_notes_v1_part4.md`. Sheets with animated frames outlined: `output/ref/allframes/`. Detector: `analysis/events.py`.
+
+| Measure | Part 1 | Part 4 | Target |
+|---|---|---|---|
+| Animation events inside shots per 10 s | 9.5 | 8.6 | **8-10** |
+| Frames with nothing moving | 22% | 21% | about 20% (mostly black cards) |
+| Longest stretch without animation | 3.8 s | 5.5 s (card) | under 4 s outside cards |
+| Median animation event | 0.29 s | 0.37 s | 0.3-0.4 s |
+
+Rules added by this pass:
+1. **Animated light everywhere:** candle flicker, rain, flickering windows, searchlights, lamps clicking on, lens flares, glints sweeping across signs.
+2. **The camera travels between scenes physically** (out through a window, down under a table, through a light tunnel, a rip/tear through the wall) about as often as it cuts.
+3. **Text is always typed.** Long black-card lines are small and left-aligned.
+4. **"Everything" or lists are shown one item at a time** (map beams, furniture sold with price tags, polaroids, plates, rack lights).
+5. **Places fill with colour** (Taiwan orange, the USA blue); routes draw as dotted arcs.
+6. **Writing happens live** with a visible marker hand; the board scrolls.
+7. **Numbers grow physically** (a cash tower with a counter), peak with a speed-line burst, and spill particles.
+8. **Props always enter with motion** (slide, drop with a bounce, fly in).
+9. **Zero:** a circled and slashed 0, or an empty plate with crumbs.
+10. **Rip/tear transition** for "became" moments.
