@@ -409,7 +409,7 @@ def night_office(ctx, t):
     rnd = random.Random(9)
     for _ in range(50):
         ctx.arc(330 + rnd.random() * 620, 60 + rnd.random() * 200, 1.6, 0, 2 * math.pi)
-        ctx.set_source_rgba(1, 1, 1, 0.7)
+        ctx.set_source_rgba(1, 1, 1, 0.45 + 0.4 * math.sin(t * 2.2 + _ * 1.7))
         ctx.fill()
     glow(ctx, 640, 230, 200, hexc("#cfe0ff"), 0.45)
     gov_building(ctx, 640, 390, 1.1)
@@ -428,7 +428,7 @@ def night_office(ctx, t):
     # desk with banker's lamp, phone
     _rect(ctx, -40, floor - 40, 1360, 280, "#4a2c1c", 5)
     _rect(ctx, -40, floor - 40, 1360, 30, "#5a3524", 3)
-    glow(ctx, 160, floor - 120, 260, hexc("#c8ffb0"), 0.35)
+    glow(ctx, 160, floor - 120, 260, hexc("#c8ffb0"), 0.33 + 0.05 * math.sin(t * 2.7) * math.sin(t * 1.1))
     ctx.move_to(90, floor - 120)
     ctx.curve_to(110, floor - 170, 210, floor - 170, 230, floor - 120)
     ctx.close_path()
@@ -613,11 +613,23 @@ def night_city(ctx, t, seed=6):
             _fill_line(ctx, hexc(col), 2)
             for wy in range(int(H - bh + 14), H - 10, 24):
                 for wx in range(int(x + 10), int(x + bw - 14), 18):
-                    if rnd.random() < 0.45:
+                    on, ph = rnd.random() < 0.45, rnd.random()
+                    if rnd.random() < 0.08:          # a few windows switch on/off (V1 f360: windows flicker)
+                        on = math.sin(t * (0.6 + ph) + ph * 40) > 0.2
+                    if on:
                         ctx.rectangle(wx, wy, 8, 11)
                         ctx.set_source_rgba(1, 0.86, 0.5, 0.85)
                         ctx.fill()
             x += bw + 6
+    for i in range(2):                               # searchlights sweep (V1 f1146)
+        a = -math.pi / 2 + 0.55 * math.sin(t * 0.5 + i * 2.2)
+        x0 = 300 + i * 650
+        ctx.move_to(x0, H)
+        ctx.line_to(x0 + 1200 * math.cos(a - 0.05), H + 1200 * math.sin(a - 0.05))
+        ctx.line_to(x0 + 1200 * math.cos(a + 0.05), H + 1200 * math.sin(a + 0.05))
+        ctx.close_path()
+        ctx.set_source_rgba(0.85, 0.9, 1, 0.07)
+        ctx.fill()
     return {"floor": None}
 
 

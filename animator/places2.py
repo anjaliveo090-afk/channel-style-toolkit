@@ -112,10 +112,25 @@ def trading_floor(ctx, t, red=True, ticker="NVDA"):
     ctx.set_source_rgb(*hexc("#05070c"))
     ctx.fill()
     _slanted_font(ctx, 30)
-    s = f"  {ticker} ▼  " * 12 if red else f"  {ticker} ▲  " * 12
-    ctx.move_to(-((t * 140) % 360), 452)
     ctx.set_source_rgb(*(hexc("#ff4a3a") if red else hexc("#3dff7a")))
-    ctx.show_text(s)
+    tw = ctx.text_extents(ticker).x_advance
+    unit = tw + 90                                  # "NVDA" + a drawn arrow (the font has no arrow glyph)
+    x = -W - ((t * 140) % unit)
+    while x < 2 * W:
+        ctx.move_to(x, 452)
+        ctx.show_text(ticker)
+        ax = x + tw + 26
+        if red:
+            ctx.move_to(ax - 11, 432)
+            ctx.line_to(ax + 11, 432)
+            ctx.line_to(ax, 450)
+        else:
+            ctx.move_to(ax - 11, 450)
+            ctx.line_to(ax + 11, 450)
+            ctx.line_to(ax, 432)
+        ctx.close_path()
+        ctx.fill()
+        x += unit
     ctx.rectangle(-W, floor - 40, 3 * W, H)
     ctx.set_source(_grad(ctx, 0, floor - 40, 0, H, [(0, "#2a2f3a"), (1, "#14171e")]))
     ctx.fill()
@@ -555,5 +570,99 @@ def laptop_email(ctx, x, y, k, subject, body, cps=30, s=1.0):
     ctx.restore()
 
 
+# ------------------------------------------------------------------ top-down desk (documents always lie in a place)
+def desk_top(ctx, t, mug=True, phone=True, seed=3, wood="#6b4226"):
+    """Top-down wooden desk (V1 f1704: documents are shown on a desk, never on a flat colour).
+    Animated so the frame is never still: coffee steam curls, the lamp pool breathes, the phone buzzes."""
+    rnd = random.Random(seed)
+    ctx.rectangle(-W, -H, 3 * W, 3 * H)
+    ctx.set_source_rgb(*hexc(wood))
+    ctx.fill()
+    for k in range(-4, 16):                       # planks + grain
+        y = k * 92
+        ctx.rectangle(-W, y, 3 * W, 3)
+        ctx.set_source_rgba(0, 0, 0, 0.28)
+        ctx.fill()
+        for _ in range(5):
+            gy = y + 10 + rnd.random() * 72
+            ctx.move_to(-W, gy)
+            for x in range(-W, 2 * W + 1, 160):
+                ctx.line_to(x, gy + 5 * math.sin(x * 0.01 + gy))
+            ctx.set_source_rgba(0, 0, 0, 0.07 + rnd.random() * 0.06)
+            ctx.set_line_width(2)
+            ctx.stroke()
+    br = 0.32 + 0.025 * math.sin(t * 3.1) * math.sin(t * 1.3)   # lamp pool breathes
+    glow(ctx, 640, 330, 760, hexc("#ffdf9a"), br)
+    if mug:                                       # coffee mug, top view, with steam
+        mx, my = 150, 150
+        ctx.arc(mx + 8, my + 10, 70, 0, 2 * math.pi)
+        ctx.set_source_rgba(0, 0, 0, 0.3)
+        ctx.fill()
+        ctx.arc(mx, my, 70, 0, 2 * math.pi)
+        _fill_line(ctx, hexc("#e8e4da"), 4)
+        ctx.arc(mx, my, 54, 0, 2 * math.pi)
+        _fill_line(ctx, hexc("#4a2a16"), 3)
+        ctx.arc(mx - 14, my - 16, 14, 0, 2 * math.pi)
+        ctx.set_source_rgba(1, 1, 1, 0.25)
+        ctx.fill()
+        _rrect(ctx, mx + 62, my - 18, 40, 36, 14)
+        _fill_line(ctx, hexc("#e8e4da"), 4)
+        for i in range(3):                        # steam wisps rise and fade in a loop
+            ph = (t * 0.45 + i / 3) % 1.0
+            ctx.move_to(mx - 20 + i * 20, my - 10)
+            for j in range(1, 9):
+                yy = my - 10 - j * 16 - ph * 60
+                ctx.line_to(mx - 20 + i * 20 + 14 * math.sin(j * 0.8 + t * 2.4 + i), yy)
+            ctx.set_source_rgba(1, 1, 1, 0.32 * (1 - ph))
+            ctx.set_line_width(9)
+            ctx.stroke()
+    if phone:                                     # phone buzzes for 0.6 s every 4.5 s
+        ph = (t + 1.7) % 4.5
+        buzz = ph < 0.6
+        sx = 4 * math.sin(t * 90) if buzz else 0
+        ctx.save()
+        ctx.translate(1120 + sx, 560)
+        ctx.rotate(0.22)
+        _rrect(ctx, -58, -108, 116, 216, 16)
+        _fill_line(ctx, hexc("#202024"), 4)
+        _rrect(ctx, -48, -94, 96, 188, 8)
+        ctx.set_source_rgb(*(hexc("#9fd0ff") if buzz else hexc("#14161c")))
+        ctx.fill()
+        if buzz:
+            for side in (-1, 1):
+                for r in (0, 1):
+                    ctx.move_to(side * (72 + r * 14), -30)
+                    ctx.line_to(side * (80 + r * 14), 0)
+                    ctx.line_to(side * (72 + r * 14), 30)
+                    ctx.set_source_rgb(*INK)
+                    ctx.set_line_width(4)
+                    ctx.stroke()
+        ctx.restore()
+    ctx.save()                                    # pen + paper stack
+    ctx.translate(1080, 150)
+    ctx.rotate(-0.5)
+    _rrect(ctx, -110, -9, 220, 18, 8)
+    _fill_line(ctx, hexc("#1d3f8a"), 3)
+    ctx.restore()
+    for i in range(3):
+        ctx.save()
+        ctx.translate(160, 610)
+        ctx.rotate(-0.1 + i * 0.07)
+        ctx.rectangle(-150, -110, 300, 220)
+        _fill_line(ctx, hexc("#f2eee2"), 3)
+        ctx.restore()
+    return {"floor": None}
+
+
+def paper_shadow(ctx, x, y, w, h, angle=0.0, lift=14):
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(angle)
+    ctx.rectangle(-w / 2 + lift * 0.8, -h / 2 + lift, w, h)
+    ctx.set_source_rgba(0, 0, 0, 0.32)
+    ctx.fill()
+    ctx.restore()
+
+
 PLACES2 = {"boardroom": boardroom, "trading_floor": trading_floor, "corkboard": corkboard,
-           "sports_field": sports_field, "stage": stage, "driveway": driveway}
+           "sports_field": sports_field, "stage": stage, "driveway": driveway, "desk_top": desk_top}

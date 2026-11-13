@@ -192,7 +192,7 @@ BEATS = [
      "labels": lab(("THE BETS", "bets", 300, 160), ("THE STAGE", "stage", 980, 160), ("THE LAUNCH", "launch", 640, 100))},
     {"at": 122, "tpl": "tower", "value": 428e9, "sub": "TWO SESSIONS", "build": 1.4, "collapse": "twelve hundred",
      "label": ("~$1,200 PER AMERICAN", "twelve hundred")},
-    {"at": 124, "tpl": "stock", "ticker": "AMD", "values": [100, 101, 103, 104, 108, 110, 113], "price": "+13%",
+    {"at": 125, "tpl": "stock", "ticker": "AMD", "values": [100, 101, 103, 104, 108, 110, 113], "price": "+13%",
      "labels": lab(("BROADCOM: BEST DAY IN A YEAR", "Broadcom", 640, 650))},
     skit(128, "trading_floor", [("INVESTOR", 450, 1.8, {"look": 0.4, "expr": "angry"}),
                                 ("BROKER", 830, 1.8, {"look": -0.4, "expr": "deadpan"})], place_kw={"red": False}),
@@ -291,7 +291,7 @@ BEATS += [
                                            col="#f2d23a", size=40))},
     {"at": 108, "tpl": "board", "lines": ("BAIRD: $500 > $200",), "stamp": ("NOT A BUY", "stopped"),
      "char": ("ANALYST ONE", "deadpan")},
-    {"at": 116, "tpl": "tag", "who": "JENSEN", "name": "JENSEN HUANG", "sub": "FOUNDER", "place": "night_office",
+    {"at": 117, "tpl": "tag", "who": "JENSEN", "name": "JENSEN HUANG", "sub": "FOUNDER", "place": "night_office",
      "expr": "neutral", "label": "FAMOUS BOSS", "label_at": "famous"},
     {"at": 123, "tpl": "label", "bgcol": "#2a1610", "glow": "#ffcf80",
      "labels": lab(("~$1,200", "twelve hundred", 640, 300), ("FOR EVERY AMERICAN", "every person", 640, 420),
@@ -311,7 +311,7 @@ BEATS += [
      "label": "DENIES IT", "label_at": "denied"},
     {"at": 215, "tpl": "scene", "place": "boardroom",
      "ov": lambda c, t, b: sets.pop_label(c, "?", 640, 360, t - b.t0 - 0.3, col="#f2d23a", size=200)},
-    {"at": 219, "tpl": "label", "bgcol": "#1d2c52",
+    {"at": 220, "tpl": "label", "bgcol": "#1d2c52",
      "labels": lab(("INSIDE", "inside", 400, 340), ("OUTSIDE", "outside", 880, 340), ("NO COMMENT", "Neither", 640, 520))},
     {"at": 232, "tpl": "tag", "who": "JENSEN", "name": "JENSEN HUANG", "place": "night_office", "expr": "happy",
      "label": "PART OF THE DEAL", "label_at": "buying"},
@@ -324,6 +324,20 @@ BEATS[BEATS.index(next(b for b in BEATS if b["at"] == 239))] = {
     "at": 239, "tpl": "scene", "place": "living_room",
     "cast": [("YOU", 640, 1.7, {"expr": "worried", "arms": "hold", "item": "phone"})],
     "ov": lambda c, t, b: sets.pop_label(c, "YOUR RETIREMENT", 640, 110, t - b.wt("retirement"), col="#f2d23a", size=56)}
+
+REACTORS = {
+    1: [("BOARD MEMBER ONE", "boardroom"), ("LAWYER", "boardroom"), ("TRADER", "trading_floor")],
+    2: [("JENSEN", "night_office"), ("ALICE", "night_city"), ("REPORTER", "night_city")],
+    3: [("CHAIRMAN", "night_office"), ("EMPLOYEE ONE", "tech_office"), ("BOARD MEMBER TWO", "boardroom")],
+    4: [("TRADER", "trading_floor"), ("ANALYST", "trading_floor"), ("INVESTOR", "trading_floor")],
+    5: [("BOARD MEMBER ONE", "boardroom"), ("BOARD MEMBER THREE", "boardroom"), ("REPORTER", "tech_office")],
+    6: [("KRESS", "tech_office"), ("TRADER ONE", "trading_floor"), ("REPORTER TWO", "tech_office")],
+    7: [("HEADHUNTER", "boardroom"), ("YOU", "living_room"), ("BOARD MEMBER", "boardroom")],
+    8: [("STAGEHAND", "stage"), ("STAGE MANAGER", "stage"), ("JENSEN", "night_office")],
+}
+
+# punchlines on black cards (reference: one about every 15-20 s)
+BEATS += [{"at": i, "tpl": "card"} for i in (10, 83, 92, 116, 124, 147, 204, 214, 219, 235, 246, 253, 267, 269)]
 
 
 def build():

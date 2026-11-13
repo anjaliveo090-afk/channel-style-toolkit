@@ -15,6 +15,7 @@ Templates are below (TPL registry). Rendering can be split across processes and 
 """
 import json
 import math
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -92,7 +93,17 @@ class Story:
         for i, b in enumerate(beats):
             b["t1"] = beats[i + 1]["t0"] if i + 1 < len(beats) else self.total
             b["sents"] = [s for s in sents if b["t0"] - 0.01 <= s["start"] < b["t1"] - 0.01]
+        cards = ("card", "title_card", "chapter_card")
+        n = 0
+        for i, b in enumerate(beats):
+            if i == 0 or "tr" in b or b["tpl"] in cards or beats[i - 1]["tpl"] in cards:
+                continue
+            n += 1
+            if n % 3 == 0:
+                b["tr"] = "whip"
         self.beats = [Beat(b, self) for b in beats]
+        rnd = np.random.default_rng(4)
+        self.dust = rnd.random((70, 5))
 
     def _build_voice(self, path):
         x = R.load_wav(path)
@@ -133,7 +144,28 @@ class Story:
                 s = cairo.ImageSurface(cairo.FORMAT_ARGB32, R.W, R.H)
                 sets.impact_flash(cairo.Context(s), (t - ft) * R.FPS / 3)
                 return R.flat(s)
-        return R.post(img) if post else img
+        if not post:
+            return img
+        return R.post(self.ambient(img, t))
+
+    def ambient(self, img, t):
+        """floating dust in the light + a faint light flicker, so no frame is ever fully still (reference)"""
+        import cv2
+        ov = np.zeros_like(img)
+        for x0, y0, vx, ph, sz in self.dust:
+            x = (x0 * R.W + (vx - 0.5) * 40 * t + 25 * math.sin(t * 0.7 + ph * 6)) % R.W
+            y = (y0 * R.H - 12 * t * (0.5 + vx) + 15 * math.sin(t * 0.9 + ph * 5)) % R.H
+            a = 0.16 + 0.24 * (0.5 + 0.5 * math.sin(t * 2 + ph * 9))
+            cv2.circle(ov, (int(x), int(y)), int(1.5 + sz * 3), (0.75 * a, 0.9 * a, a), -1, cv2.LINE_AA)
+        bok = np.zeros_like(img)
+        for x0, y0, vx, ph, sz in self.dust[:10]:
+            x = (x0 * R.W + 30 * t * (vx - 0.3) + 60 * math.sin(t * 0.5 + ph * 6)) % R.W
+            y = (y0 * R.H - 20 * t * (0.4 + vx) + 40 * math.sin(t * 0.6 + ph * 5)) % R.H
+            a = 0.05 + 0.07 * (0.5 + 0.5 * math.sin(t * 1.4 + ph * 9))
+            cv2.circle(bok, (int(x), int(y)), int(9 + sz * 12), (0.8 * a, 0.92 * a, a), -1, cv2.LINE_AA)
+        ov += cv2.GaussianBlur(bok, (0, 0), 3)
+        flick = 1 + 0.012 * math.sin(t * 5.3) * math.sin(t * 1.9)
+        return img * flick + ov
 
     # ---------------- sound
     def soundtrack(self, path):
@@ -200,8 +232,101 @@ class Beat:
         self.dur = max(0.2, self.t1 - self.t0)
         self.sents = p["sents"]
         self.tpl = TPL[p["tpl"]]
+        self.cuts = self._make_cuts()
+        self._cover = None
+
+    def _make_cuts(self):
+        """hard-cut points inside the beat (measured reference: a new framing every 2.5-2.8 s):
+        every sentence start, commas/colons inside long sentences, and a fill so no shot runs over ~2.8 s"""
+        if self.p["tpl"] in ("card", "title_card", "chapter_card"):
+            return []
+        pts = []
+        for s in self.sents:
+            pts.append(s["start"])
+            txt = s["script_text"]
+            d = s["end"] - s["start"]
+            for m in re.finditer(r"[,:;]", txt):
+                pts.append(s["start"] + d * m.end() / max(1, len(txt)))
+        pts = sorted(x for x in pts if self.t0 + 0.9 < x < self.t1 - 0.8)
+        cuts, last = [], self.t0
+        for x in pts:
+            if x - last >= 1.8:
+                cuts.append(x)
+                last = x
+        out, last = [], self.t0
+        for x in cuts + [self.t1]:
+            while x - last > 3.4:
+                last += min(2.7, (x - last) / 2)
+                out.append(last)
+            if x < self.t1:
+                out.append(x)
+            last = x
+        return out
+
+    def shot_index(self, t):
+        j = 0
+        for c in self.cuts:
+            if c <= t:
+                j += 1
+        return j
+
+    PRESETS = [(1.0, 0, 0), (1.3, -110, -30), (1.12, 95, 10), (1.42, 70, -45), (1.2, -75, 12)]
+
+    def shot(self, t, amp=1.0):
+        """(zoom multiplier, dx, dy) for the current shot: preset framing per shot (hard cut), then a push
+        at ~7.5 %/s with a slow side drift; every 5th shot is a pull-out"""
+        j = self.shot_index(t)
+        start = self.cuts[j - 1] if j > 0 else self.t0
+        age = min(4.0, max(0.0, t - start))
+        zf, ox, oy = self.PRESETS[j % len(self.PRESETS)]
+        zf = 1 + (zf - 1) * amp
+        if j % 5 == 3:
+            zp = 1.22 - 0.07 * age
+        else:
+            zp = 1.0 + 0.075 * age * (1 - 0.3 * math.exp(-age * 3))
+        drift = (14 if j % 2 else -14) * age
+        return zf * zp, (ox + drift) * amp, oy * amp
+
+    def shotcam(self, t, cx, cy, amp=1.0):
+        z, dx, dy = self.shot(t, amp)
+        return z, cx + dx, cy + dy
+
+    def coverage(self):
+        """what each shot shows. The reference puts a NEW picture on screen every ~2.5 s, so device beats
+        alternate the device with cutaways (a reaction close-up, or the chapter's place with its people).
+        A cutaway never covers a device event (a tick, stamp, pop...): those always play on the device."""
+        if self._cover is None:
+            n = len(self.cuts) + 1
+            cov = ["main"] * n
+            if self.p["tpl"] in REACT_TPLS and self.p.get("react", True) is not False:
+                ev = [x[0] for x in self.sfx()]
+                bounds = [self.t0] + self.cuts + [self.t1]
+                kind = int(self.t0 * 7) % 2
+                for j in range(1, n):
+                    a, e = bounds[j], bounds[j + 1]
+                    if cov[j - 1] != "main" or e - a < 1.0:
+                        continue
+                    if any(a - 0.2 <= x <= e + 0.1 for x in ev):
+                        continue
+                    cov[j] = ("react", "broll")[kind % 2] if self.p.get("broll", True) else "react"
+                    kind += 1
+            self._cover = cov
+        return self._cover
+
+    def cut_no(self, t):
+        """how many cutaways have been shown in this beat up to time t (picks the next face / place)"""
+        j = self.shot_index(t)
+        return sum(1 for x in self.coverage()[:j + 1] if x != "main") + int(self.t0)
+
+    def shot_start(self, t):
+        return max([c for c in self.cuts if c <= t] or [self.t0])
 
     def render(self, t):
+        kind = self.coverage()[self.shot_index(t)]
+        if kind == "react":
+            return t_react(self, t)
+        if kind == "broll":
+            return t_broll(self, t)
         return self.tpl[0](self, t)
 
     def sfx(self):
@@ -233,19 +358,19 @@ class Beat:
     def talking(self, speaker, t):
         return any(s["speaker"] == speaker and s["start"] <= t <= s["end"] for s in self.sents)
 
-    def cam(self, t, base=(640, 360), push=0.06, step=0.06, shift=34, z0=1.0):
-        """slow push over the beat + a new framing on each sentence (eased 0.35 s)"""
-        lt = t - self.t0
-        z = z0 + push * ease_out(lt / max(self.dur, 0.5))
-        k = self.k(t)
-        if k > 0:
-            e = ease((t - self.sk(k)["start"]) / 0.35)
-            kk = (k - 1) + e
-        else:
-            kk = 0.0
-        z += step * min(kk, 4)
-        dx = shift * math.sin(kk * 1.7)
-        return z, base[0] + dx, base[1]
+    def cam(self, t, base=(640, 360), push=0.06, step=0.06, shift=34, z0=1.0, amp=None):
+        """shot camera (hard cut to a new framing every ~2.5 s, fast push inside the shot)"""
+        a = amp if amp is not None else self.p.get("amp", AMP.get(self.p["tpl"], 1.0))
+        z, cx, cy = self.shotcam(t, base[0], base[1], a)
+        return z * z0, cx, cy
+
+
+REACT_TPLS = ("filing", "checklist", "board", "email", "letter", "news", "zero", "label", "calendar", "stock",
+              "tower", "map", "cork", "tv", "stage")
+
+AMP = {"filing": 0.45, "checklist": 0.45, "board": 0.5, "email": 0.45, "letter": 0.6, "news": 0.5, "zero": 0.5,
+       "label": 0.55, "tag": 0.55, "calendar": 0.5, "stock": 0.45, "tower": 0.6, "tv": 0.6, "cork": 0.6,
+       "dinner": 0.8, "stage": 0.8, "scene": 0.9, "skit": 0.6, "map": 0.5}
 
 
 def layers():
@@ -266,6 +391,23 @@ def light_cast(chars, name):
 
 def S(fn, kind, db=0.0):
     return (fn, kind, db)
+
+
+def gesture(kw, talk, b, t, x, speaker):
+    """talking characters gesture on each line (arm up over 0.25 s, then a small beat); listeners breathe"""
+    if "arms" in kw or kw.get("pose") == "back":
+        kw.setdefault("bob", 0.006 * math.sin(t * 2.3 + x))
+        return
+    if talk:
+        s0 = max([s["start"] for s in b.sents if s["speaker"] == speaker and s["start"] <= t] or [b.t0])
+        n = sum(1 for s in b.sents if s["speaker"] == speaker and s["start"] <= t)
+        right = x < 640
+        g = (["present_r", "shrug", "point_r"] if right else ["present_l", "shrug", "point_l"])[n % 3]
+        amt = ease((t - s0) / 0.25) * (0.85 + 0.15 * math.sin((t - s0) * 6))
+        kw["arms"] = (g, amt)
+        kw["bob"] = 0.012 * math.sin(t * 7)
+    else:
+        kw["bob"] = 0.006 * math.sin(t * 2.3 + x)
 
 
 # ====================================================================== templates
@@ -353,13 +495,22 @@ def t_skit(b, t):
     k = b.k(t)
     sp = b.sk(k)["speaker"]
     spots = {s: (x, sc) for s, x, sc, _ in b.p["cast"]}
-    if k == 0 or sp not in spots or k % 2 == 0:
-        z, cx, cy = b.cam(t, base=b.p.get("center", (640, 380)), push=0.05, step=0.0)
+    ls = b.sk(k)["start"]
+    le = b.sk(k)["end"]
+    age = t - ls
+    wide = sp not in spots or (k == 0 and t < b.t0 + 1.1) or t < ls
+    if not wide and le - ls > 3.4 and t > ls + (le - ls) / 2:     # long line: a cut to a closer two-shot
+        xs = [x for x, _ in spots.values()]
+        z = 1.3 * (1 + 0.06 * (t - ls - (le - ls) / 2))
+        cx, cy = sum(xs) / len(xs), 380 - 40
+    elif wide:
+        z, cx, cy = b.cam(t, base=b.p.get("center", (640, 380)))
         z *= b.p.get("zoom", 1.0)
     else:
         x, sc = spots[sp]
-        z = 1.55 * (1 + 0.04 * ease_out((t - b.sk(k)["start"]) / 1.2))
-        cx, cy = x, None
+        zc = min(2.6, max(1.55, 3.0 / sc))          # speaker's head about a third of the frame
+        z = zc * (1 + 0.07 * min(3.0, age))
+        cx, cy = x + (12 if k % 2 else -12) * age, None
     c = cairo.Context(bg)
     info = place(cairo.Context(cairo.ImageSurface(cairo.FORMAT_ARGB32, 4, 4)), pl, t, **b.p.get("place_kw", {}))
     floor = b.p.get("floor") or info.get("floor") or 620
@@ -381,7 +532,9 @@ def t_skit(b, t):
                 if b.st.sents[gi]["start"] <= t:
                     e = ex
             expr = e
-        ch.draw(c, x, kw.pop("y", floor), sc, t=t + x * 0.01, expr=expr, talk=b.talking(s, t), **kw)
+        talk = b.talking(s, t)
+        gesture(kw, talk, b, t, x, s)
+        ch.draw(c, x, kw.pop("y", floor), sc, t=t + x * 0.01, expr=expr, talk=talk, **kw)
     if b.p.get("props"):
         b.p["props"](c, t, b)
     return R.compose(bg, fg, ov, dof=2.2), True
@@ -418,8 +571,16 @@ def t_scene(b, t):
         arms = kw.pop("arms", "rest")
         if callable(arms):
             arms = arms(t, b)
+        talk = b.talking(s, t)
+        if arms == "rest":
+            kw2 = {}
+            gesture(kw2, talk, b, t, x, s)
+            arms = kw2.get("arms", arms)
+            kw.setdefault("bob", kw2.get("bob", 0))
+        else:
+            kw.setdefault("bob", 0.006 * math.sin(t * 2.3 + x))
         b.st.mod.CAST[s].draw(c, x, kw.pop("y", floor), sc, t=t + x * 0.01, expr=expr, arms=arms,
-                              talk=b.talking(s, t), **kw)
+                              talk=talk, **kw)
     if b.p.get("fg"):
         b.p["fg"](c, t, b)
     c = cairo.Context(ov)
@@ -442,7 +603,7 @@ def t_tag(b, t):
     """big close-up of one character with a name tag (box, then types on)."""
     bg, fg, ov = layers()
     lt = t - b.t0
-    z = 1.0 + 0.08 * ease_out(lt / max(1.0, b.dur))
+    z = b.shot(t, AMP["tag"])[0]
     if b.p.get("punch"):
         z *= 1 + 0.12 * ease((t - b.wt(b.p["punch"])) / 0.15)
     side = b.p.get("side", "left")
@@ -545,7 +706,7 @@ def t_calendar(b, t):
     c.set_line_width(3)
     c.stroke()
     c = cairo.Context(fg)
-    R.cam(c, 1.0 + 0.12 * ease_out(lt / 2.2), 640, 360)
+    R.cam(c, *b.shotcam(t, 640, 360, AMP["calendar"]))
     m0, m1 = b.p.get("from", "OCT"), b.p.get("month", "NOV")
     p = (lt - 0.3) / 0.35
     if m0 != m1 and p < 1:
@@ -578,17 +739,28 @@ def _tower_sfx(b):
 def t_tower(b, t):
     bg, fg, ov = layers()
     lt = t - b.t0
+    z, cx, cy = b.shotcam(t, 640, 400, AMP["tower"])
     c = cairo.Context(bg)
-    c.set_source_rgb(*sets.hexc(b.p.get("bgcol", "#2a1610")))
-    c.paint()
-    sets.glow(c, 640, 360, 640, sets.hexc("#ffcf80"), 0.32)
-    c.rectangle(-10, 560, 1300, 200)
-    c.set_source_rgb(*sets.hexc("#5a3020"))
+    R.cam(c, 1 + (z - 1) * 0.7, cx, cy)
+    place(c, b.p.get("place", "trading_floor"), t)
+    c.identity_matrix()
+    c.rectangle(0, 0, R.W, R.H)
+    c.set_source_rgba(0, 0, 0, 0.3)
     c.fill()
+    sets.glow(c, 640, 360, 640, sets.hexc("#ffcf80"), 0.25)
     c = cairo.Context(fg)
-    R.cam(c, 1.0 + 0.12 * ease_out(lt / 1.2) + 0.05 * min(b.k(t), 3), 640, 400)
+    R.cam(c, z, cx, cy)
+    c.save()
+    c.translate(640, 575)
+    c.scale(1, 0.18)
+    c.arc(0, 0, 260, 0, 2 * math.pi)
+    c.restore()
+    c.set_source_rgba(0, 0, 0, 0.35)
+    c.fill()
     col = (b.wt(b.p["collapse"]) - b.t0 + 0.1) if b.p.get("collapse") else None
     D.cash_tower(c, 640, 570, lt, n_max=14, build=b.p.get("build", 1.0), collapse_at=col)
+    if lt > b.p.get("build", 1.0) and (col is None or lt < col):
+        falling_bills(c, t, b.t0)
     c = cairo.Context(ov)
     val, fmt = b.p["value"], b.p.get("fmt", "${:,.0f}")
     if col is None or lt < col:
@@ -600,7 +772,25 @@ def t_tower(b, t):
     if b.p.get("label"):
         lt2, w = b.p["label"]
         sets.pop_label(c, lt2, 640, 110, t - b.wt(w), col="#f2d23a", size=52)
-    return R.compose(bg, fg, ov, dof=0, bloom=0.6), True
+    return R.compose(bg, fg, ov, dof=1.4, bloom=0.6), True
+
+
+def falling_bills(c, t, seed_t, n=9):
+    """paper bills drifting down past the camera (keeps money shots alive)"""
+    rnd = np.random.default_rng(int(seed_t * 10) % 1000)
+    for x0, ph, sp, rot in rnd.random((n, 4)):
+        y = ((t * (0.18 + 0.12 * sp) + ph) % 1.0) * 900 - 120
+        x = 140 + x0 * 1000 + 40 * math.sin(t * 2 + ph * 9)
+        c.save()
+        c.translate(x, y)
+        c.rotate(math.sin(t * 2.5 + rot * 7) * 0.8)
+        c.scale(1, 0.55 + 0.45 * math.cos(t * 3 + ph * 5))
+        c.rectangle(-34, -16, 68, 32)
+        sets._fill_line(c, sets.hexc("#6fbf5a"), 2.5)
+        c.arc(0, 0, 8, 0, 2 * math.pi)
+        c.set_source_rgb(*sets.hexc("#3f8a35"))
+        c.fill()
+        c.restore()
 
 
 # ---------------- stock chart on a trading screen
@@ -620,7 +810,7 @@ def t_stock(b, t):
     c = cairo.Context(bg)
     place(c, "trading_floor", t, red=b.p["values"][-1] < b.p["values"][0], ticker=b.p.get("ticker", "NVDA"))
     c = cairo.Context(fg)
-    R.cam(c, 1.0 + 0.05 * ease_out(lt / b.dur) + 0.05 * min(b.k(t), 2), 640, 360)
+    R.cam(c, *b.shotcam(t, 640, 360, AMP["stock"]))
     P2.stock_chart(c, (lt - 0.1) / b.p.get("draw", 1.6), b.p["values"], ticker=b.p.get("ticker", "NVDA"),
                    price=b.p.get("price"), change=b.p.get("change"))
     c = cairo.Context(ov)
@@ -637,7 +827,7 @@ def t_news(b, t):
     c = cairo.Context(bg)
     place(c, b.p.get("place", "boardroom"), t)
     c = cairo.Context(fg)
-    R.cam(c, 1.0 + 0.06 * ease_out(lt / b.dur), 640, 360)
+    R.cam(c, *b.shotcam(t, 640, 360, AMP["news"]))
     for i, (head, sub, w) in enumerate(b.p["papers"]):
         k = t - (b.wt(w) if w else b.t0)
         P2.newspaper(c, k, head, sub, x=640 + (i - (len(b.p["papers"]) - 1) / 2) * 90, y=360 + i * 30,
@@ -662,14 +852,7 @@ def t_filing(b, t):
     bg, fg, ov = layers()
     lt = t - b.t0
     z, cx, cy = b.cam(t, base=(640, 380), push=0.1, step=0.07, shift=20)
-    c = cairo.Context(bg)
-    c.set_source_rgb(*sets.hexc("#5a3a22"))
-    c.paint()
-    for k in range(9):
-        c.rectangle(0, k * 90, R.W, 4)
-        c.set_source_rgba(0, 0, 0, 0.18)
-        c.fill()
-    sets.glow(c, 640, 300, 700, sets.hexc("#ffe2a0"), 0.35)
+    desk_bg(b, cairo.Context(bg), t, z, cx, cy)
     c = cairo.Context(fg)
     R.cam(c, z, cx, cy)
     hl = b.p.get("highlight")
@@ -701,18 +884,15 @@ def _check_sfx(b):
 @tpl("checklist", _check_sfx)
 def t_check(b, t):
     bg, fg, ov = layers()
-    c = cairo.Context(bg)
-    c.set_source_rgb(*sets.hexc(b.p.get("bgcol", "#c8312c")))
-    c.paint()
-    sets.glow(c, 640, 330, 640, sets.hexc("#ffd090"), 0.3)
-    c = cairo.Context(fg)
     z, cx, cy = b.cam(t, base=(640, 360), push=0.08, step=0.03, shift=14)
+    desk_bg(b, cairo.Context(bg), t, z, cx, cy)
+    c = cairo.Context(fg)
     R.cam(c, z, cx, cy)
     rows = b.p["rows"]
     w, h = 560, 140 + 74 * len(rows)
     c.save()
     c.translate(640, 360)
-    c.rotate(-0.02)
+    c.rotate(-0.04)
     c.rectangle(-w / 2 + 12, -h / 2 + 14, w, h)
     c.set_source_rgba(0, 0, 0, 0.3)
     c.fill()
@@ -742,12 +922,45 @@ def t_check(b, t):
             sets._slanted_font(c, 38)
             e = c.text_extents(row)
             D.strike(c, -w / 2 + 96, yy + 20, -w / 2 + 104 + e.x_advance, k, w=7)
+    # one marker hand: comes in for a mark, glides to the next mark if it follows soon, else leaves
+    marks = []
+    for i, (row, act, wd) in enumerate(rows):
+        yy = -h / 2 + 120 + i * 74
+        sets._slanted_font(c, 38)
+        ex = c.text_extents(row).x_advance
+        marks.append((b.wt(wd), act, yy, ex))
+    marks = [m for m in sorted(marks) if m[0] < 1e8]
+
+    def tip(m, k):
+        tw, act, yy, ex = m
+        if act == "tick":
+            p = ease_out(min(1, max(0, k) / 0.15))
+            return -w / 2 + 58 + 30 * p, yy + 32 - 40 * p
+        return -w / 2 + 96 + (8 + ex) * ease_out(min(1, max(0, k) / 0.3)), yy + 20
+    live = [i for i, m in enumerate(marks) if t >= m[0] - 0.4]
+    if live:
+        i = live[-1]
+        k = t - marks[i][0]
+        hx, hy = tip(marks[i], k)
+        off = 0.0
+        near_prev = i > 0 and marks[i][0] - marks[i - 1][0] < 1.3
+        near_next = i + 1 < len(marks) and marks[i + 1][0] - marks[i][0] < 1.3
+        if k < 0 and near_prev:                    # glide from the previous mark
+            px, py = tip(marks[i - 1], 9)
+            q = ease((k + 0.4) / 0.4)
+            hx, hy = px + (hx - px) * q, py + (hy - py) * q
+        elif not near_prev:
+            off = (1 - ease((k + 0.4) / 0.3)) * 520
+        if not near_next:
+            off += ease((k - 0.4) / 0.35) * 520
+        if off < 519:
+            D.marker_hand(c, hx + off, hy + off * 0.55, t, col="#2f9a3a" if marks[i][1] == "tick" else "#d0302a")
     c.restore()
     c = cairo.Context(ov)
     if b.p.get("stamp"):
         txt, w2 = b.p["stamp"]
         D.stamp(c, 900, 560, t - b.wt(w2), txt, size=52)
-    return R.compose(bg, fg, ov, dof=0), True
+    return R.compose(bg, fg, ov, dof=0.8), True
 
 
 # ---------------- zero device: clipboard with a circled, slashed 0
@@ -755,12 +968,11 @@ def t_check(b, t):
 def t_zero(b, t):
     bg, fg, ov = layers()
     lt = t - b.t0
-    c = cairo.Context(bg)
-    c.set_source_rgb(*sets.hexc("#16244a"))
-    c.paint()
-    sets.glow(c, 640, 200, 500, sets.hexc("#cfe0ff"), 0.3)
+    z, cx, cy = b.shotcam(t, 640, 380, AMP["zero"])
+    desk_bg(b, cairo.Context(bg), t, z, cx, cy)
     c = cairo.Context(fg)
-    R.cam(c, 1.0 + 0.1 * ease_out(lt / b.dur), 640, 380)
+    R.cam(c, z, cx, cy)
+    P2.paper_shadow(c, 640, 380, 460, 600, angle=-0.04, lift=18)
     c.save()
     c.translate(640, 380)
     c.rotate(-0.04)
@@ -793,7 +1005,7 @@ def t_tv(b, t):
     c = cairo.Context(bg)
     D.live_tv(c, t)
     c = cairo.Context(fg)
-    R.cam(c, 1.0 + 0.06 * ease_out(lt / b.dur), 640, 360)
+    R.cam(c, *b.shotcam(t, 640, 360, AMP["tv"]))
     ch = b.st.mod.CAST[b.p.get("who", "SPOKESPERSON")]
     ch.scene()
     ch.draw(c, 400, 640, 1.9, t=t, pose=b.p.get("pose", "stand"), look=0.4, expr="neutral",
@@ -933,7 +1145,7 @@ def t_cork(b, t):
 def t_map(b, t):
     bg, fg, ov = layers()
     lt = t - b.t0
-    z = 1.0 + 0.25 * ease_out(lt / max(2.0, b.dur))
+    z = (1.0 + 0.25 * ease_out(lt / max(2.0, b.dur))) * b.shot(t, AMP["map"])[0]
     cx, cy = b.p.get("center", (640, 360))
     c = cairo.Context(bg)
     R.cam(c, z, cx, cy)
@@ -960,6 +1172,15 @@ def t_stage(b, t):
     R.cam(c, 1 + (z - 1) * 0.8, cx, cy)
     info = P2.stage(c, t, jacket=b.p.get("jacket", False), mark=b.p.get("mark", False),
                     chip=b.p.get("chip", True))
+    for i in range(2):                            # sweeping spotlights (V1: light is always animated)
+        a = math.pi / 2 + 0.45 * math.sin(t * 0.9 + i * 2.6)
+        x0 = 200 + i * 880
+        c.move_to(x0, -60)
+        c.line_to(x0 + 900 * math.cos(a - 0.09), -60 + 900 * math.sin(a - 0.09))
+        c.line_to(x0 + 900 * math.cos(a + 0.09), -60 + 900 * math.sin(a + 0.09))
+        c.close_path()
+        c.set_source_rgba(1, 0.95, 0.8, 0.10)
+        c.fill()
     c = cairo.Context(fg)
     R.cam(c, z, cx, cy)
     for who, x, sc, kw in b.p.get("cast", []):
@@ -1043,11 +1264,18 @@ def t_label(b, t):
     bg, fg, ov = layers()
     lt = t - b.t0
     c = cairo.Context(bg)
-    c.set_source_rgb(*sets.hexc(b.p.get("bgcol", "#16244a")))
-    c.paint()
-    sets.glow(c, 640, 340, 620, sets.hexc(b.p.get("glow", "#cfe0ff")), 0.28)
+    z, cx, cy = b.shotcam(t, 640, 360, AMP["label"])
+    R.cam(c, 1 + (z - 1) * 0.5, cx, cy)
+    ch_no = b.sents[0]["chapter"] if b.sents else 1
+    pl = b.p.get("place") or b.st.mod.REACTORS.get(ch_no, [("", "night_office")])[0][1]
+    place(c, pl, t)
+    c.identity_matrix()
+    c.rectangle(0, 0, R.W, R.H)
+    c.set_source_rgba(0, 0, 0, 0.25)
+    c.fill()
+    sets.glow(c, 640, 340, 620, sets.hexc(b.p.get("glow", "#cfe0ff")), 0.22)
     c = cairo.Context(fg)
-    R.cam(c, 1.0 + 0.1 * ease_out(lt / b.dur) + 0.04 * min(b.k(t), 3), 640, 360)
+    R.cam(c, z, cx, cy)
     if b.p.get("pie"):
         pct, w, lab = b.p["pie"]
         D.pie_plate(c, 640, 400, t - b.wt(w), pct, label=lab, r=170)
@@ -1056,4 +1284,84 @@ def t_label(b, t):
     c = cairo.Context(ov)
     for txt, w, x, y in b.p.get("labels", []):
         sets.pop_label(c, txt, x, y, t - b.wt(w), col=b.p.get("col", "#f2d23a"), size=b.p.get("size", 60))
-    return R.compose(bg, fg, ov, dof=0), True
+    return R.compose(bg, fg, ov, dof=2.6), True
+
+
+# ---------------- reaction close-up (inserted every 3rd shot of device beats)
+def t_react(b, t):
+    mod = b.st.mod
+    ch_no = b.sents[0]["chapter"] if b.sents else 1
+    who, pl, expr = None, None, None
+    if isinstance(b.p.get("react"), tuple):
+        who, expr = b.p["react"][0], b.p["react"][1]
+        pl = b.p["react"][2] if len(b.p["react"]) > 2 else None
+    opts = mod.REACTORS.get(ch_no, [("JENSEN", "night_office")])
+    n = b.cut_no(t)
+    if who is None:
+        who, pl = opts[n % len(opts)]
+    pl = pl or opts[0][1]
+    if expr is None:
+        expr = ["worried", "shock", "deadpan", "sad", "smirk"][(n + int(b.t0 * 3)) % 5]
+    age = t - b.shot_start(t)
+    bg, fg, ov = layers()
+    side = n % 2
+    hx = 478 if side == 0 else 800
+    z = 1.0 + 0.07 * age
+    c = cairo.Context(bg)
+    R.cam(c, 2.0 * z, 640, 300)
+    place(c, pl, t)
+    c = cairo.Context(fg)
+    R.cam(c, z, hx, 280)
+    ch = mod.CAST[who]
+    light_cast([ch], pl)
+    e = "neutral" if age < 0.2 else expr          # expression snaps just after the cut
+    l0 = 0.22 if side == 0 else -0.22
+    look = l0 - 0.3 * l0 / abs(l0) * ease((age - 1.0) / 0.2) * (1 - ease((age - 1.7) / 0.2))   # a glance away
+    ch.draw(c, hx, 280 + 4.0 * 210, 5.4, pose="sit", t=t, look=look, expr=e,
+            bob=0.012 * math.sin(t * 3), lean=0.02 * math.sin(t * 1.3))
+    return R.compose(bg, fg, ov, dof=4.0), True
+
+
+# ---------------- establishing cutaway: the chapter's place, with its people busy in it
+def t_broll(b, t):
+    mod = b.st.mod
+    ch_no = b.sents[0]["chapter"] if b.sents else 1
+    opts = mod.REACTORS.get(ch_no, [("JENSEN", "night_office")])
+    n = b.cut_no(t)
+    pl = opts[(n // 2) % len(opts)][1]
+    if n % 4 == 3:
+        pl = "night_city"
+    people = [w for w, q in opts if q == pl][:2] or [opts[(n // 2) % len(opts)][0]]
+    age = t - b.shot_start(t)
+    side = 1 if n % 2 else -1
+    z = 1.06 + 0.07 * age
+    cx = 640 + side * (30 + 16 * age)
+    bg, fg, ov = layers()
+    c = cairo.Context(bg)
+    R.cam(c, z, cx, 360)
+    info = place(c, pl, t)
+    c = cairo.Context(fg)
+    R.cam(c, z * 1.04, cx, 360)
+    if pl == "night_city":                        # back view, looking out at the city (V1 f1146)
+        ch = mod.CAST[people[0]]
+        light_cast([ch], pl)
+        ch.draw(c, 880 - side * 260, 860, 2.6, pose="back", t=t, bob=0.006 * math.sin(t * 2.1))
+    else:
+        floor = info.get("floor") or 640
+        chars = [mod.CAST[w] for w in people]
+        light_cast(chars, pl)
+        xs = [640] if len(people) == 1 else [400, 880]
+        for i, (w, x) in enumerate(zip(people, xs)):   # medium shot, cropped at the waist
+            busy = (i + n) % 2 == 0
+            look = 0.45 * math.sin(t * 0.7 + i) if not busy else (0.3 if x < 640 else -0.3)
+            mod.CAST[w].draw(c, x, 860, 2.5, t=t + i * 0.37, look=look,
+                             expr="deadpan" if busy else ["worried", "neutral", "smirk"][(n + i) % 3],
+                             arms="chin" if busy else "rest", item="phone" if busy else None,
+                             bob=0.008 * math.sin(t * 2.4 + i * 2))
+    return R.compose(bg, fg, ov, dof=1.8, bloom=1.0), True
+
+
+def desk_bg(b, c, t, z, cx, cy):
+    """documents always lie on a desk (animated: steam, lamp, phone buzz)"""
+    R.cam(c, z, cx, cy)
+    P2.desk_top(c, t, wood=b.p.get("wood", "#6b4226"))
