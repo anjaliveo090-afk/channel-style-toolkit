@@ -388,3 +388,186 @@ def text_card(ctx, text, t, W=1280, H=720, cps=16.0, size=64):
     ctx.set_source_rgb(0.98, 0.98, 0.98)
     ctx.show_text(text[:n])
     return n
+
+
+# ------------------------------------------------------------------ maps, places, documents, effects
+def paper_map(ctx, t, W=1280, H=720, seed=11, highlight=None):
+    """Paper-map look (V1 0:53): light-blue sea, sand land with dark outline, soft white clouds.
+    The land shapes are invented (stylised), not a real map. highlight = (x, y, r) region painted orange."""
+    ctx.set_source_rgb(*hexc("#a9d3e3"))
+    ctx.rectangle(-W, -H, 3 * W, 3 * H)
+    ctx.fill()
+    rnd = random.Random(seed)
+    blobs = [(-200, 120, 520, 420), (380, -120, 560, 330), (640, 230, 420, 300), (1050, 40, 420, 520),
+             (180, 560, 380, 260)]
+    for bx, by, bw, bh in blobs:
+        ctx.new_path()
+        n = 26
+        for k in range(n + 1):
+            a = 2 * math.pi * k / n
+            r = 0.5 + 0.08 * math.sin(a * 3 + bx) + 0.05 * math.sin(a * 7 + by) + rnd.uniform(-0.03, 0.03)
+            px, py = bx + bw / 2 + math.cos(a) * bw * r, by + bh / 2 + math.sin(a) * bh * r
+            (ctx.move_to if k == 0 else ctx.line_to)(px, py)
+        ctx.close_path()
+        ctx.set_source_rgb(*hexc("#efe2c2"))
+        ctx.fill_preserve()
+        ctx.set_source_rgb(*hexc("#5b4a32"))
+        ctx.set_line_width(3)
+        ctx.stroke()
+    if highlight:
+        hx, hy, hr = highlight
+        ctx.new_path()
+        for k in range(21):
+            a = 2 * math.pi * k / 20
+            r = hr * (0.8 + 0.2 * math.sin(a * 4 + 1))
+            (ctx.move_to if k == 0 else ctx.line_to)(hx + math.cos(a) * r * 0.7, hy + math.sin(a) * r * 1.2)
+        ctx.close_path()
+        ctx.set_source_rgb(*hexc("#f29a3a"))
+        ctx.fill_preserve()
+        ctx.set_source_rgb(*hexc("#5b4a32"))
+        ctx.set_line_width(3)
+        ctx.stroke()
+    for k in range(7):
+        cx = (rnd.random() * 1600 - 160 + t * 12) % 1700 - 200
+        cy = rnd.random() * 650
+        for j in range(4):
+            ctx.arc(cx + j * 38, cy + (j % 2) * -14, 34 + 6 * (j % 2), 0, 2 * math.pi)
+            ctx.set_source_rgba(1, 1, 1, 0.55)
+            ctx.fill()
+
+
+def map_pin(ctx, x, y, k, label=None, col="#d8342a"):
+    """Pin that drops in with overshoot (k = seconds since start) + hand-lettered label."""
+    if k <= 0:
+        return
+    drop = max(0.0, 1 - k / 0.18)
+    sc = 1 + 0.25 * math.exp(-k * 10) * math.sin(k * 30)
+    ctx.save()
+    ctx.translate(x, y - drop * 60)
+    ctx.scale(sc, sc)
+    ctx.move_to(0, 0)
+    ctx.curve_to(-20, -26, -18, -52, 0, -52)
+    ctx.curve_to(18, -52, 20, -26, 0, 0)
+    _fill_line(ctx, hexc(col), 3)
+    ctx.arc(0, -36, 7, 0, 2 * math.pi)
+    ctx.set_source_rgb(1, 1, 1)
+    ctx.fill()
+    ctx.restore()
+    if label and k > 0.15:
+        pop_label(ctx, label, x, y + 34, k - 0.15, col="#2b2b2b", size=34, angle=-0.03)
+
+
+def mill_exterior(ctx, t, W=1280, H=720, ground=560):
+    """Daylight paper mill in a pine forest: sky, far pines, red mill with chimney smoke."""
+    g = cairo.LinearGradient(0, 0, 0, ground)
+    g.add_color_stop_rgb(0, *hexc("#8cc4e8"))
+    g.add_color_stop_rgb(1, *hexc("#e7f1ee"))
+    ctx.set_source(g)
+    ctx.rectangle(-W, -H, 3 * W, H + ground)
+    ctx.fill()
+    rnd = random.Random(4)
+    for layer, (col, base, hgt) in enumerate((("#5f8a6a", ground - 40, 150), ("#3d6b4c", ground - 10, 190))):
+        for _ in range(26):
+            x = rnd.random() * (W + 400) - 200
+            hh = hgt * (0.7 + rnd.random() * 0.5)
+            ctx.move_to(x, base - hh)
+            ctx.line_to(x - hh * 0.28, base)
+            ctx.line_to(x + hh * 0.28, base)
+            ctx.close_path()
+            _fill_line(ctx, hexc(col), 2.5)
+    ctx.rectangle(-W, ground, 3 * W, H)
+    ctx.set_source_rgb(*hexc("#8fb36a"))
+    ctx.fill()
+    ctx.rectangle(-W, ground, 3 * W, 6)
+    ctx.set_source_rgb(*INK)
+    ctx.fill()
+    # mill
+    mx, mw, mh = 360, 560, 250
+    ctx.rectangle(mx, ground - mh, mw, mh)
+    _fill_line(ctx, hexc("#b5482f"), 4)
+    ctx.move_to(mx - 20, ground - mh)
+    ctx.line_to(mx + mw / 2, ground - mh - 110)
+    ctx.line_to(mx + mw + 20, ground - mh)
+    ctx.close_path()
+    _fill_line(ctx, hexc("#4a3a35"), 4)
+    for r in range(2):
+        for c in range(6):
+            ctx.rectangle(mx + 30 + c * 88, ground - mh + 40 + r * 90, 50, 56)
+            _fill_line(ctx, hexc("#f6f0dc"), 3)
+    ctx.rectangle(mx + mw - 110, ground - mh - 190, 60, 200)
+    _fill_line(ctx, hexc("#8a3a26"), 4)
+    for k in range(5):
+        ph = (t * 0.35 + k / 5) % 1
+        r = 26 + ph * 50
+        ctx.arc(mx + mw - 80 + ph * 70, ground - mh - 200 - ph * 220, r, 0, 2 * math.pi)
+        ctx.set_source_rgba(0.97, 0.97, 0.97, 0.85 * (1 - ph))
+        ctx.fill()
+    _rrect(ctx, mx + mw / 2 - 110, ground - mh - 60, 220, 50, 8)
+    _fill_line(ctx, hexc("#f4ecd6"), 3)
+    _slanted_font(ctx, 34)
+    ext = ctx.text_extents("PAPERWORKS")
+    ctx.move_to(mx + mw / 2 - ext.x_advance / 2, ground - mh - 24)
+    ctx.set_source_rgb(*INK)
+    ctx.show_text("PAPERWORKS")
+
+
+def contract_doc(ctx, x, y, w, h, amount, k_amount, t):
+    """A contract on a desk; the dollar amount rolls up to `amount` (k_amount 0..1) in green."""
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(-0.03)
+    ctx.rectangle(-w / 2 + 12, -h / 2 + 14, w, h)
+    ctx.set_source_rgba(0, 0, 0, 0.3)
+    ctx.fill()
+    ctx.rectangle(-w / 2, -h / 2, w, h)
+    _fill_line(ctx, hexc("#fbf7ec"), 4)
+    _slanted_font(ctx, 54)
+    ext = ctx.text_extents("CONTRACT")
+    ctx.move_to(-ext.x_advance / 2, -h / 2 + 80)
+    ctx.set_source_rgb(*INK)
+    ctx.show_text("CONTRACT")
+    ctx.set_source_rgba(*INK, 0.35)
+    ctx.set_line_width(3)
+    for j in range(5):
+        ctx.move_to(-w / 2 + 50, -h / 2 + 130 + j * 34)
+        ctx.line_to(w / 2 - 50 - (j % 2) * 80, -h / 2 + 130 + j * 34)
+        ctx.stroke()
+    v = int(amount * (1 - (1 - min(1, max(0, k_amount))) ** 3))
+    txt = f"${v:,}"
+    _slanted_font(ctx, 78)
+    ext = ctx.text_extents(txt)
+    glow(ctx, 0, h / 2 - 95, 260, hexc("#9cff5a"), 0.25 * min(1, k_amount * 2))
+    ctx.move_to(-ext.x_advance / 2, h / 2 - 70)
+    ctx.text_path(txt)
+    ctx.set_source_rgb(*INK)
+    ctx.set_line_width(9)
+    ctx.stroke_preserve()
+    ctx.set_source_rgb(*hexc("#3d8b2f"))
+    ctx.fill()
+    ctx.move_to(w / 2 - 230, h / 2 - 25)
+    ctx.curve_to(w / 2 - 190, h / 2 - 55, w / 2 - 150, h / 2 - 5, w / 2 - 110, h / 2 - 40)
+    ctx.set_source_rgb(*hexc("#2a3f9a"))
+    ctx.set_line_width(4)
+    ctx.stroke()
+    ctx.restore()
+
+
+def impact_flash(ctx, k, W=1280, H=720, cx=None, cy=None):
+    """Manga speed-line burst (V1 4:13): white radial wedges on black, 2-3 frames (k = 0..1)."""
+    if not 0 <= k <= 1:
+        return
+    cx = W / 2 if cx is None else cx
+    cy = H / 2 if cy is None else cy
+    ctx.set_source_rgb(1, 1, 1) if k < 0.5 else ctx.set_source_rgb(0, 0, 0)
+    ctx.paint()
+    rnd = random.Random(int(k * 10))
+    ctx.set_source_rgb(0, 0, 0) if k < 0.5 else ctx.set_source_rgb(1, 1, 1)
+    for _ in range(46):
+        a = rnd.random() * 2 * math.pi
+        da = 0.02 + rnd.random() * 0.04
+        r0 = 120 + rnd.random() * 160
+        ctx.move_to(cx + math.cos(a) * r0, cy + math.sin(a) * r0)
+        ctx.line_to(cx + math.cos(a - da) * 1600, cy + math.sin(a - da) * 1600)
+        ctx.line_to(cx + math.cos(a + da) * 1600, cy + math.sin(a + da) * 1600)
+        ctx.close_path()
+        ctx.fill()

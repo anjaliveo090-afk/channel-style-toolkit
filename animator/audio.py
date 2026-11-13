@@ -248,3 +248,52 @@ if __name__ == "__main__":
     save(out / "music.wav", music(total, 40.9, 51.05))
     save(out / "music_ref.wav", music_ref(total, swell_at=total - 4))
     print("wrote sfx + music to", out)
+
+
+def music_chapters(total, chapters, bpm=110):
+    """Music measured on Paper Billions (sound_design.md section 1): quiet sparse plucks + soft pad,
+    almost no drums, ~1 note/s, and a NEW cue per chapter whose mode follows the chapter's mood.
+    chapters = [(t_start, "minor"|"major", root_midi), ...]; at each chapter start (except the first)
+    the previous cue swells and stops, and the new one starts quietly. Mix ~22 dB under the voice."""
+    out = np.zeros(int(SR * (total + 3)))
+    beat = 60 / bpm
+    prog = {"minor": [(0, [0, 3, 7]), (-4, [-4, 0, 3]), (-9, [-9, -5, -2]), (-2, [-2, 2, 5])],   # i VI III VII
+            "major": [(0, [0, 4, 7]), (-5, [-5, -1, 2]), (-3, [-3, 0, 4]), (-7, [-7, -3, 0])]}   # I V vi IV
+
+    def put(x, at):
+        s = int(at * SR)
+        e = min(len(out), s + len(x))
+        if 0 <= s < len(out):
+            out[s:e] += x[:e - s]
+
+    bounds = [c[0] for c in chapters] + [total]
+    rnd = np.random.default_rng(3)
+    for ci, (t0, mode, root) in enumerate(chapters):
+        t1 = bounds[ci + 1]
+        t, bar = t0, 0
+        while t < t1 - 0.2:
+            off, tones = prog[mode][bar % 4]
+            r = root + off
+            n = int(SR * min(beat * 4.2, t1 - t + 0.4))
+            tb = np.arange(n) / SR
+            pad = sum(np.sin(2 * np.pi * note(r + 12 + iv) * tb) for iv in tones) * 0.022
+            pad += np.sin(2 * np.pi * note(r) * tb) * 0.05
+            env_ = np.minimum(1, tb / 0.4) * np.minimum(1, (n / SR - tb) / 0.5)
+            put(pad * env_, t)
+            for k in range(8):
+                if rnd.random() < 0.45:
+                    continue
+                m = pluck(note(r + 24 + tones[k % 3] + (12 if k == 5 else 0)), 0.8, 3, 5) * 0.28
+                if t + k * beat / 2 < t1 - 0.15:
+                    put(m, t + k * beat / 2)
+            t += beat * 4
+            bar += 1
+        if ci + 1 < len(chapters):           # swell into the chapter card, then cut
+            n = int(SR * 1.2)
+            tb = np.arange(n) / SR
+            sw = sum(np.sin(2 * np.pi * note(root + 12 + iv) * tb) for iv in prog[mode][0][1]) * 0.08
+            put(sw * (tb / 1.2) ** 2, t1 - 1.2)
+    out = out[:int(SR * total)]
+    n = int(SR * 1.0)
+    out[-n:] *= np.linspace(1, 0, n)
+    return out
