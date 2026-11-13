@@ -199,6 +199,7 @@ class Story:
         out = self.out / f"part{part}.mp4"
         p = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s",
                               f"{R.PW}x{R.PH}", "-r", str(R.FPS), "-i", "-", "-c:v", "libx264", "-crf", "18", "-tune", "animation",
+                              "-threads", "4", "-rc-lookahead", "20",
                               "-preset", "medium", "-pix_fmt", "yuv420p", str(out)], stdin=subprocess.PIPE)
         for f in range(a, e):
             img = self.frame(f / R.FPS)
