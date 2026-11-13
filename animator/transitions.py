@@ -174,3 +174,27 @@ def polaroid(ctx, x, y, k, draw_photo, w=220, h=190, angle=-0.08):
     draw_photo(ctx, w - 28, h - 28)
     ctx.restore()
     ctx.restore()
+
+
+def rip(a, b, p, seed=3):
+    """Rip / tear transition (V1 4:21, 4:58): a jagged crack opens down the middle; the two halves of `a`
+    slide apart revealing `b`, with a white torn edge."""
+    import random as _r
+    rnd = _r.Random(seed)
+    p = _ease(p)
+    gap = p * W * 0.62
+    pts = np.array([rnd.uniform(-28, 28) for _ in range(H // 24 + 2)], np.float32)
+    jag = np.interp(np.arange(H), np.arange(len(pts)) * 24, pts)[:, None]
+    cx = W / 2 + jag
+    xs = _xx
+    out = b.copy()
+    left = xs < cx - gap / 2
+    right = xs > cx + gap / 2
+    sh = int(gap / 2)
+    a_l = np.roll(a, -sh, axis=1)
+    a_r = np.roll(a, sh, axis=1)
+    out = np.where(left[..., None], a_l, out)
+    out = np.where(right[..., None], a_r, out)
+    edge = (np.abs(xs - (cx - gap / 2)) < 5) | (np.abs(xs - (cx + gap / 2)) < 5)
+    out = np.where(edge[..., None], 0.97, out)
+    return out

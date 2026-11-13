@@ -346,3 +346,108 @@ def glow_label(ctx, x, y, k, text, size=44):
     ctx.scale(s, s)
     _txt(ctx, text, 0, 0, size, "#c8ff4a", stroke="#0b2410")
     ctx.restore()
+
+
+# ------------------------------------------------------------------ added after the every-frame pass (visual_grammar 15)
+def marker_hand(ctx, x, y, t, col="#2a4fa0"):
+    """A hand holding a marker, tip at (x, y), wiggling while it writes (V1 4:52)."""
+    wob = math.sin(t * 40) * 3
+    ctx.save()
+    ctx.translate(x + wob, y + abs(wob) * 0.5)
+    ctx.rotate(-0.6)
+    _rrect(ctx, -10, 0, 20, 120, 8)
+    _fill_line(ctx, hexc("#f4f1ea"), 3)
+    ctx.rectangle(-10, 0, 20, 18)
+    ctx.set_source_rgb(*hexc(col))
+    ctx.fill()
+    ctx.move_to(-5, 0)
+    ctx.line_to(0, -14)
+    ctx.line_to(5, 0)
+    ctx.close_path()
+    ctx.fill()
+    ctx.arc(0, 120, 30, 0, 2 * math.pi)
+    _fill_line(ctx, hexc("#e9a561"), 3)
+    ctx.move_to(0, 140)
+    ctx.line_to(30, 420)
+    ctx.set_source_rgb(*INK)
+    ctx.set_line_width(46)
+    ctx.stroke()
+    ctx.restore()
+
+
+def whiteboard_live(ctx, x, y, w, h, lines, k, cps=14.0, pen_col="#2a4fa0", size=48, extra=None):
+    """Whiteboard where the words are written AS THEY ARE SAID by a visible marker hand.
+    k = seconds since writing started. Returns True while still writing."""
+    ctx.rectangle(x, y, w, h)
+    _fill_line(ctx, hexc("#f8f8f4"), 5)
+    ctx.rectangle(x + 40, y + h, w - 80, 12)
+    _fill_line(ctx, hexc("#c8c8c0"), 3)
+    n = int(max(0.0, k) * cps)
+    yy = y + 30 + size
+    cur = None
+    for s in lines:
+        m = min(len(s), n)
+        n -= m
+        _slanted_font(ctx, size)
+        ctx.move_to(x + 36, yy)
+        ctx.set_source_rgb(*hexc(pen_col))
+        ctx.show_text(s[:m])
+        if 0 < m <= len(s) and (n == 0):
+            e = ctx.text_extents(s[:m])
+            cur = (x + 36 + e.x_advance, yy - size * 0.2)
+        yy += size * 1.45
+    if extra:
+        extra(ctx)
+    if cur and k > 0:
+        marker_hand(ctx, cur[0], cur[1], k, pen_col)
+        return True
+    return False
+
+
+def arrow_down(ctx, x, y, k, length=160, col="#d0302a"):
+    """Red arrow drawn downward (a fall)."""
+    p = _ease_out(k / 0.35)
+    if p <= 0:
+        return
+    ctx.move_to(x, y)
+    ctx.line_to(x + 20, y + length * p)
+    ctx.set_source_rgb(*hexc(col))
+    ctx.set_line_width(10)
+    ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+    ctx.stroke()
+    if p > 0.9:
+        tx, ty = x + 20, y + length
+        ctx.move_to(tx - 28, ty - 30)
+        ctx.line_to(tx, ty)
+        ctx.line_to(tx + 26, ty - 34)
+        ctx.stroke()
+
+
+def cash_tower(ctx, x, base, k, n_max=14, build=1.2, collapse_at=None, brick=(120, 30)):
+    """Green cash bricks stack one by one (k s since start, all stacked by `build` s). After `collapse_at`
+    s the bricks fall and scatter (the money disappears)."""
+    bw, bh = brick
+    n = min(n_max, int(max(0.0, k) / build * n_max) + (1 if k > 0 else 0))
+    for i in range(n):
+        bx, by, rot = x - bw / 2 + (i % 2) * 6 - 3, base - (i + 1) * bh, 0.0
+        if collapse_at is not None and k > collapse_at:
+            tt = k - collapse_at - i * 0.015
+            if tt > 0:
+                sd = -1 if i % 2 else 1
+                bx += sd * (60 + i * 9) * tt * 3
+                by += 900 * tt * tt
+                rot = sd * tt * 4
+        ctx.save()
+        ctx.translate(bx + bw / 2, by + bh / 2)
+        ctx.rotate(rot)
+        _rrect(ctx, -bw / 2, -bh / 2, bw, bh, 4)
+        _fill_line(ctx, hexc("#3f9a4a"), 3)
+        ctx.rectangle(-bw * 0.12, -bh / 2, bw * 0.24, bh)
+        ctx.set_source_rgb(*hexc("#e8e2c8"))
+        ctx.fill()
+        ctx.restore()
+
+
+def slide_in(k, dur=0.25, dist=400):
+    """Offset for a prop sliding in from the side and settling (returns px still to travel)."""
+    return dist * (1 - _ease_out(k / dur))
