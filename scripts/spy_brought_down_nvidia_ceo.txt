@@ -36,7 +36,7 @@ CLERK: As long as you keep paying.
 NARRATOR: One of Megaspeed's executives was a woman named Alice Huang. No relation.
 NARRATOR: American intelligence agencies concluded she was working for China.
 NARRATOR: Beijing calls that "baseless and purely slanderous smears against China."
-NARRATOR: For about two years, she kept turning up close to Jensen. Dinners. Drinks. Industry parties.
+NARRATOR: For about two years, she kept turning up close to Jensen. Dinners. Drinks. Industry events.
 REPORTER: How close were they?
 SOURCE: Close.
 REPORTER: How close is close?
@@ -66,12 +66,12 @@ NARRATOR: Asked whether he would subpoena Jensen if he didn't respond, committee
 NARRATOR: "Absolutely."
 NARRATOR: Then came Sunday.
 NARRATOR: On the eighth of November, Jensen sent a memo to Nvidia's staff.
-NARRATOR: Tens of thousands of people opened the same email within the same hour.
+NARRATOR: Tens of thousands of employees got the same email.
 EMPLOYEE ONE: Did you read it?
 EMPLOYEE TWO: I'm reading it.
 EMPLOYEE ONE: Read it again. Slower.
 NARRATOR: In it, the founder admitted to an extramarital affair. He didn't name the woman.
-NARRATOR: And he wrote one line that every news site in the world had quoted by dinnertime.
+NARRATOR: And he wrote one line that was quoted around the world within hours.
 NARRATOR: "There is no excuse for what I did."
 NARRATOR: That same day, Nvidia's board did something boards almost never do to a founder.
 NARRATOR: It opened an investigation into him.
@@ -100,7 +100,7 @@ NARRATOR: Count only the hours the market is open, and that's about two hundred 
 NARRATOR: The next morning, Wall Street started rewriting its homework.
 NARRATOR: Citi cut its price target to two hundred and eighty-five dollars.
 NARRATOR: Wells Fargo cut from three hundred and fifteen to three hundred.
-NARRATOR: Baird went from five hundred all the way down to two hundred, and stopped telling clients to buy.
+NARRATOR: Baird went further: from five hundred all the way down to two hundred, and it stopped telling clients to buy.
 ANALYST ONE: We're lowering our target.
 ANALYST TWO: By how much?
 ANALYST ONE: About sixty percent.
@@ -127,8 +127,8 @@ NARRATOR: The money didn't leave artificial intelligence. It just moved one seat
 
 [CHAPTER 5: THE SECOND SECRET]
 NARRATOR: Wednesday, the eleventh of November.
-NARRATOR: If Sunday's memo was supposed to close the story, Wednesday ripped it back open.
-NARRATOR: The New York Times reported that Jensen had also had a relationship with a senior executive inside Nvidia, someone who worked under him.
+NARRATOR: If Sunday's memo was supposed to close the story, it didn't.
+NARRATOR: By Wednesday, The New York Times had reported that Jensen had also had a relationship with a senior executive inside Nvidia, someone who worked under him.
 NARRATOR: Then Reuters reported yet another relationship, with a different Nvidia employee.
 NARRATOR: Nvidia declined to comment.
 NARRATOR: That's three reported relationships, in three separate headlines, in less than three weeks.
@@ -177,7 +177,7 @@ REPORTER TWO: That wasn't a goodbye.
 SPOKESPERSON: It turned out to be.
 NARRATOR: The board's chair, Harvey Jones, said the board has "full confidence in Colette and the leadership team."
 NARRATOR: Nine thirty. The bell rings.
-NARRATOR: Within minutes, Nvidia is down almost ten percent.
+NARRATOR: At one point that day, Nvidia is down almost ten percent.
 NARRATOR: Its low for the day: one hundred and forty-eight dollars and eighty cents.
 NARRATOR: On the sixth of October, just five weeks earlier, it had closed at two hundred and thirty-nine.
 TRADER ONE: Is the founder quitting bad news?
@@ -192,8 +192,8 @@ NARRATOR: Then something odd happened. People started buying.
 NARRATOR: By the closing bell, Nvidia was down four point three four percent, at one hundred and sixty-six dollars and nineteen cents.
 NARRATOR: More than seven hundred million shares changed hands, far more than on a normal day.
 NARRATOR: The market had already paid for the scandal. Now it was pricing something new: Nvidia without him.
-NARRATOR: That afternoon, the President weighed in.
-NARRATOR: In a radio interview, he called it a "horrible thing," and said it was "so sad to see happen."
+NARRATOR: Later that day, the President weighed in.
+NARRATOR: In an interview, he called it a "horrible thing," and said it was "so sad to see happen."
 NARRATOR: He also said the FBI is looking into the ties between Jensen and Alice Huang.
 NARRATOR: No one has been charged. Jensen has denied compromising any secrets. Investigations take time.
 NARRATOR: But for the board, the question was never "Is he guilty of spying?"
@@ -246,7 +246,7 @@ STAGE MANAGER: For whoever's brave enough to stand on it.
 NARRATOR: And here's the strangest part of the whole story.
 NARRATOR: The chips didn't change. The factories didn't stop. The customers didn't cancel.
 NARRATOR: Nothing in the building broke.
-NARRATOR: The board still says it has no reason to believe a single secret walked out the door.
+NARRATOR: The board has said it has no reason to believe a single secret walked out the door.
 NARRATOR: What walked out was the man.
 NARRATOR: An alleged spy never needed to steal a blueprint.
 NARRATOR: She only needed a seat close enough to him that, when the truth came out, he couldn't keep his.
