@@ -622,13 +622,13 @@ def night_city(ctx, t, seed=6):
                         ctx.fill()
             x += bw + 6
     for i in range(2):                               # searchlights sweep (V1 f1146)
-        a = -math.pi / 2 + 0.55 * math.sin(t * 0.5 + i * 2.2)
+        a = -math.pi / 2 + 0.55 * math.sin(t * 0.9 + i * 2.2)
         x0 = 300 + i * 650
         ctx.move_to(x0, H)
         ctx.line_to(x0 + 1200 * math.cos(a - 0.05), H + 1200 * math.sin(a - 0.05))
         ctx.line_to(x0 + 1200 * math.cos(a + 0.05), H + 1200 * math.sin(a + 0.05))
         ctx.close_path()
-        ctx.set_source_rgba(0.85, 0.9, 1, 0.07)
+        ctx.set_source_rgba(0.85, 0.9, 1, 0.11)
         ctx.fill()
     return {"floor": None}
 

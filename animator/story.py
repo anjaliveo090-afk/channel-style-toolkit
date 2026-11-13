@@ -1173,13 +1173,13 @@ def t_stage(b, t):
     info = P2.stage(c, t, jacket=b.p.get("jacket", False), mark=b.p.get("mark", False),
                     chip=b.p.get("chip", True))
     for i in range(2):                            # sweeping spotlights (V1: light is always animated)
-        a = math.pi / 2 + 0.45 * math.sin(t * 0.9 + i * 2.6)
+        a = math.pi / 2 + 0.5 * math.sin(t * 1.5 + i * 2.6)
         x0 = 200 + i * 880
         c.move_to(x0, -60)
         c.line_to(x0 + 900 * math.cos(a - 0.09), -60 + 900 * math.sin(a - 0.09))
         c.line_to(x0 + 900 * math.cos(a + 0.09), -60 + 900 * math.sin(a + 0.09))
         c.close_path()
-        c.set_source_rgba(1, 0.95, 0.8, 0.10)
+        c.set_source_rgba(1, 0.95, 0.8, 0.14)
         c.fill()
     c = cairo.Context(fg)
     R.cam(c, z, cx, cy)
@@ -1214,7 +1214,23 @@ def t_void(b, t):
         ch.draw(c, 640, 610, 1.8, t=t, expr="worried" if dropping else b.p.get("expr", "smirk"),
                 arms="raise_r" if not dropping else "rest", look=0.0)
     if not dropping:
-        P2.key_prop(c, 640 + 95, 610 - 330 + (0 if who else 40), 1.2)
+        kx, ky = 640 + 95, 610 - 330 + (0 if who else 40)
+        P2.key_prop(c, kx, ky, 1.2)
+        g = max(0.0, math.sin(t * 4.2)) ** 3          # glint pulses on the key
+        if g > 0.02:
+            c.save()
+            c.translate(kx + 20, ky - 30)
+            c.rotate(t)
+            for a in range(4):
+                c.rotate(math.pi / 2)
+                c.move_to(0, 0)
+                c.line_to(6 * g, 6 * g)
+                c.line_to(0, 46 * g)
+                c.line_to(-6 * g, 6 * g)
+                c.close_path()
+            c.set_source_rgba(1, 1, 0.85, 0.9)
+            c.fill()
+            c.restore()
     else:
         k = t - b.wt(b.p["drop"])
         P2.key_prop(c, 735 + 40 * k, 280 + 900 * k * k, 1.2, glow_on=False)

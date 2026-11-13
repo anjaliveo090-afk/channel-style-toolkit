@@ -23,7 +23,10 @@ Real people appear only as simple original cartoon figures identified by name ta
 3. **Build `animator/<story>.py`** from `animator/nvidia_ceo.py`:
    - CAST: original characters from `style.Char`;
    - BEATS: sentence index → template;
-   - CHAPTER_MOOD.
+   - CHAPTER_MOOD;
+   - REACTORS: per chapter, the (character, place) pairs the engine cuts away to. Device beats alternate the
+     device with a reaction close-up or a b-roll shot of that place, so a new picture lands about every 2.5 s.
+     A cutaway never covers a device event (tick, stamp, pop). Set `"react": False` on a beat to keep it on the device.
 
    Templates are in `animator/story.py`: card, skit, scene, tag, board, calendar, tower, stock, news, filing, checklist, zero, tv, dinner, cork, map, stage, void, letter, email, label. Places are in `places.py` / `places2.py`; devices in `devices.py`; transitions in `transitions.py`.
 4. **Check frames:**
