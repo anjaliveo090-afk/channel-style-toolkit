@@ -141,7 +141,7 @@ class Story:
         if b.p.get("flash_at") is not None:
             ft = b.wt(b.p["flash_at"]) if isinstance(b.p["flash_at"], str) else b.t0 + b.p["flash_at"]
             if ft <= t < ft + 3 / R.FPS:
-                s = cairo.ImageSurface(cairo.FORMAT_ARGB32, R.W, R.H)
+                s = R.surface()
                 sets.impact_flash(cairo.Context(s), (t - ft) * R.FPS / 3)
                 return R.flat(s)
         if not post:
@@ -156,14 +156,15 @@ class Story:
             x = (x0 * R.W + (vx - 0.5) * 40 * t + 25 * math.sin(t * 0.7 + ph * 6)) % R.W
             y = (y0 * R.H - 12 * t * (0.5 + vx) + 15 * math.sin(t * 0.9 + ph * 5)) % R.H
             a = 0.16 + 0.24 * (0.5 + 0.5 * math.sin(t * 2 + ph * 9))
-            cv2.circle(ov, (int(x), int(y)), int(1.5 + sz * 3), (0.75 * a, 0.9 * a, a), -1, cv2.LINE_AA)
+            cv2.circle(ov, (int(x * R.S), int(y * R.S)), int((1.5 + sz * 3) * R.S), (0.75 * a, 0.9 * a, a), -1, cv2.LINE_AA)
         bok = np.zeros_like(img)
         for x0, y0, vx, ph, sz in self.dust[:10]:
             x = (x0 * R.W + 30 * t * (vx - 0.3) + 60 * math.sin(t * 0.5 + ph * 6)) % R.W
             y = (y0 * R.H - 20 * t * (0.4 + vx) + 40 * math.sin(t * 0.6 + ph * 5)) % R.H
             a = 0.05 + 0.07 * (0.5 + 0.5 * math.sin(t * 1.4 + ph * 9))
-            cv2.circle(bok, (int(x), int(y)), int(9 + sz * 12), (0.8 * a, 0.92 * a, a), -1, cv2.LINE_AA)
-        ov += cv2.GaussianBlur(bok, (0, 0), 3)
+            cv2.circle(bok, (int(x * R.S), int(y * R.S)), int((9 + sz * 12) * R.S), (0.8 * a, 0.92 * a, a), -1,
+                       cv2.LINE_AA)
+        ov += R.gblur(bok, 3 * R.S)
         flick = 1 + 0.012 * math.sin(t * 5.3) * math.sin(t * 1.9)
         return img * flick + ov
 
@@ -197,7 +198,7 @@ class Story:
         e = nf * (part + 1) // parts
         out = self.out / f"part{part}.mp4"
         p = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s",
-                              f"{R.W}x{R.H}", "-r", str(R.FPS), "-i", "-", "-c:v", "libx264", "-crf", "18",
+                              f"{R.PW}x{R.PH}", "-r", str(R.FPS), "-i", "-", "-c:v", "libx264", "-crf", "18", "-tune", "animation",
                               "-preset", "medium", "-pix_fmt", "yuv420p", str(out)], stdin=subprocess.PIPE)
         for f in range(a, e):
             img = self.frame(f / R.FPS)
@@ -434,7 +435,7 @@ def t_card(b, t):
     txt = b.p.get("text") or (b.sents[0]["script_text"] if b.sents else "")
     s = b.sents[0] if b.sents else {"start": b.t0, "end": b.t0 + 1.5}
     cps = len(txt) / max(0.6, (s["end"] - s["start"]) * 0.9)
-    surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, R.W, R.H)
+    surf = R.surface()
     c = cairo.Context(surf)
     if len(txt) > 42:   # long lines: smaller, left-aligned (measured)
         c.set_source_rgb(0, 0, 0)
@@ -465,14 +466,14 @@ def t_card(b, t):
 @tpl("title_card", lambda b: [(b.t0, audio.thud(), "thud", -2)] +
      [(b.t0 + 0.05 + i / 22, audio.tick(), "tick", -6) for i in range(0, 40, 2)])
 def t_title(b, t):
-    surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, R.W, R.H)
+    surf = R.surface()
     sets.text_card(cairo.Context(surf), b.p["text"], t - b.t0, cps=22, size=58)
     return R.flat(surf), False
 
 
 @tpl("chapter_card", lambda b: [(b.t0, audio.sting(), "sting", 0), (b.t0, audio.thud(), "thud", -3)])
 def t_chapter(b, t):
-    surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, R.W, R.H)
+    surf = R.surface()
     name = b.p["name"].title() if b.p["name"].isupper() else b.p["name"]
     sets.text_card(cairo.Context(surf), name, 99, cps=99, size=60)
     return R.flat(surf), False

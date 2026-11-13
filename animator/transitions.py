@@ -14,8 +14,16 @@ import numpy as np
 
 from style import INK, _rrect, hexc
 
-W, H = 1280, 720
-_yy, _xx = np.mgrid[0:H, 0:W].astype(np.float32)
+W, H = 1280, 720          # design space; image-level transitions work at the array's own pixel size
+_GRID = {}
+
+
+def _grid(a):
+    h, w = a.shape[:2]
+    if (h, w) not in _GRID:
+        _GRID[(h, w)] = np.mgrid[0:h, 0:w].astype(np.float32)
+    yy, xx = _GRID[(h, w)]
+    return yy, xx, w / W
 
 
 def _ease(x):
@@ -30,12 +38,13 @@ def dissolve(a, b, p):
 
 def circle_wipe(a, b, p, cx=W / 2, cy=H / 2, edge=True):
     """b grows inside a circle from (cx, cy) (or shrinks if p goes 1->0)."""
-    r = _ease(p) * math.hypot(W, H)
-    d = np.sqrt((_xx - cx) ** 2 + (_yy - cy) ** 2)
-    m = np.clip((r - d) / 3.0, 0, 1)[..., None]
+    _yy, _xx, k = _grid(a)
+    r = _ease(p) * math.hypot(W, H) * k
+    d = np.sqrt((_xx - cx * k) ** 2 + (_yy - cy * k) ** 2)
+    m = np.clip((r - d) / (3.0 * k), 0, 1)[..., None]
     out = a * (1 - m) + b * m
     if edge and 0 < p < 1:
-        ring = (np.abs(d - r) < 5)[..., None]
+        ring = (np.abs(d - r) < 5 * k)[..., None]
         out = np.where(ring, 0.08, out)
     return out
 
@@ -182,11 +191,12 @@ def rip(a, b, p, seed=3):
     import random as _r
     rnd = _r.Random(seed)
     p = _ease(p)
-    gap = p * W * 0.62
-    pts = np.array([rnd.uniform(-28, 28) for _ in range(H // 24 + 2)], np.float32)
-    jag = np.interp(np.arange(H), np.arange(len(pts)) * 24, pts)[:, None]
-    cx = W / 2 + jag
-    xs = _xx
+    _yy, xs, k = _grid(a)
+    h = a.shape[0]
+    gap = p * W * 0.62 * k
+    pts = np.array([rnd.uniform(-28, 28) for _ in range(H // 24 + 2)], np.float32) * k
+    jag = np.interp(np.arange(h), np.arange(len(pts)) * 24 * k, pts)[:, None]
+    cx = W * k / 2 + jag
     out = b.copy()
     left = xs < cx - gap / 2
     right = xs > cx + gap / 2
@@ -195,6 +205,6 @@ def rip(a, b, p, seed=3):
     a_r = np.roll(a, sh, axis=1)
     out = np.where(left[..., None], a_l, out)
     out = np.where(right[..., None], a_r, out)
-    edge = (np.abs(xs - (cx - gap / 2)) < 5) | (np.abs(xs - (cx + gap / 2)) < 5)
+    edge = (np.abs(xs - (cx - gap / 2)) < 5 * k) | (np.abs(xs - (cx + gap / 2)) < 5 * k)
     out = np.where(edge[..., None], 0.97, out)
     return out
