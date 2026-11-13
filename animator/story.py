@@ -513,6 +513,8 @@ def _skit_sfx(b):
     for i, s in enumerate(b.sents):
         if i % 3 == 2:
             out.append((s["start"], audio.pop(), "pop", -4))
+    if b.p.get("sfx"):
+        out += list(b.p["sfx"](b))
     return out
 
 
@@ -643,8 +645,13 @@ def shake(b, t, z, cx, cy):
     return z, cx, cy
 
 
+def _slam_at(b):
+    ts = b.p.get("at_s", 0.12)
+    return (b.wt(ts) - b.t0) if isinstance(ts, str) else ts     # a word of the beat, or seconds after the cut
+
+
 def _slam_sfx(b):
-    out = [(b.t0 + b.p.get("at_s", 0.12), audio.thud(), "thud", 2)]
+    out = [(b.t0 + _slam_at(b), audio.thud(), "thud", 2)]
     if b.p.get("cross"):
         out.append((b.t0 + b.p.get("cross_s", 0.5), audio.pop(), "pop", 0))
     if b.p.get("label"):
@@ -659,7 +666,7 @@ def t_slam(b, t):
     lt = t - b.t0
     side = b.p.get("side", "left")
     hx = 478 if side == "left" else 800
-    ts = b.p.get("at_s", 0.12)
+    ts = _slam_at(b)
     z = 1.0 + 0.05 * lt
     cx, cy = hx, 280
     k = lt - ts
