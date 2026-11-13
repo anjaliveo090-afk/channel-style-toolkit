@@ -1,0 +1,215 @@
+NARRATOR: On Thursday morning, the most valuable chip company on Earth woke up without the man who started it. Thirty-three years after he sketched out his first chip in a diner booth, Jensen Huang was gone. Not fired. Not retired. Resigned, effective immediately. As president. As chief executive. As a member of the board. Every title, all at once. The filing that announced it was only a few paragraphs long. And it never once said why.
+
+BOARD MEMBER: Should we put a reason in?
+
+LAWYER: No.
+
+BOARD MEMBER: Everyone already knows the reason.
+
+LAWYER: That's why.
+
+NARRATOR: In the two trading days after his first confession, his company lost more value than the entire yearly economy of most countries on Earth. And the whole story fits on one whiteboard: a dinner, a memo, and a second secret. This is how one alleged spy brought down the most powerful man in artificial intelligence. And why, once it started, it took exactly one week.
+
+NARRATOR: If you missed how this started, here it is in ninety seconds. Nvidia makes the chips that train almost every big AI on the planet. America doesn't let China buy the best ones. According to reporting by The New York Times, a Singapore company called Megaspeed found a way around that. It bought billions of dollars of Nvidia servers, kept them outside China, and rented their computing power to Chinese companies over the internet. Think of a dealer who won't sell you a car. So your friend buys it, parks it in his driveway, and hands you the keys every morning.
+
+CUSTOMER: I'd like to buy your best chips.
+
+CLERK: They're not for sale here.
+
+CUSTOMER: Then what am I paying for?
+
+CLERK: The password.
+
+CUSTOMER: How long does the password last?
+
+CLERK: As long as you keep paying.
+
+NARRATOR: One of Megaspeed's executives was a woman named Alice Huang. No relation. American intelligence agencies concluded she was working for China. Beijing calls that "baseless and purely slanderous smears against China." For about two years, she kept turning up close to Jensen. Dinners. Drinks. Industry events.
+
+REPORTER: How close were they?
+
+SOURCE: Close.
+
+REPORTER: How close is close?
+
+SOURCE: Keep reading.
+
+NARRATOR: At the end of October, The New York Times reported that the two had a "close relationship." Jensen said none of it ever touched Nvidia's secrets. Nvidia said the same thing. Nobody has been charged with anything. For a few days, it looked like the story might stop there. It didn't.
+
+NARRATOR: Thursday, the fifth of November. A letter arrives from Capitol Hill. It's signed by three of the most powerful Republicans in the House: the chairs of the Foreign Affairs, Intelligence and China committees. They want Jensen in a locked room on the eighteenth of November, for a closed-door briefing about his contact with Alice Huang. They also want to see Nvidia's rules for keeping spies out of the building.
+
+AIDE: Sir, it's a technology company. What rules do they even have?
+
+CHAIRMAN: That's what we're asking.
+
+AIDE: What do we tell him to bring?
+
+CHAIRMAN: Everything.
+
+AIDE: And if he doesn't come?
+
+CHAIRMAN: Then the next letter won't be a request.
+
+NARRATOR: Nvidia's public answer was one sentence long. "Our chief executive has an outstanding security team that accompanies him where needed." That is a perfectly true sentence. It's just the answer to a different question. Asked whether he would subpoena Jensen if he didn't respond, committee chair Brian Mast needed one word. "Absolutely." Then came Sunday. On the eighth of November, Jensen sent a memo to Nvidia's staff. Tens of thousands of employees got the same email.
+
+EMPLOYEE ONE: Did you read it?
+
+EMPLOYEE TWO: I'm reading it.
+
+EMPLOYEE ONE: Read it again. Slower.
+
+NARRATOR: In it, the founder admitted to an extramarital affair. He didn't name the woman. And he wrote one line that was quoted around the world within hours. "There is no excuse for what I did." That same day, Nvidia's board did something boards almost never do to a founder. It opened an investigation into him. A committee of independent directors, plus an outside law firm, Wachtell, Lipton, Rosen and Katz, the firm big companies call when the problem is sitting at the very top. The board said it had "no reason to believe that either national security or NVIDIA secrets were compromised." But it was going to look anyway. Now, founders who admit a mistake usually survive it. Investors forgive almost anything, as long as the chips keep selling. So on Monday morning, Wall Street had exactly one question. How much does an apology cost?
+
+NARRATOR: Monday, the ninth of November. Nine thirty. The bell rings in New York. Nvidia falls four point three percent. That sounds small. On a company this size, it's close to two hundred billion dollars, in a single day.
+
+TRADER: Two hundred billion. Is that a lot for Nvidia?
+
+ANALYST: It's a lot for the planet.
+
+TRADER: Who's selling?
+
+ANALYST: Everyone who read the memo.
+
+TRADER: Who didn't read it?
+
+ANALYST: They're selling too. Just slower.
+
+NARRATOR: Jensen himself owns about eight hundred and eleven million Nvidia shares. On that one Monday, they lost six point four seven billion dollars. Count only the hours the market is open, and that's about two hundred and seventy-five thousand dollars a second. The next morning, Wall Street started rewriting its homework. Citi cut its price target to two hundred and eighty-five dollars. Wells Fargo cut from three hundred and fifteen to three hundred. Baird went further: from five hundred all the way down to two hundred, and it stopped telling clients to buy.
+
+ANALYST ONE: We're lowering our target.
+
+ANALYST TWO: By how much?
+
+ANALYST ONE: About sixty percent.
+
+ANALYST TWO: Because of the chips?
+
+ANALYST ONE: The chips are fine.
+
+ANALYST TWO: Then why?
+
+ANALYST ONE: Because of the guy who sells them.
+
+NARRATOR: That's the real risk in this story. Nvidia isn't just a company that happened to have a famous boss. For thirty-three years, the boss was the strategy. He picked the bets. He sold them on stage. In his black leather jacket, he was the product launch. Over those first two trading sessions, one estimate put the damage at about four hundred and twenty-eight billion dollars. That's roughly twelve hundred dollars for every person in America, gone between a Sunday email and a Tuesday close. And here's the strange part. The rest of the chip world had a great week. On Tuesday, AMD jumped more than thirteen percent. Broadcom had its best day in almost a year.
+
+INVESTOR: Sell Nvidia!
+
+BROKER: And buy what?
+
+INVESTOR: Whatever's sitting next to Nvidia.
+
+BROKER: That's not a strategy.
+
+INVESTOR: This week it is.
+
+NARRATOR: The money didn't leave artificial intelligence. It just moved one seat down the table.
+
+NARRATOR: Wednesday, the eleventh of November. If Sunday's memo was supposed to close the story, it didn't. By Wednesday, The New York Times had reported that Jensen had also had a relationship with a senior executive inside Nvidia, someone who worked under him. Then Reuters reported yet another relationship, with a different Nvidia employee. Nvidia declined to comment. That's three reported relationships, in three separate headlines, in less than three weeks. Every one of them landed on the same desk: the board's. This is the part that matters to a board. An affair outside the company is a private failure. A relationship with someone who works for you is a governance problem. Nvidia's own code of conduct lists "personal relationships" as a possible conflict of interest. Picture a referee who's dating one of the players. Even if every single call he makes is fair, nobody can ever prove it.
+
+FAN: Was that a foul?
+
+REFEREE: Trust me.
+
+FAN: That's the problem.
+
+NARRATOR: And remember that letter from Congress? Its deadline to reply was this same Wednesday. That evening, Nvidia's board sat down to decide what to do with its founder. The meeting stretched into the night.
+
+BOARD MEMBER ONE: He built this company.
+
+BOARD MEMBER TWO: That's why this is hard.
+
+BOARD MEMBER THREE: And that's why it can't wait until tomorrow.
+
+BOARD MEMBER ONE: What do we tell the customers?
+
+BOARD MEMBER TWO: That the chips haven't changed.
+
+BOARD MEMBER ONE: And the employees?
+
+BOARD MEMBER THREE: That the rules apply to everyone.
+
+BOARD MEMBER TWO: Even the founder?
+
+BOARD MEMBER THREE: Especially the founder.
+
+NARRATOR: Nvidia's own filing dates the decision to that Wednesday. The rest of the world found out the next morning.
+
+NARRATOR: Thursday, the twelfth of November. Nvidia files a short form with the Securities and Exchange Commission. It's called an eight-K. Companies use it to tell investors about something big, right away. This one says Jensen Huang has resigned, effective immediately. The new boss, for now, is Colette Kress. She has been Nvidia's chief financial officer for more than a decade, the person who walks Wall Street through the numbers every three months. She keeps that job, too. Interim chief executive and finance chief. Two jobs, one desk.
+
+REPORTER: How long will she be in charge?
+
+SPOKESPERSON: Until there's someone else.
+
+REPORTER: And who's that?
+
+SPOKESPERSON: That's what "search" means.
+
+REPORTER TWO: Did he say goodbye to the staff?
+
+SPOKESPERSON: He wrote to them on Sunday.
+
+REPORTER TWO: That wasn't a goodbye.
+
+SPOKESPERSON: It turned out to be.
+
+NARRATOR: The board's chair, Harvey Jones, said the board has "full confidence in Colette and the leadership team." Nine thirty. The bell rings. At one point that day, Nvidia is down almost ten percent. Its low for the day: one hundred and forty-eight dollars and eighty cents. On the sixth of October, just five weeks earlier, it had closed at two hundred and thirty-nine.
+
+TRADER ONE: Is the founder quitting bad news?
+
+TRADER TWO: It was.
+
+TRADER ONE: Was?
+
+TRADER TWO: Now it's old news.
+
+TRADER ONE: So we buy?
+
+TRADER TWO: We buy the company. Not the drama.
+
+TRADER ONE: What's the difference?
+
+TRADER TWO: About ten percent.
+
+NARRATOR: Then something odd happened. People started buying. By the closing bell, Nvidia was down four point three four percent, at one hundred and sixty-six dollars and nineteen cents. More than seven hundred million shares changed hands, far more than on a normal day. The market had already paid for the scandal. Now it was pricing something new: Nvidia without him. Later that day, the President weighed in. In an interview, he called it a "horrible thing," and said it was "so sad to see happen." He also said the FBI is looking into the ties between Jensen and Alice Huang. No one has been charged. Jensen has denied compromising any secrets. Investigations take time. But for the board, the question was never "Is he guilty of spying?" It was much simpler. "Can he still run this company?" On Thursday, the answer was no.
+
+NARRATOR: So who gets the corner office? The Financial Times has floated two names. Ian Buck, the Nvidia engineer behind the software that turned its gaming chips into AI chips. And Rene Haas, who runs Arm, the company whose chip designs sit inside almost every phone on Earth. Neither has said a word. The board says it will look both inside and outside the company.
+
+HEADHUNTER: What are we looking for?
+
+BOARD MEMBER: Someone who understands chips.
+
+HEADHUNTER: Easy.
+
+BOARD MEMBER: Who can sell them to every company on Earth.
+
+HEADHUNTER: Harder.
+
+BOARD MEMBER: And who has never had dinner with anyone interesting.
+
+HEADHUNTER: That's not a résumé. That's a hostage.
+
+NARRATOR: Whoever it is will face one problem on day one. Jensen didn't just manage Nvidia. He was its salesman, its keynote, and its face. When a customer spent billions on Nvidia chips, part of what they were buying was him. Imagine a famous restaurant where the chef also greets every table at the door. The kitchen can keep cooking. But the regulars notice who isn't standing there.
+
+DINER: Where's the chef?
+
+WAITER: The food is exactly the same.
+
+DINER: That's not what I asked.
+
+NARRATOR: And this story doesn't stay on Wall Street. It walks straight into your retirement account. Nvidia is one of the biggest companies in the S and P five hundred. If your savings sit in a fund that simply tracks the market, a noticeable piece of them sits in Nvidia.
+
+YOU: Wait. Did I just lose money on somebody's love life?
+
+NARRATOR: Not exactly. You lost money on not knowing. Markets hate an empty corner office more than almost anything else. And the next two dates are already circled on the calendar. On the seventeenth of November, Nvidia reports its quarterly earnings. Its first report in thirty-three years without Jensen in charge. And Congress still wants its briefing. According to Brian Mast, Jensen is willing to talk to lawmakers as soon as next week. This time, he'll walk in without a title.
+
+NARRATOR: For thirty-three years, Jensen Huang's black leather jacket was the most recognisable outfit in tech. He wore it on every stage, at every launch, in front of every new chip. Soon, someone else will be standing on that stage. Maybe in a different jacket. Maybe in no jacket at all.
+
+STAGEHAND: Do we take his mark off the floor?
+
+STAGE MANAGER: Leave it there.
+
+STAGEHAND: For him?
+
+STAGE MANAGER: For whoever's brave enough to stand on it.
+
+NARRATOR: And here's the strangest part of the whole story. The chips didn't change. The factories didn't stop. The customers didn't cancel. Nothing in the building broke. The board has said it has no reason to believe a single secret walked out the door. What walked out was the man. An alleged spy never needed to steal a blueprint. She only needed a seat close enough to him that, when the truth came out, he couldn't keep his. In his memo, before any of this had been decided, Jensen wrote the one line that nobody has argued with since. "There is no excuse for what I did."
