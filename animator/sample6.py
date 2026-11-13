@@ -1,9 +1,10 @@
-"""6-second style sample, 16:9 1280x720 @ 24 fps (the reference format).
-Original characters and text. Shots:
-  0.00-2.45  wide dinner two-shot, slow push-in, glass raised, laugh on the beat, name tag slides in
+"""6-second style sample, 16:9 1280x720 @ 24 fps, built on the measured V1 frames
+(two-shot = V1 0:23, close-up = V1 0:07, text card = V1 0:04-0:06). Original characters and text.
+  0.00-2.45  two-shot across a candle-lit table, slow push-in; glass up, laugh on the beat
   2.45-2.75  whip-pan with horizontal motion blur
-  2.75-4.55  close-up on the banker, push-in; laugh snaps to shock + punch-in, red label pops in
-  4.55-6.00  hard cut to a black card, white handwritten script typed letter by letter
+  2.75-4.55  big close-up (head radius 225 px at 478,250), fork raised; name tag wipes in;
+             laugh snaps to shock with a punch-in; red label pops in
+  4.55-6.00  hard cut to black, white slanted brush script typed letter by letter
 Run:  python3 animator/sample6.py  ->  output/sample6/sample6.mp4
 """
 import math
@@ -23,10 +24,12 @@ from style import Char  # noqa: E402
 W, H, FPS, TOTAL = 1280, 720, 24, 6.0
 OUT = Path(__file__).resolve().parent.parent / "output" / "sample6"
 
-BANKER = Char(body="#6b5a3e", hair="bald", hair_col="#d8d2c8", skin="#e8b385", glasses="round",
-              collar="lapel", tie="#9b1c22", light=(0.75, -0.35))
-GUEST = Char(body="#1f6f63", hair="bun", hair_col="#7a2e1c", skin="#edbd8f", glasses=None,
-             collar="shirt", earrings="#e8c050", light=(-0.75, -0.35))
+# original characters built with the reference construction rules
+BANKER = Char(body="#1c2233", hair="swept", hair_col="#4a3426", glasses="round", collar="shirt",
+              tie="#a3161d", light=(0.9, 0.45), pin="#d9b44a")
+GUEST = Char(body="#16654f", hair="bun", hair_col="#6e2a18", glasses=None, collar="round",
+             earrings="#e8c050", light=(-0.9, 0.45), build=0.82,
+             skin={"hi": "#fcd08a", "mid": "#dba37c", "sh": "#b38b73", "rim": "#febd6c"})
 
 T_WHIP0, T_WHIP1, T_CARD = 2.45, 2.75, 4.55
 T_SNAP, T_LABEL = 3.35, 3.5
@@ -40,10 +43,7 @@ def ease(x):
 
 
 def surfaces():
-    bg = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
-    fg = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
-    ov = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
-    return bg, fg, ov
+    return [cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H) for _ in range(3)]
 
 
 def arr(surf):
@@ -53,67 +53,80 @@ def arr(surf):
 
 
 def cam(ctx, zoom, cx, cy):
-    """Zoom about (cx, cy) in world space, keeping it at the same screen point."""
     ctx.translate(cx, cy)
     ctx.scale(zoom, zoom)
     ctx.translate(-cx, -cy)
 
 
-def clear(surf):
-    c = cairo.Context(surf)
-    c.set_operator(cairo.OPERATOR_CLEAR)
-    c.paint()
-
-
 # ------------------------------------------------------------------ shots
 def shot_wide(t):
+    """Layout measured on V1 0:23: heads at (255,300) R160 and (1040,310) R150, table top y 603."""
     bg, fg, ov = surfaces()
-    z = 1.0 + 0.07 * ease(t / 2.6)
+    z = 1.0 + 0.05 * ease(t / 2.5)
     c = cairo.Context(bg)
-    cam(c, 1 + (z - 1) * 0.6, 640, 330)
-    sets.restaurant_bg(c, t)
-    sets.booth(c, 230, 200, 360, 460)
-    sets.booth(c, 690, 200, 360, 460)
+    cam(c, 1 + (z - 1) * 0.7, 640, 360)
+    sets.wood_wall(c)
+    sets.night_window(c, 905, -10, 1290, 215, t)
+    sets.curtain(c, 860, 905, 470)
+    sets.sconce(c, 690, 190)
+    sets.booth_side(c, -40, 150, 120, studs_x=30, studs=(262, 300, 370, 440, 505, 580))
+    sets.booth_side(c, 1150, 1330, 150, studs_x=1255, studs=(232, 300), flip=True)
     c = cairo.Context(fg)
-    cam(c, z, 640, 330)
-    k_raise = ease((t - 0.55) / 0.35)
-    BANKER.draw(c, 410, 640, 2.7, expr="laugh" if t > 0.9 else "happy", t=t, pose="sit",
-                arms=("raise_r", 0.25 + 0.75 * k_raise), item="wine", item_hand="r", look=0.3)
-    GUEST.draw(c, 870, 640, 2.7, expr="smirk", t=t + 1.3, pose="sit",
-               arms=("raise_l", 0.25 + 0.6 * ease((t - 0.7) / 0.35)), item="wine", item_hand="l", look=-0.35)
-    sets.table(c, 640, 545, 700, t)
-    c = cairo.Context(ov)
-    sets.name_tag(c, "THE BANKER", 70, 600, ease((t - 0.45) / 0.3))
-    return compose(bg, fg, ov, dof=3.0)
+    cam(c, z, 640, 360)
+    k = ease((t - 0.45) / 0.4)
+    BANKER.draw(c, 255, 711, 4.0, expr="laugh" if t > 0.85 else "happy", t=t, pose="sit", look=0.35,
+                arms={"r": (575 - (1 - k) * 60, 330 + (1 - k) * 200), "l": (455, 635)}, item="wine", item_hand="r")
+    GUEST.draw(c, 1040, 695, 3.75, expr="smirk", t=t + 1.7, pose="sit", look=-0.3,
+               arms={"l": (850, 630), "r": (1210, 640)})
+    sets.tablecloth(c, 660, 603, 568, 42, glow_x=655)
+    sets.plate(c, 430, 600)
+    sets.plate(c, 885, 600)
+    sets.standing_wine(c, 800, 600, 140)
+    sets.roses_candle(c, 655, 600, t)
+    BANKER.draw_arms_over(c, only=("l",))      # hands rest on the plates, over the cloth
+    GUEST.draw_arms_over(c, only=("l",))
+    return compose(bg, fg, ov, dof=3.5)
 
 
 def shot_close(t):
-    """t is shot-local time (0 at T_WHIP0 so the whip has content)."""
+    """Layout measured on V1 0:07: head (478,250) R225, raised hand at (905,345), name tag box
+    (765,532) 415x108. t is local (0 = whip start)."""
     bg, fg, ov = surfaces()
-    tl = t
-    z = 1.0 + 0.05 * ease(tl / 1.8)
-    snap = ease((t + T_WHIP0 - T_SNAP) / 0.12)
-    z *= 1 + 0.12 * snap
+    ga = t + T_WHIP0
+    z = 1.0 + 0.04 * ease(t / 1.8)
+    snap = ease((ga - T_SNAP) / 0.12)
+    z *= 1 + 0.1 * snap
     c = cairo.Context(bg)
-    cam(c, 2.1, 380, 300)
-    sets.restaurant_bg(c, t + 2.5)
-    sets.booth(c, 210, 250, 380, 400)
-    c.identity_matrix()
-    sets.candle_at(c, 1150, 760, t, s=1.6)
+    cam(c, z, 478, 250)
+    sets.wood_wall(c, rail_y=470, panel=(700, 960))
+    sets.night_window(c, 1040, -10, 1290, 470, t + 3)
+    sets.curtain(c, 965, 1040, 470)
+    sets.sconce(c, 775, 175, 1.1)
+    sets.booth_side(c, 20, 330, 120, studs_x=65, studs=(195, 258, 352, 452, 550, 650))
+    c.save()
+    c.translate(1160, 600)
+    c.scale(1.3, 1.3)
+    c.translate(-1160, -600)
+    sets.roses_candle(c, 1160, 690, t)
+    c.restore()
     c = cairo.Context(fg)
-    cam(c, z, 470, 380)
-    shocked = (t + T_WHIP0) >= T_SNAP
-    BANKER.draw(c, 470, 870, 4.6, expr="shock" if shocked else "laugh", t=t + 2.5, pose="sit",
-                arms=("raise_r", 1.0 - 0.6 * snap), item="wine", item_hand="r", look=0.15 + 0.2 * snap)
+    cam(c, z, 478, 250)
+    shocked = ga >= T_SNAP
+    BANKER.draw(c, 478, 250 + 2.57 * 225, 5.625, expr="shock" if shocked else "laugh", t=ga, pose="sit",
+                look=0.2 + 0.15 * snap, arms={"r": (905 - 15 * snap, 345 + 35 * snap), "l": (300, 900)},
+                item="fork", item_hand="r")
+    sets.tablecloth(c, 640, 705, 760, 40, glow_x=1100)
+    sets.plate(c, 770, 700, 150, 30)
     c = cairo.Context(ov)
-    sets.pop_label(c, "-$40 MILLION", 960, 190, (t + T_WHIP0) - T_LABEL)
-    return compose(bg, fg, ov, dof=9.0)
+    sets.name_tag(c, "MARCUS VALE", 765, 532, 415, 108, (ga - (T_WHIP1 + 0.15)) / 0.35)
+    sets.pop_label(c, "-$40 MILLION", 1000, 150, ga - T_LABEL, size=76)
+    return compose(bg, fg, ov, dof=4.0)
 
 
 def shot_card(t):
     surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, W, H)
     c = cairo.Context(surf)
-    sets.text_card(c, CARD_TEXT, t - 0.05, W, H, cps=CARD_CPS, size=58)
+    sets.text_card(c, CARD_TEXT, t - 0.05, W, H, cps=CARD_CPS)
     return arr(surf)[..., :3]
 
 
@@ -124,17 +137,16 @@ def compose(bg, fg, ov, dof=0.0):
         b = cv2.GaussianBlur(b, (0, 0), dof)
     f = arr(fg)
     img = b * (1 - f[..., 3:4]) + f[..., :3]
-    # bloom from the bright warm sources
-    lum = img.max(axis=2, keepdims=True)
-    bright = img * np.clip((lum - 0.9) / 0.1, 0, 1)
-    img = img + cv2.GaussianBlur(bright, (0, 0), 16) * 0.4
+    # bloom only from real light sources (flames, bulbs): luminance above 0.95
+    lum = (img[..., 0:1] * 0.114 + img[..., 1:2] * 0.587 + img[..., 2:3] * 0.299)   # B,G,R order
+    bright = img * np.clip((lum - 0.95) / 0.05, 0, 1)
+    img = img + cv2.GaussianBlur(bright, (0, 0), 24) * 0.9
     o = arr(ov)
-    img = img * (1 - o[..., 3:4]) + o[..., :3]
-    return img
+    return img * (1 - o[..., 3:4]) + o[..., :3]
 
 
 _yy, _xx = np.mgrid[0:H, 0:W].astype(np.float32)
-VIG = (1 - 0.55 * (((_xx - W / 2) / (W * 0.62)) ** 2 + ((_yy - H / 2) / (H * 0.62)) ** 2)).clip(0.35, 1)[..., None]
+VIG = (1 - 0.45 * (((_xx - W / 2) / (W * 0.62)) ** 2 + ((_yy - H / 2) / (H * 0.62)) ** 2)).clip(0.4, 1)[..., None]
 RNG = np.random.default_rng(7)
 
 
@@ -142,8 +154,7 @@ def hblur(img, n):
     n = int(n)
     if n < 3:
         return img
-    k = np.ones((1, n), np.float32) / n
-    return cv2.filter2D(img, -1, k)
+    return cv2.filter2D(img, -1, np.ones((1, n), np.float32) / n)
 
 
 def frame(t):
@@ -151,8 +162,7 @@ def frame(t):
         img = shot_wide(t)
     elif t < T_WHIP1:
         p = ease((t - T_WHIP0) / (T_WHIP1 - T_WHIP0))
-        a = shot_wide(t)
-        b = shot_close(t - T_WHIP0)
+        a, b = shot_wide(t), shot_close(t - T_WHIP0)
         dx = int(p * W)
         img = np.zeros_like(a)
         img[:, :W - dx] = a[:, dx:]
@@ -163,8 +173,7 @@ def frame(t):
     else:
         return shot_card(t - T_CARD)
     img = img * VIG
-    img = img + RNG.normal(0, 0.012, img.shape[:2])[..., None].astype(np.float32)
-    return img
+    return img + RNG.normal(0, 0.01, img.shape[:2])[..., None].astype(np.float32)
 
 
 # ------------------------------------------------------------------ sound
@@ -178,29 +187,32 @@ def soundtrack(path):
         mix[s:e] += np.asarray(x[:e - s]) * vol
 
     put(audio.music_ref(TOTAL), 0, 0.55)
-    put(audio.pop(), 0.45, 0.55)              # name tag
-    put(audio.bell(), 0.92, 0.18)             # glasses clink
-    put(audio.whoosh(), T_WHIP0 - 0.03, 0.35)  # whip-pan
-    put(audio.sting_soft(), T_SNAP, 0.6)      # the snap to shock
-    put(audio.pop(), T_LABEL, 0.7)            # label pops in
-    for i in range(len(CARD_TEXT)):
-        if CARD_TEXT[i] != " ":
+    put(audio.bell(), 0.9, 0.18)
+    put(audio.whoosh(), T_WHIP0 - 0.03, 0.35)
+    put(audio.pop(), T_WHIP1 + 0.15, 0.45)
+    put(audio.sting_soft(), T_SNAP, 0.6)
+    put(audio.pop(), T_LABEL, 0.7)
+    for i, ch in enumerate(CARD_TEXT):
+        if ch != " ":
             put(audio.tick(), T_CARD + 0.05 + i / CARD_CPS, 0.35)
     audio.save(path, mix)
 
 
-def main():
+def main(only=None):
     OUT.mkdir(parents=True, exist_ok=True)
+    if only is not None:      # quick still frames: python3 animator/sample6.py 1.2 3.0
+        for tt in only:
+            img = (np.clip(frame(tt), 0, 1) * 255).astype(np.uint8)
+            cv2.imwrite(str(OUT / f"still_{tt:.2f}.png"), img)
+        return
     wav = OUT / "sample6.wav"
     soundtrack(wav)
     silent = OUT / "sample6_video.mp4"
     p = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}",
                           "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-crf", "17", "-preset", "medium",
                           "-pix_fmt", "yuv420p", str(silent)], stdin=subprocess.PIPE)
-    nf = int(TOTAL * FPS)
-    for i in range(nf):
-        img = frame(i / FPS)
-        bgr = (np.clip(img, 0, 1) * 255).astype(np.uint8)   # cairo ARGB32 bytes are B,G,R,A
+    for i in range(int(TOTAL * FPS)):
+        bgr = (np.clip(frame(i / FPS), 0, 1) * 255).astype(np.uint8)   # cairo bytes are B,G,R,A
         p.stdin.write(np.ascontiguousarray(bgr).tobytes())
     p.stdin.close()
     p.wait()
@@ -211,4 +223,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main([float(a) for a in sys.argv[1:]] or None)
