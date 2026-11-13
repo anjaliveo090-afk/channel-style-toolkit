@@ -451,3 +451,85 @@ def cash_tower(ctx, x, base, k, n_max=14, build=1.2, collapse_at=None, brick=(12
 def slide_in(k, dur=0.25, dist=400):
     """Offset for a prop sliding in from the side and settling (returns px still to travel)."""
     return dist * (1 - _ease_out(k / dur))
+
+
+# ------------------------------------------------------------------ hook props (cold open)
+def nameplate(ctx, x, y, text, k_in, k_fall=-1.0, w=330, h=64, seed=0):
+    """Brass name plate on a door: pops on (k_in s since it was said), falls off with a spin (k_fall s)."""
+    p = _pop(k_in)
+    if p <= 0:
+        return
+    ctx.save()
+    if k_fall > 0:
+        ctx.translate(x + (30 if seed % 2 else -30) * k_fall, y + 1400 * k_fall * k_fall)
+        ctx.rotate((0.9 if seed % 2 else -0.8) * k_fall)
+    else:
+        ctx.translate(x, y)
+    ctx.scale(p, p)
+    _rrect(ctx, -w / 2, -h / 2, w, h, 8)
+    _fill_line(ctx, hexc("#c9a032"), 4)
+    _rrect(ctx, -w / 2 + 8, -h / 2 + 8, w - 16, h - 16, 5)
+    ctx.set_source_rgba(1, 1, 1, 0.18)
+    ctx.fill()
+    for sx in (-w / 2 + 16, w / 2 - 16):
+        ctx.arc(sx, 0, 4, 0, 2 * math.pi)
+        ctx.set_source_rgb(*INK)
+        ctx.fill()
+    _txt(ctx, text, 0, 12, 34, "#200a00")
+    ctx.restore()
+
+
+def office_door(ctx, x, y, w=300, h=560, label=""):
+    """Wooden office door, bottom centre at (x, y), frosted glass panel with a label."""
+    ctx.rectangle(x - w / 2 - 22, y - h - 22, w + 44, h + 22)
+    _fill_line(ctx, hexc("#3a2416"), 5)
+    ctx.rectangle(x - w / 2, y - h, w, h)
+    _fill_line(ctx, hexc("#7a4a2a"), 5)
+    ctx.rectangle(x - w / 2 + 40, y - h + 40, w - 80, 200)
+    _fill_line(ctx, hexc("#cfe3ea"), 4)
+    if label:
+        _txt(ctx, label, x, y - h + 155, 30, "#3a3a3a")
+    for yy in (y - h + 290, y - h + 420):
+        ctx.rectangle(x - w / 2 + 40, yy, w - 80, 100)
+        ctx.set_source_rgba(0, 0, 0, 0.12)
+        ctx.fill()
+    ctx.arc(x + w / 2 - 40, y - h / 2 + 30, 14, 0, 2 * math.pi)
+    _fill_line(ctx, hexc("#c9a032"), 3)
+
+
+def puff(ctx, x, y, k, dur=0.45, r=120):
+    """Cartoon smoke puff where someone vanished (k s since the vanish)."""
+    if k < 0 or k > dur:
+        return
+    q = k / dur
+    for i in range(9):
+        a = i * 2 * math.pi / 9 + 0.4
+        d = r * (0.25 + 0.75 * _ease_out(q))
+        ctx.arc(x + d * math.cos(a), y + 0.7 * d * math.sin(a), r * 0.38 * (1 - 0.6 * q), 0, 2 * math.pi)
+        ctx.set_source_rgba(0.93, 0.93, 0.9, 0.95 * (1 - q))
+        ctx.fill()
+    ctx.arc(x, y, r * 0.5 * (1 - q), 0, 2 * math.pi)
+    ctx.set_source_rgba(1, 1, 1, 0.9 * (1 - q))
+    ctx.fill()
+
+
+def cardboard_box(ctx, x, y, s=1.0, items=True):
+    """Office box carried out (bottom centre at x, y)."""
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.scale(s, s)
+    if items:
+        ctx.rectangle(-60, -175, 26, 80)
+        _fill_line(ctx, hexc("#3a9a4a"), 3)
+        ctx.rectangle(10, -160, 60, 50)
+        _fill_line(ctx, hexc("#f2efe6"), 3)
+    ctx.move_to(-95, -120)
+    ctx.line_to(95, -120)
+    ctx.line_to(85, 0)
+    ctx.line_to(-85, 0)
+    ctx.close_path()
+    _fill_line(ctx, hexc("#c89a5a"), 4)
+    ctx.rectangle(-30, -95, 60, 22)
+    ctx.set_source_rgba(0, 0, 0, 0.25)
+    ctx.fill()
+    ctx.restore()

@@ -81,7 +81,13 @@ class Story:
         beats = []
         for b in mod.BEATS:
             b = dict(b)
-            b["t0"] = sents[b["at"]]["start"] - 0.06
+            s0 = sents[b["at"]]
+            b["t0"] = s0["start"] - 0.06
+            if b.get("word"):          # start on a word inside the sentence (a new picture mid-sentence)
+                txt = s0["script_text"].lower()
+                k = txt.find(b["word"].lower())
+                assert k >= 0, (b["at"], b["word"])
+                b["t0"] = s0["start"] + (s0["end"] - s0["start"]) * k / max(1, len(txt)) - 0.06
             beats.append(b)
         for g0, ln, ch, name in self.gaps:
             if ch == sents[0]["chapter"] + 1:
@@ -92,7 +98,11 @@ class Story:
         beats.sort(key=lambda b: b["t0"])
         for i, b in enumerate(beats):
             b["t1"] = beats[i + 1]["t0"] if i + 1 < len(beats) else self.total
-            b["sents"] = [s for s in sents if b["t0"] - 0.01 <= s["start"] < b["t1"] - 0.01]
+            b["sents"] = [s for s in sents if b["t0"] - 0.01 <= s["start"] < b["t1"] - 0.01
+                          or (b.get("word") and s["start"] < b["t0"] < s["end"])
+                          or (i + 1 < len(beats) and beats[i + 1].get("word") and s["start"] < b["t1"] < s["end"]
+                              and b["t0"] - 0.01 <= s["start"])]
+            b["sents"].sort(key=lambda s: s["start"])
         cards = ("card", "title_card", "chapter_card")
         n = 0
         for i, b in enumerate(beats):
@@ -468,7 +478,24 @@ def t_card(b, t):
      [(b.t0 + 0.05 + i / 22, audio.tick(), "tick", -6) for i in range(0, 40, 2)])
 def t_title(b, t):
     surf = R.surface()
-    sets.text_card(cairo.Context(surf), b.p["text"], t - b.t0, cps=22, size=58)
+    c = cairo.Context(surf)
+    lt = t - b.t0
+    sets.text_card(c, b.p["text"], lt, cps=22, size=58)
+    word = getattr(b.st.mod, "TITLE_REDACT", None)
+    if word and word in b.p["text"]:
+        txt = b.p["text"]
+        i = txt.index(word)
+        if lt * 22 >= i:                        # the bar appears when typing reaches the word
+            sets._slanted_font(c, 58)
+            ex_all = c.text_extents(txt)
+            x0 = 640 - ex_all.x_advance / 2 + c.text_extents(txt[:i]).x_advance
+            wd = c.text_extents(word).x_advance
+            reveal = 1.45
+            on = lt < reveal or (lt < reveal + 0.25 and int(lt * 24) % 2 == 0)
+            if on:
+                c.rectangle(x0 - 6, 360 - 50, wd + 12, 64)
+                c.set_source_rgb(*sets.hexc("#c8312c"))
+                c.fill()
     return R.flat(surf), False
 
 
@@ -554,6 +581,7 @@ def t_scene(b, t):
     bg, fg, ov = layers()
     z, cx, cy = b.cam(t, base=b.p.get("center", (640, 360)), push=b.p.get("push", 0.07), step=b.p.get("step", 0.06))
     z *= b.p.get("zoom", 1.0)
+    z, cx, cy = shake(b, t, z, cx, cy)
     c = cairo.Context(bg)
     R.cam(c, 1 + (z - 1) * 0.8, cx, cy)
     info = place(c, b.p["place"], t, **b.p.get("place_kw", {})) if b.p.get("place") else {}
@@ -567,6 +595,14 @@ def t_scene(b, t):
     light_cast(chars, b.p.get("place", ""))
     for s, x, sc, kw in cast:
         kw = dict(kw)
+        show = kw.pop("show", None)
+        if show is not None and not show(t, b):
+            continue
+        if callable(x):
+            x = x(t, b)
+        for key in ("look", "walk_phase", "item", "pose", "lean", "y"):
+            if callable(kw.get(key)):
+                kw[key] = kw[key](t, b)
         expr = kw.pop("expr", "neutral")
         if callable(expr):
             expr = expr(t, b)
@@ -588,7 +624,82 @@ def t_scene(b, t):
     c = cairo.Context(ov)
     if b.p.get("ov"):
         b.p["ov"](c, t, b)
-    return R.compose(bg, fg, ov, dof=b.p.get("dof", 1.6), bloom=b.p.get("bloom", 0.9)), True
+    img = R.compose(bg, fg, ov, dof=b.p.get("dof", 1.6), bloom=b.p.get("bloom", 0.9))
+    if b.p.get("sepia"):                          # flashback tint
+        g = img.mean(axis=2, keepdims=True)
+        img = 0.3 * img + 0.7 * g * np.array([0.72, 0.9, 1.1], np.float32)
+    return img, True
+
+
+def shake(b, t, z, cx, cy):
+    """camera kick on impact words: a short zoom punch + jitter (p["shake"] = list of words)"""
+    for w in b.p.get("shake", []):
+        k = t - b.wt(w)
+        if 0 <= k < 0.3:
+            a = 1 - k / 0.3
+            z *= 1 + 0.06 * a
+            cx += 16 * a * math.sin(k * 95)
+            cy += 12 * a * math.cos(k * 83)
+    return z, cx, cy
+
+
+def _slam_sfx(b):
+    out = [(b.t0 + b.p.get("at_s", 0.12), audio.thud(), "thud", 2)]
+    if b.p.get("cross"):
+        out.append((b.t0 + b.p.get("cross_s", 0.5), audio.pop(), "pop", 0))
+    if b.p.get("label"):
+        out.append((b.wt(b.p["label"][1]), audio.pop(), "pop", -2))
+    return out
+
+
+@tpl("slam", _slam_sfx)
+def t_slam(b, t):
+    """close-up of one character; a big word stamp slams onto the frame (camera kick), optionally crossed out."""
+    bg, fg, ov = layers()
+    lt = t - b.t0
+    side = b.p.get("side", "left")
+    hx = 478 if side == "left" else 800
+    ts = b.p.get("at_s", 0.12)
+    z = 1.0 + 0.05 * lt
+    cx, cy = hx, 280
+    k = lt - ts
+    if 0 <= k < 0.3:
+        a = 1 - k / 0.3
+        z *= 1 + 0.08 * a
+        cx += 18 * a * math.sin(k * 95)
+        cy += 14 * a * math.cos(k * 83)
+    c = cairo.Context(bg)
+    R.cam(c, 2.0 * z, 640, 300)
+    pl = b.p.get("place", "boardroom")
+    place(c, pl, t, **b.p.get("place_kw", {}))
+    c = cairo.Context(fg)
+    R.cam(c, z, cx, cy)
+    ch = b.st.mod.CAST[b.p["who"]]
+    light_cast([ch], pl)
+    expr = b.p.get("expr", "neutral")
+    if callable(expr):
+        expr = expr(t, b)
+    ch.draw(c, hx, 280 + 4.0 * 210, 5.4, pose="sit", t=t, look=0.22 if side == "left" else -0.22, expr=expr,
+            arms=b.p.get("arms", "rest"), bob=0.012 * math.sin(t * 3))
+    c = cairo.Context(ov)
+    sx = 920 if side == "left" else 360
+    D.stamp(c, sx, 330, k, b.p["text"], col=b.p.get("col", "#d0302a"), size=b.p.get("size", 92), angle=-0.12)
+    if b.p.get("cross"):
+        kc = lt - b.p.get("cross_s", 0.5)
+        if kc > 0:
+            for (x0, y0, x1, y1), d in (((sx - 190, 250, sx + 190, 410), 0), ((sx + 190, 250, sx - 190, 410), 0.1)):
+                q = ease_out((kc - d) / 0.12)
+                if q > 0:
+                    c.move_to(x0, y0)
+                    c.line_to(x0 + (x1 - x0) * q, y0 + (y1 - y0) * q)
+                    c.set_source_rgb(*sets.INK)
+                    c.set_line_width(16)
+                    c.set_line_cap(cairo.LINE_CAP_ROUND)
+                    c.stroke()
+    if b.p.get("label"):
+        txt, w = b.p["label"]
+        sets.pop_label(c, txt, sx, 520, t - b.wt(w), col="#f2d23a", size=46)
+    return R.compose(bg, fg, ov, dof=4.0), True
 
 
 # ---------------- close-up with a name tag

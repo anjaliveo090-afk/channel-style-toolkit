@@ -7,6 +7,7 @@ Run:
   python3 animator/nvidia_ceo.py concat N       # join parts + mix -> final mp4
   python3 animator/nvidia_ceo.py still T ...    # check frames
 """
+import math
 import sys
 from pathlib import Path
 
@@ -22,6 +23,7 @@ ALIGN = ROOT / "output/nvidia/align.json"
 VOICE = ROOT / "output/nvidia/voice.mp3"
 OUT = ROOT / "output/nvidia"
 TITLE = "How a Chinese Spy Brought Down Nvidia's CEO"
+TITLE_REDACT = "Spy"
 
 CHAPTER_MOOD = {1: ("minor", 50), 2: ("minor", 45), 3: ("minor", 50), 4: ("minor", 52), 5: ("minor", 47),
                 6: ("minor", 50), 7: ("major", 53), 8: ("minor", 50)}
@@ -86,22 +88,86 @@ L2 = [("BOARD MEMBER", 430, 1.7, {}), ("LAWYER", 850, 1.7, {})]
 
 BEATS = [
     # ---------------- CHAPTER 1: THE JACKET
-    {"at": 0, "tpl": "stage", "jacket": True, "chip": False, "push": 0.12,
-     "labels": lab(("33 YEARS", "Thirty-three", 640, 120))},
-    {"at": 1, "tpl": "board", "place": "diner", "lines": ("1993", "A CHIP IDEA"), "cps": 6},
-    {"at": 2, "tpl": "checklist", "title": "HOW HE LEFT", "rows": [("FIRED", "x", "Not fired"), ("RETIRED", "x", "Not retired"),
-                                                               ("RESIGNED", "tick", "Resigned")],
-     "stamp": ("EFFECTIVE NOW", "immediately")},
-    {"at": 5, "tpl": "checklist", "title": "JENSEN HUANG", "bgcol": "#1d2c52",
-     "rows": [("PRESIDENT", "x", "As president"), ("CHIEF EXECUTIVE", "x", "As chief executive"),
-              ("BOARD MEMBER", "x", "As a member")], "stamp": ("ALL OF THEM", "Every title")},
+    # hook (rebuilt to the reference's cold-open pattern: a real place with people, a time tag typing on,
+    # hard cuts on every phrase, stamps that slam with a camera kick, a flashback, things that vanish and fall)
+    {"at": 0, "tpl": "scene", "place": "tech_office", "tr": "cut", "amp": 0.6,
+     "cast": [("EMPLOYEE ONE", lambda t, b: 140 + 290 * min(1.0, (t - b.t0) / 1.8), 1.8,
+               {"walk_phase": lambda t, b: (t - b.t0) * 7 if t - b.t0 < 1.8 else None, "look": 0.3,
+                "expr": "neutral"}),
+              ("EMPLOYEE TWO", 930, 1.8, {"item": "phone", "arms": "chin", "look": -0.25,
+                                          "expr": lambda t, b: "shock" if t > b.wt("most valuable") else "neutral"})],
+     "ov": lambda c, t, b: (sets.name_tag(c, "THURSDAY MORNING", 60, 600, 400, 76, (t - b.t0 - 0.15) / 0.35),
+                            sets.pop_label(c, "#1 CHIP COMPANY ON EARTH", 640, 110, t - b.wt("most valuable"),
+                                           col="#f2d23a", size=54)),
+     "sfx": lambda b: [(b.wt("most valuable"), story.audio.pop(), "pop", 0)]},
+    {"at": 0, "word": "woke up", "tpl": "scene", "place": "tech_office", "tr": "cut", "amp": 0.5, "zoom": 1.12,
+     "center": (640, 330), "push": 0.1,
+     "cast": [("EMPLOYEE ONE", 250, 1.8, {"look": 0.45, "expr": "worried"}),
+              ("EMPLOYEE TWO", 1030, 1.8, {"look": -0.45, "expr": "shock"})],
+     "fg": lambda c, t, b: ceo_chair(c, 640, 590),
+     "ov": lambda c, t, b: sets.pop_label(c, "THE FOUNDER'S CHAIR", 640, 110, t - b.wt("started"), col="#f2d23a",
+                                          size=50),
+     "sfx": lambda b: [(b.t0 + 0.05, story.audio.sting_low(), "sting", -8), (b.wt("started"), story.audio.pop(), "pop", 0)]},
+    # flashback: 1993, a diner; he vanishes on "was gone"
+    {"at": 1, "tpl": "scene", "place": "diner", "sepia": True, "tr": "dissolve", "amp": 0.6,
+     "cast": [("JENSEN", 560, 1.9, {"item": "paper", "arms": "hold", "look": 0.15, "expr": "smirk"}),
+              ("WAITER", 980, 1.7, {"look": -0.4, "expr": "neutral"})],
+     "ov": lambda c, t, b: (sets.name_tag(c, "1993", 60, 600, 220, 76, (t - b.t0 - 0.2) / 0.35),
+                            sets.pop_label(c, "33 YEARS AGO", 640, 110, t - b.wt("Thirty-three"), col="#f2d23a",
+                                           size=56)),
+     "sfx": lambda b: [(b.wt("Thirty-three"), story.audio.pop(), "pop", 0)]},
+    {"at": 1, "word": "in a diner", "tpl": "scene", "place": "diner", "sepia": True, "tr": "cut", "amp": 0.3,
+     "zoom": 1.0, "center": (560, 300), "push": 0.05,
+     "cast": [("JENSEN", 560, 5.0, {"pose": "sit", "y": 1050, "item": "paper", "arms": "hold", "look": 0.2,
+                                     "expr": "smirk", "show": lambda t, b: t < b.wt("gone")})],
+     "fg": lambda c, t, b: (napkin(c, t, b), D.puff(c, 560, 420, t - b.wt("gone"), r=300)),
+     "ov": lambda c, t, b: sets.name_tag(c, "JENSEN HUANG", 765, 532, 415, 108, (t - b.wt("Jensen Huang")) / 0.35),
+     "sfx": lambda b: [(b.wt("Jensen Huang"), story.audio.pop(), "pop", -2), (b.wt("gone"), story.audio.whoosh(), "swish", 2),
+                       (b.wt("gone") + 0.05, story.audio.sting_low(), "sting", -6)]},
+    # not fired / not retired / resigned: three slams
+    {"at": 2, "tpl": "slam", "who": "JENSEN", "place": "boardroom", "text": "FIRED", "cross": True, "cross_s": 0.42,
+     "expr": "deadpan", "tr": "cut", "size": 130},
+    {"at": 3, "tpl": "slam", "who": "JENSEN", "place": "porch_sunset", "side": "right", "text": "RETIRED",
+     "col": "#c9a032", "cross": True, "cross_s": 0.5, "expr": "smirk", "tr": "cut", "size": 120},
+    {"at": 4, "tpl": "scene", "place": "tech_office", "tr": "cut", "amp": 0.5, "shake": ["Resigned"],
+     "cast": [("JENSEN", lambda t, b: 380 + 260 * min(1.0, (t - b.t0) / 2.2), 1.5,
+               {"walk_phase": lambda t, b: (t - b.t0) * 6.5, "arms": "hold", "look": 0.35, "expr": "deadpan"})],
+     "fg": lambda c, t, b: (D.office_door(c, 1060, 590, w=240, h=430, label="EXIT"),
+                            D.cardboard_box(c, 380 + 260 * min(1.0, (t - b.t0) / 2.2) + 14, 495, 0.72)),
+     "ov": lambda c, t, b: (D.stamp(c, 640, 100, t - b.wt("Resigned"), "RESIGNED", col="#2f9a3a", size=96),
+                            sets.pop_label(c, "EFFECTIVE IMMEDIATELY", 640, 196, t - b.wt("immediately"),
+                                           col="#f2d23a", size=46)),
+     "sfx": lambda b: [(b.wt("Resigned"), story.audio.thud(), "thud", 3), (b.wt("immediately"), story.audio.pop(), "pop", 0)]},
+    # every title, all at once: three name plates go up on his door, then all fall off together
+    {"at": 5, "tpl": "scene", "place": "boardroom", "tr": "whip", "amp": 0.45, "center": (640, 330),
+     "shake": ["all at once"],
+     "cast": [("JENSEN", lambda t, b: 1010 + 40 * (t - b.t0), 1.5,
+               {"pose": "back", "walk_phase": lambda t, b: (t - b.t0) * 5}),
+              ],
+     "fg": lambda c, t, b: plates_door(c, t, b),
+     "sfx": lambda b: [(b.wt(w), story.audio.pop(), "pop", 0) for w in ("As president", "As chief", "As a member")]
+     + [(b.wt("all at once") + 0.25 + i * 0.07, story.audio.thud(), "thud", -2) for i in range(3)]},
     {"at": 9, "tpl": "filing", "title": "FORM 8-K", "lines": ["Item 5.02", "Departure of Officers", "Effective immediately",
                                                               "", "Reason: ______"], "circle": (4, "never once")},
     skit(11, "boardroom", L2),
-    {"at": 15, "tpl": "tower", "value": 428e9, "sub": "TWO TRADING DAYS", "build": 1.6, "collapse": "economy",
-     "label": ("BIGGER THAN MOST ECONOMIES", "economy")},
+    {"at": 15, "tpl": "scene", "place": "trading_floor", "amp": 0.5,
+     "cast": [("TRADER", 400, 1.8, {"expr": "shock", "arms": lambda t, b: "cheer" if int(t * 3) % 2 else "shrug"}),
+              ("ANALYST", 880, 1.8, {"expr": "worried", "item": "phone", "arms": "chin", "look": -0.3})],
+     "ov": lambda c, t, b: (sets.pop_label(c, "2 TRADING DAYS", 640, 110, t - b.wt("two trading"), col="#f2d23a",
+                                           size=56),
+                            sets.pop_label(c, "AFTER HIS FIRST CONFESSION", 640, 190, t - b.wt("confession"),
+                                           col="#ff5a4a", size=40)),
+     "sfx": lambda b: [(b.wt("two trading"), story.audio.pop(), "pop", 0), (b.wt("confession"), story.audio.pop(), "pop", -2)]},
+    {"at": 15, "word": "his company lost", "tpl": "tower", "value": 428e9, "sub": "TWO TRADING DAYS", "build": 1.2,
+     "react": False, "tr": "cut"},
+    {"at": 15, "word": "than the entire", "tpl": "label", "place": "trading_floor", "react": False, "tr": "cut",
+     "fg": lambda c, t, b: D.balance_scale(c, 640, 210, t - b.t0, scale_cash, scale_globe, tilt=-0.22, s=1.0),
+     "labels": lab(("NVIDIA'S LOSS", "than the entire", 330, 610), ("MOST COUNTRIES' YEARLY ECONOMY", "economy", 920, 610)),
+     "size": 40},
     {"at": 16, "tpl": "board", "lines": ("1. A DINNER", "2. A MEMO", "3. A SECOND SECRET")},
-    {"at": 17, "tpl": "void", "who": "JENSEN", "drop": "brought down"},
+    {"at": 17, "tpl": "tag", "who": "ALICE", "place": "night_city", "side": "right", "expr": "smirk",
+     "name": "THE ALLEGED SPY", "accent": "#d8342a", "flash_at": 0.35, "react": False},
+    {"at": 17, "word": "brought down", "tpl": "void", "who": "JENSEN", "drop": "brought down", "tr": "cut"},
     {"at": 18, "tpl": "calendar", "from": "OCT", "month": "NOV", "label": "ONE WEEK"},
     # ---------------- CHAPTER 2: PREVIOUSLY
     {"at": 19, "tpl": "label", "bgcol": "#1d2c52", "labels": lab(("90 SECONDS", "ninety", 640, 360))},
@@ -324,6 +390,73 @@ BEATS[BEATS.index(next(b for b in BEATS if b["at"] == 239))] = {
     "at": 239, "tpl": "scene", "place": "living_room",
     "cast": [("YOU", 640, 1.7, {"expr": "worried", "arms": "hold", "item": "phone"})],
     "ov": lambda c, t, b: sets.pop_label(c, "YOUR RETIREMENT", 640, 110, t - b.wt("retirement"), col="#f2d23a", size=56)}
+
+
+def ceo_chair(c, x, y):
+    """empty office chair with his leather jacket over the back (y = floor)"""
+    sets._rrect(c, x - 120, y - 380, 240, 250, 40)
+    sets._fill_line(c, sets.hexc("#1a1a1e"), 5)
+    P2.leather_jacket(c, x, y - 30, 1.0)
+    c.rectangle(x - 135, y - 165, 270, 44)
+    sets._fill_line(c, sets.hexc("#1a1a1e"), 5)
+    c.rectangle(x - 9, y - 121, 18, 90)
+    sets._fill_line(c, sets.hexc("#4a4a50"), 3)
+    for dx in (-110, -55, 55, 110):
+        c.move_to(x, y - 31)
+        c.line_to(x + dx, y - 6)
+        c.set_source_rgb(*sets.INK)
+        c.set_line_width(9)
+        c.stroke()
+        c.arc(x + dx, y - 4, 9, 0, 6.3)
+        c.fill()
+
+
+def napkin(c, t, b):
+    """the napkin with the first chip sketch: in his hands, then it floats down to the counter after he vanishes"""
+    k = t - b.wt("gone")
+    if k < 0:
+        return
+    y = 330 + min(1.0, k / 0.9) ** 2 * 260
+    c.save()
+    c.translate(560 + 40 * math.sin(k * 5) * max(0, 1 - k / 0.9), y)
+    c.rotate(0.3 * math.sin(k * 6) * max(0, 1 - k / 0.9) - 0.08)
+    c.rectangle(-110, -80, 220, 160)
+    sets._fill_line(c, sets.hexc("#fbf7ea"), 4)
+    c.rectangle(-45, -40, 90, 80)
+    c.set_source_rgb(*sets.hexc("#2a4fa0"))
+    c.set_line_width(4)
+    c.stroke()
+    for i in range(5):
+        for side in (-1, 1):
+            c.move_to(side * 45, -32 + i * 16)
+            c.line_to(side * 62, -32 + i * 16)
+            c.move_to(-32 + i * 16, side * 40)
+            c.line_to(-32 + i * 16, side * 56)
+    c.stroke()
+    c.restore()
+
+
+def plates_door(c, t, b):
+    D.office_door(c, 640, 640, w=300, h=560, label="J. HUANG")
+    fall = t - b.wt("all at once") - 0.15
+    for i, (txt, w) in enumerate((("PRESIDENT", "As president"), ("CHIEF EXECUTIVE", "As chief"),
+                                  ("BOARD MEMBER", "As a member"))):
+        D.nameplate(c, 640, 330 + i * 78, txt, t - b.wt(w), fall - i * 0.06 if fall > 0 else -1, seed=i)
+
+
+def scale_cash(c, x, y):
+    for i in range(6):
+        c.rectangle(x - 55, y - 22 - i * 22, 110, 20)
+        sets._fill_line(c, sets.hexc("#6fbf5a"), 3)
+
+
+def scale_globe(c, x, y):
+    for i, dx in enumerate((-30, 30)):
+        c.arc(x + dx, y - 34, 30, 0, 6.3)
+        sets._fill_line(c, sets.hexc("#3d7fd0"), 3)
+        c.arc(x + dx - 8, y - 40, 11, 0, 6.3)
+        c.set_source_rgb(*sets.hexc("#5aa04a"))
+        c.fill()
 
 REACTORS = {
     1: [("BOARD MEMBER ONE", "boardroom"), ("LAWYER", "boardroom"), ("TRADER", "trading_floor")],
