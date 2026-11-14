@@ -17,16 +17,17 @@ import cv2  # noqa: E402
 import numpy as np  # noqa: E402
 
 import nvidia_ceo as n  # noqa: E402
+import places as P  # noqa: E402
 import places2 as P2  # noqa: E402
 import render16 as R  # noqa: E402
 import sets  # noqa: E402
 
 W, H = 1280, 720
-HEAVY = "Inter Display Black"
+FONT = "DejaVu Sans"   # closest installed match to the reference caps (widths within 2%)
 
 
 def heavy_text(c, txt, x, y, size, col, outline=14, shadow=12):
-    c.select_font_face(HEAVY, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+    c.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
     c.set_font_size(size)
     c.set_line_join(cairo.LINE_JOIN_ROUND)
     if shadow:
@@ -80,42 +81,111 @@ def chip(c, x, y, s=1.0, t=0.0):
     c.restore()
 
 
-def main(out):
+def ray_burst(c, x, y, r, n=14, col="#7dff3a", a=0.5):
+    for i in range(n):
+        ang = i * 2 * math.pi / n + 0.2
+        c.move_to(x, y)
+        c.line_to(x + r * math.cos(ang - 0.06), y + r * math.sin(ang - 0.06))
+        c.line_to(x + r * math.cos(ang + 0.06), y + r * math.sin(ang + 0.06))
+        c.close_path()
+    g = cairo.RadialGradient(x, y, 0, x, y, r)
+    g.add_color_stop_rgba(0, *sets.hexc(col), a)
+    g.add_color_stop_rgba(1, *sets.hexc(col), 0)
+    c.set_source(g)
+    c.fill()
+
+
+def glowing_email(c, x, y, s=1.0, angle=-0.18):
+    """the Sunday memo: an envelope torn open, green light bursting out (one prop, like the reference)"""
+    sets.glow(c, x, y, 260 * s, sets.hexc("#6ad822"), 0.75)
+    ray_burst(c, x, y - 20 * s, 330 * s)
+    c.save()
+    c.translate(x, y)
+    c.rotate(angle)
+    c.scale(s, s)
+    c.rectangle(-70, -150, 140, 120)                       # the letter sliding out
+    sets._fill_line(c, sets.hexc("#fbf8ef"), 5)
+    for i in range(4):
+        c.rectangle(-50, -130 + i * 22, 100 - (i == 3) * 40, 7)
+        c.set_source_rgb(*sets.hexc("#3a3a3a"))
+        c.fill()
+    c.rectangle(-120, -70, 240, 150)                       # envelope
+    sets._fill_line(c, sets.hexc("#f2ead6"), 6)
+    c.move_to(-120, -70)
+    c.line_to(0, 20)
+    c.line_to(120, -70)
+    c.set_source_rgb(*sets.INK)
+    c.set_line_width(5)
+    c.stroke()
+    c.restore()
+    rnd = np.random.default_rng(3)                        # paper fragments flying out
+    for fx, fy, fr in rnd.random((6, 3)):
+        px, py = x + (fx - 0.5) * 420 * s, y - 120 * s - fy * 200 * s
+        c.save()
+        c.translate(px, py)
+        c.rotate(fr * 3)
+        c.rectangle(-12, -8, 24, 16)
+        sets._fill_line(c, sets.hexc("#d8ffb8"), 3)
+        c.restore()
+
+
+def bokeh(c, seed=5):
+    rnd = np.random.default_rng(seed)
+    for x0, y0, r0, w in rnd.random((26, 4)):
+        col = "#ffb24a" if w < 0.7 else "#ff5a3a"
+        sets.glow(c, 60 + x0 * 1160, 180 + y0 * 420, 18 + r0 * 46, sets.hexc(col), 0.55)
+
+
+def fit_text(c, parts, x_max_w, cap_target):
+    """size so the whole line fits x_max_w with cap height <= cap_target"""
+    c.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+    c.set_font_size(100)
+    cap = -c.text_extents("H").y_bearing / 100
+    adv = sum(c.text_extents(t).x_advance for t, _ in parts) / 100
+    return min(cap_target / cap, x_max_w / adv)
+
+
+def main(out, hook="ONE EMAIL.", number="-$428 BILLION"):
     bg, fg, ov = R.layers()
-    # ---- background: night boardroom, darkened, lit cold from the window and hot red from the right
+    # ---- background: night office, hard blur, warm lamp bokeh, dark (reference: 52-62% of pixels < 0.2 lum)
     c = cairo.Context(bg)
-    R.cam(c, 1.3, 640, 330)
-    P2.boardroom(c, 0.0)
+    R.cam(c, 1.25, 640, 330)
+    P.night_office(c, 1.0)
     c.identity_matrix()
     c.rectangle(0, 0, W, H)
-    c.set_source_rgba(0, 0, 0, 0.5)
+    c.set_source_rgba(0, 0, 0, 0.45)
     c.fill()
-    sets.glow(c, 1050, 420, 760, sets.hexc("#ff3a2a"), 0.42)
-    sets.glow(c, 230, 260, 640, sets.hexc("#4a8aff"), 0.32)
-    # ---- middle: the jacket on its stand, the spy behind with the chip, the founder in front in shock
+    bokeh(c)
+    # ---- the one face, huge (head ~55% H, centre 0.33 W / 0.55 H), turned to the prop, sweating
     c = cairo.Context(fg)
-    P2.leather_jacket(c, 1130, 700, 1.45)
-    alice = n.CAST["ALICE"]
-    alice.scene(ambient=(0.85, 0.78, 1.0), rim="#ff7a5a")
-    alice.draw(c, 950, 320 + 4.0 * 40 * 4.0, 4.0, pose="sit", expr="smirk", look=-0.35, arms="present_l", t=1.0)
-    chip(c, 700, 630, 0.8)
     jensen = n.CAST["JENSEN"]
-    jensen.scene(ambient=(0.95, 0.9, 1.0), rim="#9fd0ff")
-    jensen.draw(c, 400, 430 + 4.0 * 40 * 5.7, 5.7, pose="sit", expr="scared", look=0.3, lean=-0.03, t=1.0)
-    for (x, y, s, a) in ((640, 300, 1.3, 0.35), (600, 410, 1.0, 0.5), (190, 320, 1.1, -0.4)):
-        sweat(c, x, y, s, a)
-    # ---- top: heavy sans caps, white noun + red dollar figure
+    jensen.scene(ambient=(0.95, 0.92, 0.98), rim="#a8ff7a")
+    jensen.draw(c, 420, 400 + 4.0 * 40 * 6.0, 6.0, pose="sit", expr="scared", look=0.3, lean=-0.03, t=1.0)
+    glowing_email(c, 860, 560, 1.15)
+    for (x, y, s_, a) in ((660, 300, 1.4, 0.35), (630, 420, 1.0, 0.5), (190, 330, 1.2, -0.4)):
+        sweat(c, x, y, s_, a)
+    # ---- one line of text across the top: white hook + red number, black stroke + drop shadow
     c = cairo.Context(ov)
-    heavy_text(c, "NVIDIA", 44, 150, 118, "#ffffff")
-    heavy_text(c, "-$428 BILLION", 44, 290, 128, "#ff2a1e")
-    img = R.compose(bg, fg, ov, dof=2.2, bloom=1.1)
+    parts = [(hook + " ", "#f5f4ed"), (number, "#fd3b31")]
+    size = fit_text(c, parts, 0.86 * W, 94)
+    c.select_font_face(FONT, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+    c.set_font_size(size)
+    total = sum(c.text_extents(t).x_advance for t, _ in parts)
+    x = (W - total) / 2
+    cap = -c.text_extents("H").y_bearing
+    base = 0.11 * H + cap / 2
+    for t, col in parts:
+        x += heavy_text(c, t, x, base, size, col, outline=0.075 * size, shadow=0.09 * size)
+    empty = R.surface()
+    img = R.compose(bg, fg, empty, dof=8.0, bloom=1.1)
     img = R.post(img, grain=0.004)
+    o = R.arr(ov)                                    # text goes on after the vignette: it stays full white/red
+    img = np.clip(img, 0, 1) * (1 - o[..., 3:4]) + o[..., :3]
     img = np.clip(img, 0, 1)
     small = cv2.resize((img * 255).astype(np.uint8), (1280, 720), interpolation=cv2.INTER_AREA)
     out = Path(out)
     cv2.imwrite(str(out), small)
     cv2.imwrite(str(out.with_suffix(".jpg")), small, [cv2.IMWRITE_JPEG_QUALITY, 93])
-    cv2.imwrite(str(out.with_name(out.stem + "_2x.png")), (img * 255).astype(np.uint8))
     print("wrote", out, out.with_suffix(".jpg"))
 
 
