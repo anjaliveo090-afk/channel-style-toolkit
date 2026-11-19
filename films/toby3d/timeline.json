@@ -1,0 +1,408 @@
+{
+"total": 58.682,
+"beats": [
+{
+"t0": 0.25,
+"t1": 2.61,
+"tpl": "scene",
+"sents": [
+{
+"start": 0.31,
+"end": 2.49,
+"text": "This noob is the reason Roblox has a leave button.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 2.61,
+"t1": 4.75,
+"tpl": "tag",
+"sents": [
+{
+"start": 2.67,
+"end": 4.61,
+"text": "His name was Toby and he had one dream.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 4.75,
+"t1": 6.41,
+"tpl": "scene",
+"sents": [
+{
+"start": 4.81,
+"end": 6.27,
+"text": "Make every player feel welcome.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 6.41,
+"t1": 7.663,
+"tpl": "scene",
+"sents": [
+{
+"start": 6.47,
+"end": 10.53,
+"text": "So he joined an obby and built a giant welcome sign directly over the first jump.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 7.663,
+"t1": 10.65,
+"tpl": "scene",
+"sents": [
+{
+"start": 6.47,
+"end": 10.53,
+"text": "So he joined an obby and built a giant welcome sign directly over the first jump.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 10.65,
+"t1": 11.53,
+"tpl": "slam",
+"sents": [
+{
+"start": 10.71,
+"end": 11.29,
+"text": "You're welcome!",
+"speaker": "TOBY"
+}
+]
+},
+{
+"t0": 11.53,
+"t1": 13.07,
+"tpl": "scene",
+"sents": [
+{
+"start": 11.59,
+"end": 12.83,
+"text": "Nobody could see the platforms.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 13.07,
+"t1": 15.71,
+"tpl": "scene",
+"sents": [
+{
+"start": 13.13,
+"end": 15.61,
+"text": "Then he opened a free pizza stand in a racing game.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 15.71,
+"t1": 17.022,
+"tpl": "scene",
+"sents": [
+{
+"start": 15.77,
+"end": 19.39,
+"text": "Every time a car passed, Toby stopped it to ask, pepperoni or cheese?",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 17.022,
+"t1": 19.49,
+"tpl": "scene",
+"sents": [
+{
+"start": 15.77,
+"end": 19.39,
+"text": "Every time a car passed, Toby stopped it to ask, pepperoni or cheese?",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 19.49,
+"t1": 21.61,
+"tpl": "scene",
+"sents": [
+{
+"start": 19.55,
+"end": 21.49,
+"text": "The entire race became a traffic jam.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 21.61,
+"t1": 22.87,
+"tpl": "card",
+"sents": [
+{
+"start": 21.67,
+"end": 22.77,
+"text": "But Toby wasn't finished.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 22.87,
+"t1": 25.35,
+"tpl": "scene",
+"sents": [
+{
+"start": 22.93,
+"end": 25.21,
+"text": "He threw a surprise party in a hide and seek server.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 25.35,
+"t1": 26.903,
+"tpl": "scene",
+"sents": [
+{
+"start": 25.41,
+"end": 29.27,
+"text": "Balloons covered every hiding spot and he shouted everyone's names through a megaphone.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 26.903,
+"t1": 29.21,
+"tpl": "scene",
+"sents": [
+{
+"start": 25.41,
+"end": 29.27,
+"text": "Balloons covered every hiding spot and he shouted everyone's names through a megaphone.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 29.21,
+"t1": 30.01,
+"tpl": "slam",
+"sents": [
+{
+"start": 29.27,
+"end": 29.89,
+"text": "Found you!",
+"speaker": "TOBY"
+}
+]
+},
+{
+"t0": 30.01,
+"t1": 30.91,
+"tpl": "slam",
+"sents": [
+{
+"start": 30.07,
+"end": 30.67,
+"text": "Happy birthday!",
+"speaker": "TOBY"
+}
+]
+},
+{
+"t0": 30.91,
+"t1": 33.03,
+"tpl": "scene",
+"sents": [
+{
+"start": 30.97,
+"end": 32.93,
+"text": "Players begged the moderators to remove him.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 33.03,
+"t1": 34.53,
+"tpl": "scene",
+"sents": [
+{
+"start": 33.09,
+"end": 34.47,
+"text": "One admin kicked Toby out.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 34.53,
+"t1": 36.53,
+"tpl": "scene",
+"sents": [
+{
+"start": 34.59,
+"end": 36.35,
+"text": "He rejoined with twice as many balloons.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 36.53,
+"t1": 37.715,
+"tpl": "scene",
+"sents": [
+{
+"start": 36.59,
+"end": 40.57,
+"text": "So the developers made a brand new button that let anyone escape a server instantly.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 37.715,
+"t1": 40.77,
+"tpl": "label",
+"sents": [
+{
+"start": 36.59,
+"end": 40.57,
+"text": "So the developers made a brand new button that let anyone escape a server instantly.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 40.77,
+"t1": 41.51,
+"tpl": "scene",
+"sents": [
+{
+"start": 40.83,
+"end": 41.45,
+"text": "Leave game!",
+"speaker": "ANNOUNCER"
+}
+]
+},
+{
+"t0": 41.51,
+"t1": 42.45,
+"tpl": "scene",
+"sents": [
+{
+"start": 41.57,
+"end": 42.37,
+"text": "Players clicked it.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 42.45,
+"t1": 44.33,
+"tpl": "scene",
+"sents": [
+{
+"start": 42.51,
+"end": 44.21,
+"text": "One by one the server emptied.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 44.33,
+"t1": 45.83,
+"tpl": "scene",
+"sents": [
+{
+"start": 44.39,
+"end": 45.75,
+"text": "Finally, Toby was alone.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 45.83,
+"t1": 47.17,
+"tpl": "card",
+"sents": [
+{
+"start": 45.89,
+"end": 47.07,
+"text": "But here's the crazy part.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 47.17,
+"t1": 49.83,
+"tpl": "scene",
+"sents": [
+{
+"start": 47.23,
+"end": 49.77,
+"text": "Toby spotted the new button and thought it was a doorbell.",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 49.83,
+"t1": 53.165,
+"tpl": "scene",
+"sents": [
+{
+"start": 49.89,
+"end": 54.57,
+"text": "He clicked it 20 times and every time he rejoined he shouted, did somebody order pizza?",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 53.165,
+"t1": 54.73,
+"tpl": "scene",
+"sents": [
+{
+"start": 49.89,
+"end": 54.57,
+"text": "He clicked it 20 times and every time he rejoined he shouted, did somebody order pizza?",
+"speaker": "NARRATOR"
+}
+]
+},
+{
+"t0": 54.73,
+"t1": 58.682,
+"tpl": "scene",
+"sents": [
+{
+"start": 54.79,
+"end": 57.09,
+"text": "The developers were the ones who finally logged off.",
+"speaker": "NARRATOR"
+}
+]
+}
+]
+}
