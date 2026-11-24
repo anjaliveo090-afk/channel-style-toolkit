@@ -66,7 +66,7 @@ Patch only the beats the user names. If the changes stay inside one part, re-ren
 
 ## 9. Thumbnail
 - Follow `thumbnail_bible.md` (measured on the 4 reference thumbnails): one top line (white hook + red `-$` number, black stroke + shadow, drawn after the vignette), one huge sweating face turned to one glowing green prop with rays and fragments, dark hard-blurred background with warm bokeh.
-- Edit the text / prop / expression in `animator/thumbnail.py` (`main(out, hook, number)`), run it, LOOK at the PNG, fix, send PNG + JPG (1280x720, under 2 MB).
+- Text: `python3 animator/thumbnail.py out.png "ONE EMAIL." "-$428 BILLION"`; change the prop / expression / background inside `main()` of `animator/thumbnail.py`. Run it, LOOK at the PNG, fix, send PNG + JPG (1280x720, under 2 MB).
 
 ## 10. SEO
 - Save `scripts/<story>_SEO.md` (template: `scripts/spy_brought_down_nvidia_ceo_SEO.md`): 3 title options, description (2 short paragraphs + chapters + sources line + "nobody has been charged" type disclaimers where they apply + 3 hashtags), tags under 500 characters, pinned comment, upload settings.

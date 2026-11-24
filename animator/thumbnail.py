@@ -190,4 +190,5 @@ def main(out, hook="ONE EMAIL.", number="-$428 BILLION"):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else n.OUT / "thumbnail.png")
+    a = sys.argv[1:]
+    main(a[0] if a else n.OUT / "thumbnail.png", *a[1:3])     # [out] [hook] [number], e.g. "ONE EMAIL." "-$428 BILLION"
